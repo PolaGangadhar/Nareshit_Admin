@@ -27,7 +27,7 @@
     // const username = 'your_username';
 
     fetch(`/getimage/${username}`, {
-        method: 'GET',
+        method: 'GET',s
     headers: {
         'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,

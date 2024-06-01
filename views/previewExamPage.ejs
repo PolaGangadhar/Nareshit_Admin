@@ -1,1472 +1,1519 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
     <title>Exam Portal</title>
     <style>
+      body {
+        display: grid;
+        grid-template-areas:
+          "header header header"
+          "nav article article"
+          "nav legend ads"
+          "nav footer footer";
+        grid-template-rows: 80px 1fr 1fr; /* Change the third row to 1fr */
+        grid-template-columns: 18% 1fr 15%;
+        grid-row-gap: 10px;
+        grid-column-gap: 2px;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        position: relative; /* Added position relative to body */
+      }
+
+      #loader-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        z-index: 999;
+      }
+
+      #loader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      #loading-text {
+        margin-top: 10px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      header,
+      article,
+      nav {
+        padding: 0.4em;
+        background: white;
+        border-radius: 5px;
+        border: 1px solid grey; /* Add border styling */
+      }
+
+      #pageHeader {
+        grid-area: header;
+        display: flex;
+        border-radius: 5px;
+        justify-content: space-between;
+        align-items: center;
+        background-color: azure;
+        position: relative; /* Added position relative to header */
+      }
+
+      #adminInfo {
+        display: flex;
+        align-items: center;
+      }
+
+      #adminUsername {
+        margin-right: 10px; /* Adjust the margin as needed */
+      }
+
+      #sideLogo {
+        width: 30px; /* Adjust the width as needed */
+        height: auto;
+        margin-right: 20px; /* Adjust the margin as needed */
+      }
+
+      #companyName {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 24px;
+      }
+
+      #timer {
+        font-size: 18px;
+      }
+
+      footer {
+        display: flex;
+      }
+
+      #pageFooter {
+        grid-area: footer;
+        border: 1px solid grey;
+        width: 100%; /* Set the desired width for the footer */
+        box-sizing: border-box; /* Include padding and border in the total width */
+        display: flex;
+        align-items: center; /* Align items vertically in the center */
+        padding: 10px; /* Add padding as needed */
+        grid-column: 1 / span 3; /* Span across all columns */
+        background-color: azure;
+        height: 100px;
+      }
+
+      #mainArticle {
+        grid-area: article;
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+        max-height: calc(100vh - 200px);
+        /* Set max height for the article */
+        position: relative;
+        padding: 2em;
+      }
+
+      #mainNav {
+        text-align: center;
+        grid-area: nav;
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+        max-height: calc(100vh - 200px);
+        /* Set max height for the nav */
+      }
+
+      #siteAds {
+        grid-area: ads;
+      }
+      #legend {
+        grid-area: legend;
+      }
+      /* Stack the layout on small devices/viewports. */
+      @media all and (max-width: 575px) {
         body {
-            display: grid;
-            grid-template-areas:
-                "header header header"
-                "nav article article"
-                "nav legend ads"
-                "nav footer footer";
-            grid-template-rows: 80px 1fr 1fr; /* Change the third row to 1fr */
-            grid-template-columns: 18% 1fr 15%;
-            grid-row-gap: 10px;
-            grid-column-gap: 2px;
-            height: 100vh;
-            margin: 0; 
-            font-family: Arial, sans-serif;
-            position: relative; /* Added position relative to body */
+          grid-template-areas:
+            "header"
+            "article"
+            "ads"
+            "nav"
+            "footer";
+          grid-template-rows: 80px 1fr 70px 1fr 70px;
+          grid-template-columns: 1fr;
         }
+      }
 
-              #loader-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.7);
-            z-index: 999;
-        }
-
-        #loader {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        #loading-text {
-            margin-top: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        header, article, nav{
-            padding: 0.4em;
-            background: white;
-            border-radius: 5px;
-            border: 1px solid grey; /* Add border styling */
-        }
-
-        #pageHeader {
-            grid-area: header;
-            display: flex;
-            border-radius: 5px;
-            justify-content: space-between;
-            align-items: center;
-            background-color: azure;
-            position: relative; /* Added position relative to header */
-        }
-
-        #adminInfo {
-            display: flex;
-            align-items: center;
-        }
-
-        #adminUsername {
-            margin-right: 10px; /* Adjust the margin as needed */
-        }
-
-        #sideLogo {
-            width: 30px; /* Adjust the width as needed */
-            height: auto;
-            margin-right: 20px; /* Adjust the margin as needed */
-        }
-
-        #companyName {
-            flex-grow: 1;
-            text-align: center;
-            font-size: 24px; 
-        }
-
-        #timer {
-         
-            font-size: 18px;
-        }
-
-        footer{
-            display: flex;
-        }
-
-        #pageFooter {
-            grid-area: footer;
-            border: 1px solid grey;
-            width: 100%; /* Set the desired width for the footer */
-            box-sizing: border-box; /* Include padding and border in the total width */
-            display: flex;
-            align-items: center; /* Align items vertically in the center */
-            padding: 10px; /* Add padding as needed */
-            grid-column: 1 / span 3; /* Span across all columns */
-            background-color: azure;
-            height: 100px;
-        }
-
-        #mainArticle {
-            grid-area: article;
-            overflow-y: auto;
-            /* Enable vertical scrolling */
-            max-height: calc(100vh - 200px);
-            /* Set max height for the article */
-            position: relative;
-            padding: 2em;
-        }
-
-        #mainNav {
-            text-align: center;
-            grid-area: nav;
-            overflow-y: auto;
-            /* Enable vertical scrolling */
-            max-height: calc(100vh - 200px);
-            /* Set max height for the nav */
-        }
-
-        #siteAds {
-            grid-area: ads;
-        }
-        #legend
-        {
-        grid-area:legend;
-        }
-        /* Stack the layout on small devices/viewports. */
-        @media all and (max-width: 575px) {
-            body {
-                grid-template-areas:
-                    "header"
-                    "article"
-                    "ads"
-                    "nav"
-                    "footer";
-                grid-template-rows: 80px 1fr 70px 1fr 70px;
-                grid-template-columns: 1fr;
-            }
-        }
-
-        
-
-        #submitBtn {
-          
-            background-color: #35a84e;
-            color: #fff;
-            cursor: pointer;
-            padding: 5px;
+      #submitBtn {
+        background-color: #35a84e;
+        color: #fff;
+        cursor: pointer;
+        padding: 5px;
         margin: 5px 15px;
         border: 1px solid #ccc;
         border-radius: 5px;
         width: 200px;
         text-align: center;
         font-weight: bold;
-        height:50px;
-        }
+        height: 50px;
+      }
 
-        #mainArticle {
-            margin: 1.5em;
-        }
+      #mainArticle {
+        margin: 1.5em;
+      }
 
-        #logo2 {
-            height: 25px;
-            width: 180px;
-            align-self: center; /* Align the image vertically in the center */
-            margin-top: 10px;
-        }
+      #logo2 {
+        height: 25px;
+        width: 180px;
+        align-self: center; /* Align the image vertically in the center */
+        margin-top: 10px;
+      }
 
-        #footerText {
-            margin: 0px 0px 0px 20px; /* Adjust the margin as needed */
-        }
+      #footerText {
+        margin: 0px 0px 0px 20px; /* Adjust the margin as needed */
+      }
 
-        
-        #my-textbox2,
-        #my-checkbox,
-        #next {
-            display: none; /* Hide the label initially */
-        } 
+      #my-textbox2,
+      #my-checkbox,
+      #next {
+        display: none; /* Hide the label initially */
+      }
 
-        .radio-group {
-            margin-top: 10px;
-        }
+      .radio-group {
+        margin-top: 10px;
+      }
 
-        .radio-group input {
-            margin-right: 10px;
-        }
+      .radio-group input {
+        margin-right: 10px;
+      }
 
-       
+      .next-button {
+        margin: 5px;
+        padding: 10px;
+        background-color: #4caf50; /* Green background color */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-        .next-button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #4CAF50; /* Green background color */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+      .next-button:hover {
+        background-color: #45a049; /* Darker green on hover */
+      }
 
-        .next-button:hover {
-            background-color: #45a049; /* Darker green on hover */
-        }
+      #mainNav button {
+        margin: 5px;
+        padding: 10px;
+        background-color: grey; /* Green background color */
+        color: white;
+        width: 150px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
 
-        #mainNav button {
-            margin: 5px;
-            padding: 10px;
-            background-color: grey; /* Green background color */
-            color: white;
-            width: 150px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #mainNav button:hover {
-            background-color: grey; /* Darker green on hover */
-        }
-        #legend {
+      #mainNav button:hover {
+        background-color: grey; /* Darker green on hover */
+      }
+      #legend {
         margin-top: 5px;
         display: flex;
-        justify-content:center;
-        gap:20px;
-    }
-    .box
-    {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:3px;
-    }
-    .legend {
-     
-       
+        justify-content: center;
+        gap: 20px;
+      }
+      .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+      }
+      .legend {
         border: 1px solid #ccc;
-        display:flex;
+        display: flex;
         width: 10px;
-        height:10px;
+        height: 10px;
         text-align: center;
         font-weight: bold;
-    }
+      }
 
-    .legend.attempted {
-        background-color: #4CAF50; /* Green */
+      .legend.attempted {
+        background-color: #4caf50; /* Green */
         color: white;
-    }
+      }
 
-    .legend.attempted-review {
+      .legend.attempted-review {
         background-color: #f39c12; /* Orange */
         color: white;
-    }
+      }
 
-    .legend.attempted-not-review {
+      .legend.attempted-not-review {
         background-color: #3498db; /* Blue */
         color: white;
-    }
+      }
 
-    .legend.not-attempted {
+      .legend.not-attempted {
         background-color: #e74c3c; /* Red */
         color: white;
-    }
-    .qheader{
-    display:flex;
-    justify-content:space-between;
-    }
-    .body-change{
-            background-color: black;
-            color: white;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            width: 180%;
-            height: 10px;
-        }
+      }
+      .qheader {
+        display: flex;
+        justify-content: space-between;
+      }
+      .body-change {
+        background-color: black;
+        color: white;
+        font-family: "Courier New", monospace;
+        white-space: pre-wrap;
+        width: 180%;
+        height: 10px;
+      }
 
-        .keyword {
-            color: #569cd6; /* Blue color for keywords */
-        }
+      .keyword {
+        color: #569cd6; /* Blue color for keywords */
+      }
 
-        .string {
-            color: #ce9178; /* Red color for strings */
-        }
+      .string {
+        color: #ce9178; /* Red color for strings */
+      }
 
-        .comment {
-            color: #608b4e; /* Green color for comments */
-        }
-             
+      .comment {
+        color: #608b4e; /* Green color for comments */
+      }
 
-        .highlight {
-            background-color: yellow;
-        }
-        textarea {
-            width: 94%;
-            height: 280px;
-            border: none;
-            background-color: black;
-            color: white;
-            padding: 10px;
-            box-sizing: border-box;
-            margin-left: 25px;
-        }
-        .code-editor {
-    height: 300px; /* Set the desired height */
-}
+      .highlight {
+        background-color: yellow;
+      }
+      textarea {
+        width: 94%;
+        height: 280px;
+        border: none;
+        background-color: black;
+        color: white;
+        padding: 10px;
+        box-sizing: border-box;
+        margin-left: 25px;
+      }
+      .code-editor {
+        height: 300px; /* Set the desired height */
+      }
 
+      .question-attempted {
+        background-color: green; /* Set the background color for attempted questions */
+      }
 
-  .question-attempted {
-    background-color: green; /* Set the background color for attempted questions */
-  }
-
-  .question-unattempted {
-    background-color: red; /* Set the background color for unattempted questions */
-  }
-
-
+      .question-unattempted {
+        background-color: red; /* Set the background color for unattempted questions */
+      }
     </style>
     <!-- Include Ace library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <!-- Include Ace Autocomplete extension -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <header id="pageHeader">
-        <img src="https://www.nareshit.com/wp-content/uploads/2019/06/xNareshit-Logo-Png.png.pagespeed.ic.DS6ZMd4hME.png" alt="Logo" id="logo">
-        <div id="adminInfo">         
-           
-            <div id="adminUsername">
-            </div>
-        </div>
+      <img
+        src="https://www.nareshit.com/wp-content/uploads/2019/06/xNareshit-Logo-Png.png.pagespeed.ic.DS6ZMd4hME.png"
+        alt="Logo"
+        id="logo"
+      />
+      <div id="adminInfo">
+        <div id="adminUsername"></div>
+      </div>
     </header>
-    
 
-   <article id="mainArticle" style="height: 450px;"> 
-    <!-- Timer Display -->
-    <div class="qheader">
+    <article id="mainArticle" style="height: 450px">
+      <!-- Timer Display -->
+      <div class="qheader">
         <div id="timer">Time Remaining: <span id="timerDisplay"></span></div>
         <div>
-            <button id="submitBtn" onclick="previewresult()">Confirm Preview Questions</button>
+          <button id="submitBtn" onclick="previewresult()">
+            Confirm Preview Questions
+          </button>
         </div>
-    </div>
+      </div>
 
-    <br><br>
+      <br /><br />
 
-    <% questions.forEach((question, index) => { %>
-   
-        <div id="<%= 'my-textbox' + (index + 2) %>" style="<%= index === 0 ? 'display: block;' : 'display: none;' %>">
-        <label id="<%='lbl' + (index+2) %>" value="<%= question.QuestionID %>"></label>
-            <% if (question.QuestionType === 'Code') { %>
-                <br><label id="<%= 'lb-' + (index + 2) %>">Q<%= index + 1 %>. &nbsp; <%= question.QuestionDescription %></label>
-                <div class="code-editor" id="<%= 'codeEditor' + (index + 2) %>"></div><br>
-                <button onclick="<%= 'buildCode' + (index + 2) %>()">Build</button>
-                <button onclick="<%= 'runCode' + (index + 2) %>()">Run</button>
-                <button onclick="<%= 'validateCode' + (index + 2) %>()">Validate</button>
-                <br>
-            <% } else if (question.QuestionType === 'FreeText') { %>
-                <br><label id="<%= 'lb-' + (index + 2) %>">Q<%= index + 1 %>. &nbsp; <%= question.QuestionDescription %></label><br>
-                <textarea id="<%= 'freeText' + (index + 2) %>" style="background-color: #6495ED; fore-color: #2F2320   height: 200px; width: 100%;"></textarea>
-                <br>
-            <% } else if (question.QuestionType === 'Check' || question.QuestionType === 'MCQ') { %>
-                <br><label id="<%= 'lb-' + (index + 2) %>">Q<%= index + 1 %>. &nbsp; <span style="white-space: pre-line;"><%- question.QuestionDescription %></span></label><br>
-                <div class="<%= question.QuestionType === 'Check' ? 'checkbox-group' : 'radio-group' %>" dataradioid="<%= index + 2 %>" id="<%= question.QuestionType === 'Check' ? 'checkboxes' : 'radiobuttons' %>">
-    <% for (let i = 1; i <= 4; i++) { %>
-        <label>
-            <input type="<%= question.QuestionType === 'Check' ? 'checkbox' : 'radio' %>" dataquestionid="<%= question.QuestionID %>" name="<%= 'answer' + index %>" id="<%= 'answer' + (index + 2) + '_' + i %>" value="<%= question['Option' + String.fromCharCode(64 + i)] %>">
-             <%= question['Option' + String.fromCharCode(64 + i)] %>
-        </label>
-    <br>
-    <br>
-    <% } %>
-</div><br>
-            <% } %>
+      <% questions.forEach((question, index) => { %>
 
-            <!-- "Review Later" button -->
-              <div style="margin-top: 10px; margin-bottom: 10px;">
-                <label for="<%= 'reviewLater' + (index + 2) %>">Review Later</label>
-                <input type="checkbox" id="<%= 'reviewLater' + (index + 2) %>" name="reviewLater" value="reviewLater" onchange="updateReviewStatus(<%= index + 2 %>)">
-            </div>
-
-            <!-- Display the current question number out of total questions -->
-            <div style="margin-bottom: 10px; text-align: center;">Question <%= index + 1 %> of <%= questions.length %></div>
-
-            <button id="btnnextquestion" onclick="nextQuestion()" style="display: block; margin: 0 auto;">Next</button>
-
-        </div>
-
+      <div
+        id="<%= 'my-textbox' + (index + 2) %>"
+        style="<%= index === 0 ? 'display: block;' : 'display: none;' %>"
+      >
+        <label
+          id="<%='lbl' + (index+2) %>"
+          value="<%= question.QuestionID %>"
+        ></label>
         <% if (question.QuestionType === 'Code') { %>
-            <script>
-                console.log("Initializing Ace editor for <%= 'codeEditor' + (index + 2) %>");
-                var editor<%= index + 2 %> = ace.edit("<%= 'codeEditor' + (index + 2) %>");
-                editor<%= index + 2 %>.setTheme("ace/theme/twilight");
-                editor<%= index + 2 %>.getSession().setMode("ace/mode/csharp");
-            </script>
-        <% } %>
-    <% }) %>
- <script>
-        // Track attempted status for each question
-        var attemptedStatus = new Array(<%= questions.length %>).fill(false);
-
-        // Add event listeners to track user interactions
-      document.addEventListener('change', async function (event) {
-      console.log('change event tiggered');
-  var target = event.target;
-
-  if (target.type === 'checkbox' || target.type === 'radio') {
-    // Extract question number and option index from the element ID
-    var matches = target.id.match(/answer(\d+)_(\d+)/);
-    if (matches) {
-      var questionNumber = parseInt(matches[1], 10);
-
-      attemptedStatus[questionNumber - 1] = true;
-
-      const questionIdUpdateElement = document.getElementById('lbl' + questionNumber);
-      const updatedquestionId = questionIdUpdateElement.getAttribute('value');
-      
-      // Use try-catch block for asynchronous operations
-      try {
-        const updatedSubmittedAnswerElement = document.querySelector('input[dataquestionid="' + updatedquestionId + '"]:checked');
-        const updatedsubmittedanswer = updatedSubmittedAnswerElement ? updatedSubmittedAnswerElement.value : null;
-        
-        const inputButton = document.querySelector(`button[buttonquestionid="${updatedquestionId}"]`);
-        let UpdatedQuestionStatus = "Na";
-        const Questionstatus = "NA";
-
-        var checkbox = document.getElementById('reviewLater' + questionNumber);
-
-       if (checkbox && checkbox.checked) {
-    inputButton.style.backgroundColor = 'orange';
-    UpdatedQuestionStatus = "AttemptReview";
-} else {
-    inputButton.style.backgroundColor = 'green';
-    UpdatedQuestionStatus = "Attempted";
-}
-
-   let resultData1 = JSON.parse(localStorage.getItem('resultData')) || [];
-
-       const existingEntryIndex = resultData1.findIndex(entry => entry.QuestionID === updatedquestionId);
-
-                    if (existingEntryIndex !== -1) {
-                        // Update existing entry
-                        resultData1[existingEntryIndex] = {
-                            QuestionID: updatedquestionId,
-                            Answer: updatedsubmittedanswer,
-                            Status: UpdatedQuestionStatus,
-                            Type: 'MCQ'
-                        };
-                    } else {
-                        // Add new entry
-                        resultData1.push({
-                            QuestionID: updatedquestionId,
-                            Answer: updatedsubmittedanswer,
-                            Status: UpdatedQuestionStatus,
-                            Type: 'MCQ'
-                        });
-                    }
-      localStorage.setItem('resultData', JSON.stringify(resultData1));
-      
-      UpdateResultData();
-
-
-      } catch (error) {
-        console.error('Error processing change event:', error);
-      }
-    }
-  }
-});
-    </script>
-</article>
-      
-
-
-<div id="legend">
-      <div class="box"><div class="legend attempted"></div>Attempted</div>
-      <div class="box"><div class="legend attempted-review"></div>Attempted + Review</div>
-       <div class="box"><div class="legend attempted-not-review"></div>Attempted + Not Review Later</div>
-        <div class="box"><div class="legend not-attempted"></div>Not Attempted</div>
-            
-  </div>
-<script>
-    // Function to determine button color based on status
-    function getButtonColor(status) {
-        if (status === 'Attempted') {
-            return 'green';
-        } else if (status === 'AttemptReview') {
-            return 'orange';
-        } else if (status === 'AttemptNotReview') {
-            return 'blue';
-        } else {
-            // Default color if status is not one of the specified values
-            return 'red';
-        }
-    }
-
-  
-</script>
-
-<!-- Rest of your HTML -->
-
-<nav id="mainNav">
-    <% questions.forEach((question, index) => { %>
-        <button buttonid="<%= index + 2 %>" buttonquestionid="<%= question.QuestionID %>" onclick="myFunction(<%= index + 2 %>)">
-            <strong> Question <%= index + 1 %></strong>
+        <br /><label id="<%= 'lb-' + (index + 2) %>"
+          >Q<%= index + 1 %>. &nbsp; <%= question.QuestionDescription %></label
+        >
+        <div class="code-editor" id="<%= 'codeEditor' + (index + 2) %>"></div>
+        <br />
+        <button onclick="<%= 'buildCode' + (index + 2) %>()">Build</button>
+        <button onclick="<%= 'runCode' + (index + 2) %>()">Run</button>
+        <button onclick="<%= 'validateCode' + (index + 2) %>()">
+          Validate
         </button>
-    <% }) %>
-</nav>
+        <br />
+        <% } else if (question.QuestionType === 'FreeText') { %>
+        <br /><label id="<%= 'lb-' + (index + 2) %>"
+          >Q<%= index + 1 %>. &nbsp; <%= question.QuestionDescription %></label
+        ><br />
+        <textarea
+          id="<%= 'freeText' + (index + 2) %>"
+          style="background-color: #6495ED; fore-color: #2F2320   height: 200px; width: 100%;"
+        ></textarea>
+        <br />
+        <% } else if (question.QuestionType === 'Check' || question.QuestionType
+        === 'MCQ') { %>
+        <br /><label id="<%= 'lb-' + (index + 2) %>"
+          >Q<%= index + 1 %>. &nbsp;
+          <span style="white-space: pre-line"
+            ><%- question.QuestionDescription %></span
+          ></label
+        ><br />
+        <div
+          class="<%= question.QuestionType === 'Check' ? 'checkbox-group' : 'radio-group' %>"
+          dataradioid="<%= index + 2 %>"
+          id="<%= question.QuestionType === 'Check' ? 'checkboxes' : 'radiobuttons' %>"
+        >
+          <% for (let i = 1; i <= 4; i++) { %>
+          <label>
+            <input
+              type="<%= question.QuestionType === 'Check' ? 'checkbox' : 'radio' %>"
+              dataquestionid="<%= question.QuestionID %>"
+              name="<%= 'answer' + index %>"
+              id="<%= 'answer' + (index + 2) + '_' + i %>"
+              value="<%= question['Option' + String.fromCharCode(64 + i)] %>"
+            />
+            <%= question['Option' + String.fromCharCode(64 + i)] %>
+          </label>
+          <br />
+          <br />
+          <% } %>
+        </div>
+        <br />
+        <% } %>
 
-<span id="currentQuestionNumber" style="display: none"></span>
+        <!-- "Review Later" button -->
+        <div style="margin-top: 10px; margin-bottom: 10px">
+          <label for="<%= 'reviewLater' + (index + 2) %>">Review Later</label>
+          <input
+            type="checkbox"
+            id="<%= 'reviewLater' + (index + 2) %>"
+            name="reviewLater"
+            value="reviewLater"
+            onchange="updateReviewStatus(<%= index + 2 %>)"
+          />
+        </div>
 
-<script>
-    // Add an event listener for the 'load' event
-    window.addEventListener('load', function () {
+        <!-- Display the current question number out of total questions -->
+        <div style="margin-bottom: 10px; text-align: center">
+          Question <%= index + 1 %> of <%= questions.length %>
+        </div>
+
+        <button
+          id="btnnextquestion"
+          onclick="nextQuestion()"
+          style="display: block; margin: 0 auto"
+        >
+          Next
+        </button>
+      </div>
+
+      <% if (question.QuestionType === 'Code') { %>
+      <script>
+        console.log("Initializing Ace editor for <%= 'codeEditor' + (index + 2) %>");
+        var editor<%= index + 2 %> = ace.edit("<%= 'codeEditor' + (index + 2) %>");
+        editor<%= index + 2 %>.setTheme("ace/theme/twilight");
+        editor<%= index + 2 %>.getSession().setMode("ace/mode/csharp");
+      </script>
+      <% } %> <% }) %>
+      <script>
+                // Track attempted status for each question
+                var attemptedStatus = new Array(<%= questions.length %>).fill(false);
+
+                // Add event listeners to track user interactions
+              document.addEventListener('change', async function (event) {
+              console.log('change event tiggered');
+          var target = event.target;
+
+          if (target.type === 'checkbox' || target.type === 'radio') {
+            // Extract question number and option index from the element ID
+            var matches = target.id.match(/answer(\d+)_(\d+)/);
+            if (matches) {
+              var questionNumber = parseInt(matches[1], 10);
+
+              attemptedStatus[questionNumber - 1] = true;
+
+              const questionIdUpdateElement = document.getElementById('lbl' + questionNumber);
+              const updatedquestionId = questionIdUpdateElement.getAttribute('value');
+
+              // Use try-catch block for asynchronous operations
+              try {
+                const updatedSubmittedAnswerElement = document.querySelector('input[dataquestionid="' + updatedquestionId + '"]:checked');
+                const updatedsubmittedanswer = updatedSubmittedAnswerElement ? updatedSubmittedAnswerElement.value : null;
+
+                const inputButton = document.querySelector(`button[buttonquestionid="${updatedquestionId}"]`);
+                let UpdatedQuestionStatus = "Na";
+                const Questionstatus = "NA";
+
+                var checkbox = document.getElementById('reviewLater' + questionNumber);
+
+               if (checkbox && checkbox.checked) {
+            inputButton.style.backgroundColor = 'orange';
+            UpdatedQuestionStatus = "AttemptReview";
+        } else {
+            inputButton.style.backgroundColor = 'green';
+            UpdatedQuestionStatus = "Attempted";
+        }
+
+           let resultData1 = JSON.parse(localStorage.getItem('resultData')) || [];
+
+               const existingEntryIndex = resultData1.findIndex(entry => entry.QuestionID === updatedquestionId);
+
+                            if (existingEntryIndex !== -1) {
+                                // Update existing entry
+                                resultData1[existingEntryIndex] = {
+                                    QuestionID: updatedquestionId,
+                                    Answer: updatedsubmittedanswer,
+                                    Status: UpdatedQuestionStatus,
+                                    Type: 'MCQ'
+                                };
+                            } else {
+                                // Add new entry
+                                resultData1.push({
+                                    QuestionID: updatedquestionId,
+                                    Answer: updatedsubmittedanswer,
+                                    Status: UpdatedQuestionStatus,
+                                    Type: 'MCQ'
+                                });
+                            }
+              localStorage.setItem('resultData', JSON.stringify(resultData1));
+
+              UpdateResultData();
+
+
+              } catch (error) {
+                console.error('Error processing change event:', error);
+              }
+            }
+          }
+        });
+      </script>
+    </article>
+
+    <div id="legend">
+      <div class="box">
+        <div class="legend attempted"></div>
+        Attempted
+      </div>
+      <div class="box">
+        <div class="legend attempted-review"></div>
+        Attempted + Review
+      </div>
+      <div class="box">
+        <div class="legend attempted-not-review"></div>
+        Attempted + Not Review Later
+      </div>
+      <div class="box">
+        <div class="legend not-attempted"></div>
+        Not Attempted
+      </div>
+    </div>
+    <script>
+      // Function to determine button color based on status
+      function getButtonColor(status) {
+        if (status === "Attempted") {
+          return "green";
+        } else if (status === "AttemptReview") {
+          return "orange";
+        } else if (status === "AttemptNotReview") {
+          return "blue";
+        } else {
+          // Default color if status is not one of the specified values
+          return "red";
+        }
+      }
+    </script>
+
+    <!-- Rest of your HTML -->
+
+    <nav id="mainNav">
+      <% questions.forEach((question, index) => { %>
+      <button
+        buttonid="<%= index + 2 %>"
+        buttonquestionid="<%= question.QuestionID %>"
+        onclick="myFunction(<%= index + 2 %>)"
+      >
+        <strong> Question <%= index + 1 %></strong>
+      </button>
+      <% }) %>
+    </nav>
+
+    <span id="currentQuestionNumber" style="display: none"></span>
+
+    <script>
+      // Add an event listener for the 'load' event
+      window.addEventListener("load", function () {
         // Retrieve stored resultData from localStorage
-        var storedResultData = JSON.parse(localStorage.getItem('resultData'));
+        var storedResultData = JSON.parse(localStorage.getItem("resultData"));
 
         // Check if there is stored data
         if (Array.isArray(storedResultData) && storedResultData.length > 0) {
-            // Iterate through stored resultData and update selected options
-            storedResultData.forEach(function (item) {
-                var questionId = item.QuestionID;
-                var answer = item.Answer;
+          // Iterate through stored resultData and update selected options
+          storedResultData.forEach(function (item) {
+            var questionId = item.QuestionID;
+            var answer = item.Answer;
 
-                // Find the corresponding radio or checkbox element and mark it as selected
+            // Find the corresponding radio or checkbox element and mark it as selected
 
-                 const button = document.querySelector(`button[buttonquestionid="${questionId}"]`);
+            const button = document.querySelector(
+              `button[buttonquestionid="${questionId}"]`
+            );
             if (button) {
-                button.style.backgroundColor = getButtonColor(item.Status);
+              button.style.backgroundColor = getButtonColor(item.Status);
             }
 
-                var inputElement = document.querySelector('input[dataquestionid="' + questionId + '"][value="' + answer + '"]');
-                if (inputElement) {
-                    inputElement.checked = true;
-                }
-            });
-        }
-    });
-
-          
-           
-
-
-
-
-
-</script>
-
-
-<script>
-
-     var attemptedStatus = [];
-       const totalDuration = 45 * 60; // 10 minutes
-    const promptDuration = 2 * 60; // 2 minutes
-    let timeRemaining = totalDuration;
-    let timerInterval;
-    let totalQuestions = <%= questions.length %>;
-    let timerExpired = false; 
-    let promptShown = false;
-     let currentQuestion = 1;
-      let currentIndex = 2;
-       let resultData = [];
-       let shouldCallExamSubmission = true;
-       // Extract testID value
-var testID = getParameterValue("testID");
-console.log("testID:", testID);
-
-// Extract TID value
-var TID = getParameterValue("TID");
-console.log("TID:", TID);
-
-       let ExamId=testID;
-       let userName; 
-
-
-      document.addEventListener("DOMContentLoaded", async function () {
-        let isRequestInProgress = false;
-        document.getElementById("timer").style.display = "none";
-        const processUserInput = async () => {
-            userName = "Admin1@nareshit.net";
-            if (userName === null) {
-                //showLoadingIndicator();
-                // Use a Promise to simulate the delay before prompting the user
-                //await new Promise(resolve => setTimeout(resolve, 2000));
-                const userInput = prompt("Please enter your username:");
-                if (userInput !== null && userInput.trim() !== "") {
-                    localStorage.setItem('username', userInput);
-                    await ExamPageLoad(userInput);
-                } else {
-                    alert("Invalid UserName. Please try again when refreshing the page.");
-                }
-               // hideLoadingIndicator();
-            } else {
-              // showLoadingIndicator();
-                // Simulate a 2-second loading delay for demonstration purposes
-                //await new Promise(resolve => setTimeout(resolve, 2000));
-                await ExamPageLoad(userName);
-               // hideLoadingIndicator();
+            var inputElement = document.querySelector(
+              'input[dataquestionid="' +
+                questionId +
+                '"][value="' +
+                answer +
+                '"]'
+            );
+            if (inputElement) {
+              inputElement.checked = true;
             }
-
-            // Release the lock after the request is completed
-            isRequestInProgress = false;
-        };
-
-        const showLoadingIndicator = () => {
-            // Display the loader container
-            const loaderContainer = document.getElementById("loader-container");
-            loaderContainer.style.display = "flex";
-        };
-
-        const hideLoadingIndicator = () => {
-            // Hide the loader container
-            const loaderContainer = document.getElementById("loader-container");
-            loaderContainer.style.display = "none";
-        };
-
-        // Check if a request is already in progress before proceeding
-        if (!isRequestInProgress) {
-            // Set the lock to prevent other requests
-            isRequestInProgress = true;
-
-            // Process the user input
-            await processUserInput();
-        } else {
-            // Inform the user that a request is already in progress
-            alert("Another request is already in progress. Please wait.");
+          });
         }
-    });
-    // Set the total duration of the test in seconds
-    //varables global values
-    //validate the student exam submitted or not
+      });
+    </script>
 
-    async function ExamPageLoad(userInput)
-    {
-    
-        
-    
-    
-    
-            
-            const GetUserExistingTID = await ValidateExamEntry(userInput);
-          
-            if(GetUserExistingTID == 0)
-            {
-            // Display the username
-            displayUsername(userInput);
+    <script>
 
-            // Call the post method here if needed
-            //the below method will start the exam
-            console.log("entertered into post method");
-            postMethod(userInput);
-             console.log("leaved into post method");
-             //document.getElementById("mainNav").style.display = "block";
-             //document.getElementById("mainArticle").style.display = "block";
-            // document.getElementById("legend").style.display = "block";
-             initializeReviewStatus();
-            timeRemaining = getRemainingTime();
+           var attemptedStatus = [];
+             const totalDuration = 45 * 60; // 10 minutes
+          const promptDuration = 2 * 60; // 2 minutes
+          let timeRemaining = totalDuration;
+          let timerInterval;
+          let totalQuestions = <%= questions.length %>;
+          let timerExpired = false;
+          let promptShown = false;
+           let currentQuestion = 1;
+            let currentIndex = 2;
+             let resultData = [];
+             let shouldCallExamSubmission = true;
+             // Extract testID value
+      var testID = getParameterValue("testID");
+      console.log("testID:", testID);
 
-            // Start the timer
-          initializeTimer();
+      // Extract TID value
+      var TID = getParameterValue("TID");
+      console.log("TID:", TID);
 
-          loadInitialIndex();
-             }
+             let ExamId=testID;
+             let userName;
+
+
+            document.addEventListener("DOMContentLoaded", async function () {
+              let isRequestInProgress = false;
+              document.getElementById("timer").style.display = "none";
+              const processUserInput = async () => {
+                  userName = "gangadharpola@gmail.com";
+                  if (userName === null) {
+                      //showLoadingIndicator();
+                      // Use a Promise to simulate the delay before prompting the user
+                      //await new Promise(resolve => setTimeout(resolve, 2000));
+                      const userInput = prompt("Please enter your username:");
+                      if (userInput !== null && userInput.trim() !== "") {
+                          localStorage.setItem('username', userInput);
+                          await ExamPageLoad(userInput);
+                      } else {
+                          alert("Invalid UserName. Please try again when refreshing the page.");
+                      }
+                     // hideLoadingIndicator();
+                  } else {
+                    // showLoadingIndicator();
+                      // Simulate a 2-second loading delay for demonstration purposes
+                      //await new Promise(resolve => setTimeout(resolve, 2000));
+                      await ExamPageLoad(userName);
+                     // hideLoadingIndicator();
+                  }
+
+                  // Release the lock after the request is completed
+                  isRequestInProgress = false;
+              };
+
+              const showLoadingIndicator = () => {
+                  // Display the loader container
+                  const loaderContainer = document.getElementById("loader-container");
+                  loaderContainer.style.display = "flex";
+              };
+
+              const hideLoadingIndicator = () => {
+                  // Hide the loader container
+                  const loaderContainer = document.getElementById("loader-container");
+                  loaderContainer.style.display = "none";
+              };
+
+              // Check if a request is already in progress before proceeding
+              if (!isRequestInProgress) {
+                  // Set the lock to prevent other requests
+                  isRequestInProgress = true;
+
+                  // Process the user input
+                  await processUserInput();
+              } else {
+                  // Inform the user that a request is already in progress
+                  alert("Another request is already in progress. Please wait.");
+              }
+          });
+          // Set the total duration of the test in seconds
+          //varables global values
+          //validate the student exam submitted or not
+
+          async function ExamPageLoad(userInput)
+          {
+
+
+
+
+
+
+                  const GetUserExistingTID = await ValidateExamEntry(userInput);
+
+                  if(GetUserExistingTID == 0)
+                  {
+                  // Display the username
+                  displayUsername(userInput);
+
+                  // Call the post method here if needed
+                  //the below method will start the exam
+                  console.log("entertered into post method");
+                  postMethod(userInput);
+                   console.log("leaved into post method");
+                   //document.getElementById("mainNav").style.display = "block";
+                   //document.getElementById("mainArticle").style.display = "block";
+                  // document.getElementById("legend").style.display = "block";
+                   initializeReviewStatus();
+                  timeRemaining = getRemainingTime();
+
+                  // Start the timer
+                initializeTimer();
+
+                loadInitialIndex();
+                   }
+                   else
+
+                   {
+
+                     const userInput = prompt("Please enter your username:");
+              if (userInput !== null && userInput.trim() !== "") {
+                      localStorage.setItem('username',userInput);
+                      await ExamPageLoad(userInput);
+              }
              else
+              {
 
-             {
+                     alert("Invalid UserName Try Again!! While Refresh the page");
+              }
+                     //  localStorage.setItem('username',null);
+                      // alert("Exam your are already submitted with transaction id : " + GetUserExistingTID);
 
-               const userInput = prompt("Please enter your username:");
-        if (userInput !== null && userInput.trim() !== "") {
-                localStorage.setItem('username',userInput);
-                await ExamPageLoad(userInput);
-        }
-       else
-        { 
-       
-               alert("Invalid UserName Try Again!! While Refresh the page");
-        }
-               //  localStorage.setItem('username',null);
-                // alert("Exam your are already submitted with transaction id : " + GetUserExistingTID);
 
-               
-             }
-        
-    
-   
-    
-    }
-
-   
-   // Function to parse query string and extract parameter value
-function getParameterValue(parameter) {
-    var params = new URLSearchParams(window.location.search);
-    return params.get(parameter);
-}
+                   }
 
 
 
 
-async function ValidateExamEntry(studentname) {
-  try {
-    const response = await fetch('/getStudentExamSubmission', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        StudentName: studentname,
-        TestId:ExamId,
-      }),
-    });
+          }
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
 
-    const data = await response.json();
-    console.log('Server Response:', data);
-
-    // Return the TransactionId
-    return data.TransactionId;
-  } catch (error) {
-    console.error('Error:1', error.message);
-    // Reject the promise with the error
-    throw error;
-  }
-}
+         // Function to parse query string and extract parameter value
+      function getParameterValue(parameter) {
+          var params = new URLSearchParams(window.location.search);
+          return params.get(parameter);
+      }
 
 
 
 
-
-   function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-   function updateReviewStatus(index) {
-
-     const questionIdElement = document.getElementById('lbl' + index);
-const questionId = questionIdElement.getAttribute('value');
-
-    // Get the checkbox element
-    var checkbox = document.getElementById('reviewLater' + index);
-         // Assuming the radio group has an ID of 'radiobuttons'
-    const radioGroup = document.querySelector(`[dataradioid="${currentIndex}"]`);
-
-
-// Use querySelector to find the checked radio input within the radio group
-const checkedOption = radioGroup.querySelector('input[type="radio"]:checked');
-const inputButton = document.querySelector(`button[buttonid="${currentIndex}"]`);
-if (checkedOption && checkbox.checked) {    
-       inputButton.style.backgroundColor = 'orange';
-       resultData.push({ QuestionID: questionId, Answer: '', Status: 'AttemptReview', Type: 'MCQ' });
-    }
-    else if(!checkedOption && checkbox.checked)
-    {
-       resultData.push({ QuestionID: questionId, Answer: '', Status: 'AttemptNotReview', Type: 'MCQ' });
-        inputButton.style.backgroundColor = 'blue';
-    }
-     else if(!checkedOption && !checkbox.checked)
-    {
-       resultData.push({ QuestionID: questionId, Answer: '', Status: 'Not Attempted', Type: 'MCQ' });
-        inputButton.style.backgroundColor = 'red';
-    }
-   
-    else 
-    {
-         resultData.push({ QuestionID: questionId, Answer: '', Status: 'Attempted', Type: 'MCQ' });
-        inputButton.style.backgroundColor = 'green';
-    }
-   
-
-
-
-
-}
-
-function initializeTimer() {
-    const startTime = new Date().getTime();
-    
-    // Get the remaining time from localStorage
-    const savedTime = getRemainingTime();
-
-    // If there is saved time, adjust the start time accordingly
-    const adjustedStartTime = savedTime ? startTime - (totalDuration - savedTime) * 1000 : startTime;
-
-    function update() {
-        const currentTime = new Date().getTime();
-        const elapsedTime = Math.floor((currentTime - adjustedStartTime) / 1000);
-
-        if (elapsedTime <= totalDuration) {
-            timeRemaining = totalDuration - elapsedTime;
-
-            // Save the remaining time to localStorage
-            saveRemainingTime();
-
-            // Check for the last 2 minutes and show a prompt
-            if (timeRemaining === promptDuration && !timerExpired && !promptShown) {
-                promptShown = true;
-                showPrompt();
-            }
-
-            // Update the timer display
-            updateTimerDisplay();
-
-            // Schedule the next update after 1000 milliseconds (1 second)
-            setTimeout(update, 1000);
-        } else {
-            clearInterval(timerInterval);
-            timerExpired = true;
-            alert('Time is up! Click the "Submit" button to finish your exam.'); // You can customize this behavior
-            setTimeout(function () {
-                // Call your result function here
-                //alert("Calling result function");
-                      // result();
-            }, 500);
-        }
-    }
-
-    // Start the timer by scheduling the first update
-    setTimeout(update, 1000);
-}
-
-function displayUsername(username) {
-        // Modify this part to display the username on the right corner
-        const usernameDisplay = document.getElementById('adminUsername');
-        if (usernameDisplay) {
-            usernameDisplay.innerText = `Welcome, ${username}!`;
-        }
-    }
-
-
-//function resetTimer() {
-    // Clear the existing timer interval
-   // clearInterval(timerInterval);
-
-    // Reset the time remaining to the initial duration
-   // timeRemaining = totalDuration;
-
-    // Save the remaining time to localStorage
-    //saveRemainingTime();
-
-
-//}
-
-
-      function resetTimer() {
-        // Clear the existing timer interval
-        clearInterval(timerInterval);
-
-        // Reset the time remaining to the initial duration
-        timeRemaining = totalDuration;
-
-        // Save the remaining time to localStorage
-        saveRemainingTime();
-
-        // Restart the timer
-       initializeTimer();
-    }
-
-        function getRemainingTime() {
-           const username = localStorage.getItem('username');
-    if (username) {
-        const key = `examTimer_${username}`;
-        const savedTime = localStorage.getItem(key);
-        return savedTime ? parseInt(savedTime) : totalDuration;
-    }
-        }
-
-        // Function to save the remaining time to localStorage
-        function saveRemainingTime() {
-            const username = localStorage.getItem('username');
-    if (username) {
-        const key = `examTimer_${username}`;
-        localStorage.setItem(key, timeRemaining.toString());
-    }
-        }
-
-function updateTimerDisplay() {
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    saveRemainingTime();
-    document.getElementById('timerDisplay').innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-}                     
-    function showPrompt() {
-        // You can customize the prompt behavior here
-       // promptShown = true;
-        alert('Only 2 minutes remaining!');
-    }
-
-    // Counter to keep track of the current question
-   
-
-    function myFunction(questionNumber) {
-        // Hide the current question
-
-        hideCurrentQuestion();
-
-        // Set the new current question
-        currentIndex = questionNumber;
-        
-        // Show the new current question
-        showCurrentQuestion();
-
-       // updateCurrentQuestionId();
-    }
-
-       async function loadInitialIndex() {
-    try {
-        // Hide the current question
-        hideCurrentQuestion();
-
-       
-       currentIndex= getStoredCurrentQuestion();
-       if(currentIndex ==1)
-       currentIndex=2;
-        // Show the new current question
-
-        //  hideCurrentQuestion();
-
-        showCurrentQuestion();
-
-        // You can now use the currentQuestionId as needed in your application
-       // console.log('Current Question ID:', currentQuestionId);
-
-        // Update the current question ID if needed
-        // updateCurrentQuestionId();
-    } catch (error) {
-        console.error('Error in loadInitialIndex:', error.message);
-    }
-}
-
-    // Initialize reviewLater status when the page loads
- 
-
-    function initializeReviewStatus() {
-        const questionDivs = document.querySelectorAll("[id^='my-textbox']");
-        questionDivs.forEach((questionDiv) => {
-            questionDiv.dataset.reviewLater = "false";
-        });
-    }
-
-   window.addEventListener('beforeunload', async function (event) {
-    // Check if the exam is still ongoing and shouldCallExamSubmission is true
-    if (shouldCallExamSubmission) {
-        loadInitialIndex();
+      async function ValidateExamEntry(studentname) {
         try {
-            // Perform asynchronous operations here (e.g., making an HTTP request)
-          //  await updateCurrentQuestionId();
-            //await examsubmission();
+          const response = await fetch('/getStudentExamSubmission', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              StudentName: studentname,
+              TestId:ExamId,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+
+          const data = await response.json();
+          console.log('Server Response:', data);
+
+          // Return the TransactionId
+          return data.TransactionId;
         } catch (error) {
-            // Handle errors here
-            console.error('Error during beforeunload:', error.message);
+          console.error('Error:1', error.message);
+          // Reject the promise with the error
+          throw error;
         }
-    }
-});
+      }
 
 
-    function getCurrentIndex() {
-        return currentIndex;
-    }
-  function nextQuestion() {
-    // Move to the next question
-    if (totalQuestions == currentIndex - 1) {
-        hideCurrentQuestion();
-        currentIndex = 2;
-    } else {
-        hideCurrentQuestion();
-        currentIndex++;
-    }
 
-    // Show the next question if it exists
-    const nextQuestionDiv = document.getElementById(`my-textbox${currentIndex}`);
-    if (nextQuestionDiv) {
-        nextQuestionDiv.style.display = "block";
 
-        // Update the class based on whether the question has been attempted or not
-        const attempted = attemptedStatus[currentIndex - 2];
-       
-    } else {
-        currentIndex = 2; // Reset to the first question
-    }
 
-    // Update the display to show the next question
-    	showCurrentQuestion();
+         function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 
-    //updateCurrentQuestionId();
-}
+         function updateReviewStatus(index) {
 
- async function updateCurrentQuestionId() {
-    const studentName = localStorage.getItem('username'); // Replace with actual student name
-    const testId = ExamId; // Replace with actual test ID
-    const newQuestionId = currentIndex; // Replace with the new question ID
-    const transactionid = localStorage.getItem('transactionID');
-    
-    try {
-      const response = await fetch('/updateCurrentQuestionId', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ studentName, testId, newQuestionId,transactionid }),
+           const questionIdElement = document.getElementById('lbl' + index);
+      const questionId = questionIdElement.getAttribute('value');
+
+          // Get the checkbox element
+          var checkbox = document.getElementById('reviewLater' + index);
+               // Assuming the radio group has an ID of 'radiobuttons'
+          const radioGroup = document.querySelector(`[dataradioid="${currentIndex}"]`);
+
+
+      // Use querySelector to find the checked radio input within the radio group
+      const checkedOption = radioGroup.querySelector('input[type="radio"]:checked');
+      const inputButton = document.querySelector(`button[buttonid="${currentIndex}"]`);
+      if (checkedOption && checkbox.checked) {
+             inputButton.style.backgroundColor = 'orange';
+             resultData.push({ QuestionID: questionId, Answer: '', Status: 'AttemptReview', Type: 'MCQ' });
+          }
+          else if(!checkedOption && checkbox.checked)
+          {
+             resultData.push({ QuestionID: questionId, Answer: '', Status: 'AttemptNotReview', Type: 'MCQ' });
+              inputButton.style.backgroundColor = 'blue';
+          }
+           else if(!checkedOption && !checkbox.checked)
+          {
+             resultData.push({ QuestionID: questionId, Answer: '', Status: 'Not Attempted', Type: 'MCQ' });
+              inputButton.style.backgroundColor = 'red';
+          }
+
+          else
+          {
+               resultData.push({ QuestionID: questionId, Answer: '', Status: 'Attempted', Type: 'MCQ' });
+              inputButton.style.backgroundColor = 'green';
+          }
+
+
+
+
+
+      }
+
+      function initializeTimer() {
+          const startTime = new Date().getTime();
+
+          // Get the remaining time from localStorage
+          const savedTime = getRemainingTime();
+
+          // If there is saved time, adjust the start time accordingly
+          const adjustedStartTime = savedTime ? startTime - (totalDuration - savedTime) * 1000 : startTime;
+
+          function update() {
+              const currentTime = new Date().getTime();
+              const elapsedTime = Math.floor((currentTime - adjustedStartTime) / 1000);
+
+              if (elapsedTime <= totalDuration) {
+                  timeRemaining = totalDuration - elapsedTime;
+
+                  // Save the remaining time to localStorage
+                  saveRemainingTime();
+
+                  // Check for the last 2 minutes and show a prompt
+                  if (timeRemaining === promptDuration && !timerExpired && !promptShown) {
+                      promptShown = true;
+                      showPrompt();
+                  }
+
+                  // Update the timer display
+                  updateTimerDisplay();
+
+                  // Schedule the next update after 1000 milliseconds (1 second)
+                  setTimeout(update, 1000);
+              } else {
+                  clearInterval(timerInterval);
+                  timerExpired = true;
+                  alert('Time is up! Click the "Submit" button to finish your exam.'); // You can customize this behavior
+                  setTimeout(function () {
+                      // Call your result function here
+                      //alert("Calling result function");
+                            // result();
+                  }, 500);
+              }
+          }
+
+          // Start the timer by scheduling the first update
+          setTimeout(update, 1000);
+      }
+
+      function displayUsername(username) {
+              // Modify this part to display the username on the right corner
+              const usernameDisplay = document.getElementById('adminUsername');
+              if (usernameDisplay) {
+                  usernameDisplay.innerText = `Welcome, ${username}!`;
+              }
+          }
+
+
+      //function resetTimer() {
+          // Clear the existing timer interval
+         // clearInterval(timerInterval);
+
+          // Reset the time remaining to the initial duration
+         // timeRemaining = totalDuration;
+
+          // Save the remaining time to localStorage
+          //saveRemainingTime();
+
+
+      //}
+
+
+            function resetTimer() {
+              // Clear the existing timer interval
+              clearInterval(timerInterval);
+
+              // Reset the time remaining to the initial duration
+              timeRemaining = totalDuration;
+
+              // Save the remaining time to localStorage
+              saveRemainingTime();
+
+              // Restart the timer
+             initializeTimer();
+          }
+
+              function getRemainingTime() {
+                 const username = localStorage.getItem('username');
+          if (username) {
+              const key = `examTimer_${username}`;
+              const savedTime = localStorage.getItem(key);
+              return savedTime ? parseInt(savedTime) : totalDuration;
+          }
+              }
+
+              // Function to save the remaining time to localStorage
+              function saveRemainingTime() {
+                  const username = localStorage.getItem('username');
+          if (username) {
+              const key = `examTimer_${username}`;
+              localStorage.setItem(key, timeRemaining.toString());
+          }
+              }
+
+      function updateTimerDisplay() {
+          const minutes = Math.floor(timeRemaining / 60);
+          const seconds = timeRemaining % 60;
+          saveRemainingTime();
+          document.getElementById('timerDisplay').innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      }
+          function showPrompt() {
+              // You can customize the prompt behavior here
+             // promptShown = true;
+              alert('Only 2 minutes remaining!');
+          }
+
+          // Counter to keep track of the current question
+
+
+          function myFunction(questionNumber) {
+              // Hide the current question
+
+              hideCurrentQuestion();
+
+              // Set the new current question
+              currentIndex = questionNumber;
+
+              // Show the new current question
+              showCurrentQuestion();
+
+             // updateCurrentQuestionId();
+          }
+
+             async function loadInitialIndex() {
+          try {
+              // Hide the current question
+              hideCurrentQuestion();
+
+
+             currentIndex= getStoredCurrentQuestion();
+             if(currentIndex ==1)
+             currentIndex=2;
+              // Show the new current question
+
+              //  hideCurrentQuestion();
+
+              showCurrentQuestion();
+
+              // You can now use the currentQuestionId as needed in your application
+             // console.log('Current Question ID:', currentQuestionId);
+
+              // Update the current question ID if needed
+              // updateCurrentQuestionId();
+          } catch (error) {
+              console.error('Error in loadInitialIndex:', error.message);
+          }
+      }
+
+          // Initialize reviewLater status when the page loads
+
+
+          function initializeReviewStatus() {
+              const questionDivs = document.querySelectorAll("[id^='my-textbox']");
+              questionDivs.forEach((questionDiv) => {
+                  questionDiv.dataset.reviewLater = "false";
+              });
+          }
+
+         window.addEventListener('beforeunload', async function (event) {
+          // Check if the exam is still ongoing and shouldCallExamSubmission is true
+          if (shouldCallExamSubmission) {
+              loadInitialIndex();
+              try {
+                  // Perform asynchronous operations here (e.g., making an HTTP request)
+                //  await updateCurrentQuestionId();
+                  //await examsubmission();
+              } catch (error) {
+                  // Handle errors here
+                  console.error('Error during beforeunload:', error.message);
+              }
+          }
       });
 
-      const data = await response.json();
 
-      if (response.ok) {
-        // Success
-        console.log(data.message);
-        console.log('Updated Current Question ID:', data.updatedQuestionId);
-        // Perform any additional actions based on the updated data
-      } else {
-        // Error handling
-        console.error(data.message);
+          function getCurrentIndex() {
+              return currentIndex;
+          }
+        function nextQuestion() {
+          // Move to the next question
+          if (totalQuestions == currentIndex - 1) {
+              hideCurrentQuestion();
+              currentIndex = 2;
+          } else {
+              hideCurrentQuestion();
+              currentIndex++;
+          }
+
+          // Show the next question if it exists
+          const nextQuestionDiv = document.getElementById(`my-textbox${currentIndex}`);
+          if (nextQuestionDiv) {
+              nextQuestionDiv.style.display = "block";
+
+              // Update the class based on whether the question has been attempted or not
+              const attempted = attemptedStatus[currentIndex - 2];
+
+          } else {
+              currentIndex = 2; // Reset to the first question
+          }
+
+          // Update the display to show the next question
+          	showCurrentQuestion();
+
+          //updateCurrentQuestionId();
       }
-    } catch (error) {
-      console.error('Error:2', error.message);
-    }
-  }
 
+       async function updateCurrentQuestionId() {
+          const studentName = localStorage.getItem('username'); // Replace with actual student name
+          const testId = ExamId; // Replace with actual test ID
+          const newQuestionId = currentIndex; // Replace with the new question ID
+          const transactionid = localStorage.getItem('transactionID');
 
-
-
-
-    // Function to hide the current question
-    function hideCurrentQuestion() {
-   var checkbox1 = document.getElementById('reviewLater' + currentIndex);
-     // Assuming the radio group has an ID of 'radiobuttons'
-    const radioGroup = document.querySelector(`[dataradioid="${currentIndex}"]`);
-
-
-// Use querySelector to find the checked radio input within the radio group
-//const checkedOption = radioGroup.querySelector('input[type="radio"]:checked');
-//const inputButton = document.querySelector(`button[buttonid="${currentIndex}"]`);
-//if (checkedOption && inputButton.style.backgroundColor != 'orange') {    
-     //  inputButton.style.backgroundColor = 'green';
-   // }
-   // else if(!checkedOption && inputButton.style.backgroundColor != 'blue')
-   // {
-      
-    //    inputButton.style.backgroundColor = 'red';
-   // }
-
-        let currentLabel = document.getElementById(`lb-${currentIndex}`);
-        let currentTextbox = document.getElementById(`my-textbox${currentIndex}`);
-        let currentRadioGroup = document.getElementById(`radiobuttons${currentIndex}`);
-        let currentCheckboxGroup = document.getElementById(`checkboxes${currentIndex}`);
-        
-
-        if (currentLabel) currentLabel.style.display = "none";
-        if (currentTextbox) currentTextbox.style.display = "none";
-        if (currentRadioGroup) currentRadioGroup.style.display = "none";
-        if (currentCheckboxGroup) currentCheckboxGroup.style.display = "none";
-     
-    
-
-    
-
-
-        // Reset the background color of the current question
-        //document.getElementById(`my-textbox${currentIndex}`).style.backgroundColor = '';
-    }
-    function getStoredCurrentQuestion() {
-     let nusername =  localStorage.getItem('username');
-    
-    const storedQuestion = localStorage.getItem(`currentIndex_${nusername}`);
-    if (storedQuestion==null){
-     localStorage.setItem(`currentIndex_${nusername}`,1);
-     }
-    return storedQuestion ? parseInt(storedQuestion) : 1;
-   }
-
-    // Function to show the current question
-    function showCurrentQuestion() {
-        
-
-          
-
-
-
-        let currentLabel = document.getElementById(`lb-${currentIndex}`);
-        let currentTextbox = document.getElementById(`my-textbox${currentIndex}`);
-        let currentRadioGroup = document.getElementById(`radiobuttons${currentIndex}`);
-        let currentCheckboxGroup = document.getElementById(`checkboxes${currentIndex}`);
-
-        if (currentLabel) currentLabel.style.display = "block";
-        if (currentTextbox) currentTextbox.style.display = "block";
-        if (currentRadioGroup) currentRadioGroup.style.display = "block";
-        if (currentCheckboxGroup) currentCheckboxGroup.style.display = "block";
-
-        // Highlight the background color of the current question
-        //document.getElementById(`my-textbox${currentIndex}`).style.backgroundColor = '#FFD700';
-
-         // Update the question number display
-    document.getElementById('currentQuestionNumber').innerText = `Question ${currentIndex} of ${totalQuestions}`;
-
-
-
-
-    let pusername =  localStorage.getItem('username');
-
-    // Store the current question number with the username in localStorage
-     localStorage.setItem(`currentIndex_${pusername}`, currentIndex);
-
-    }
-    async function postMethod(username) {
-    try {
-        const response = await fetch('/startExam', {
-            method: 'POST',
-            headers: {
+          try {
+            const response = await fetch('/updateCurrentQuestionId', {
+              method: 'PUT',
+              headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                studentName: username,
-                testId : ExamId
-            }),
-        });
+              },
+              body: JSON.stringify({ studentName, testId, newQuestionId,transactionid }),
+            });
 
-        if (response.ok) {
+            const data = await response.json();
 
-            const responseData = await response.json();
-
-            // Extract TransactionID from the response
-            const transactionID = responseData.transactionID;
-             var TID = getParameterValue("transactionId");
-            if(TID == localStorage.getItem('transactionID'))
-            {
-            alert("continue your previous session exam with transactionId" + TID);
-            const updatedquestions = responseData.updatedquestions;
-            console.log(updatedquestions);
-            updatedquestions.forEach(({ QuestionID, AttemptedAnswer,AttemptedStatus }) => {
-            if ((AttemptedAnswer !== null  && AttemptedAnswer !='') || AttemptedStatus == "AttemptNotReview"  ) {
-    setUnCheckedState(QuestionID, AttemptedAnswer,AttemptedStatus);
-                   setCheckedState(QuestionID, AttemptedAnswer,AttemptedStatus);
-    }
-});
-           }
-           else{
-           var TID = getParameterValue("transactionId");
-           
-           alert("All the best , please note this transaction id for further reference" + TID);
-           //resultData = [];
-           const editupdatedquestions = responseData.updatedquestions;
-            console.log(editupdatedquestions);
-            editupdatedquestions.forEach(({ QuestionID, AttemptedAnswer,AttemptedStatus }) => {
-            if ((AttemptedAnswer !== null  && AttemptedAnswer !='') || AttemptedStatus == "AttemptNotReview"  ) {
-    setUnCheckedState(QuestionID, AttemptedAnswer,AttemptedStatus);
-    }
-});
-            localStorage.setItem('transactionID', transactionID);
-           }
-            // Store TransactionID in the session
-           
-
-            // Use the stored TransactionID as needed
-            console.log('TransactionID:', transactionID);
-            
-            // Continue with other logic or redirect as needed
-           // examsubmission();
-        } else {
-            console.error('Failed to submit username. Server returned:', response.status, response.statusText);
-        }
-    } catch (error) {
-        console.error('Error during the POST request:', error.message);
-    }
-}
-     function examsubmission() {
-        var selectedAnswers = [];
-
-
-
-        // Loop through each question
-      //  attemptedStatus.forEach((attempted, index) => {
-         //   if (attempted) {
-          //     submitQuestion(index,'MCQ');
-         //   }
-       // });
-
-       const storedData = localStorage.getItem('resultData');
-
-// Parse the JSON string back to an array
-const retrievedResultData = JSON.parse(storedData);
-
-        callExamSubmissionProcedure(retrievedResultData,localStorage.getItem('username'), ExamId, localStorage.getItem('transactionID'))
-        // Log or send the selected answers and attempted status
-        console.log(selectedAnswers);
-    }
-
-
-    async function finalexamsubmission() {
-        var selectedAnswers = [];
-        var retruntid;
-        // Loop through each question
-        //attemptedStatus.forEach((attempted, index) => {
-         //   if (attempted) {
-           //    submitQuestion(index,'MCQ');
-          //  }
-       // });
-
-         var TID = getParameterValue("transactionId");
-
-       // FinalcallExamSubmissionProcedure(resultData,localStorage.getItem('username'), ExamId, TID)
-        // Log or send the selected answers and attempted status
-       
-         const storedData = localStorage.getItem('resultData');
-
-// Parse the JSON string back to an array
-const retrievedResultData = JSON.parse(storedData);
- var TID = getParameterValue("transactionId");
-        retruntid = await FinalcallExamSubmissionProcedure(retrievedResultData,localStorage.getItem('username'), ExamId, TID)
-  
-       return retruntid;
-       console.log(selectedAnswers);
-    }
-
-    function callExamSubmissionProcedure(resultData,studentName, testId, transactionId) {
-        fetch('/FinalSubmission', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                resultData: resultData,
-                studentName: studentName,
-                testId: testId,
-                transactionId: transactionId
-            }),
-        })
-        .then(response => {
             if (response.ok) {
-                console.log('Exam submitted successfully!');
+              // Success
+              console.log(data.message);
+              console.log('Updated Current Question ID:', data.updatedQuestionId);
+              // Perform any additional actions based on the updated data
             } else {
-                console.error('Failed to submit exam. Server returned:', response.status, response.statusText);
+              // Error handling
+              console.error(data.message);
             }
-        })
-        .catch(error => {
-            console.error('Error during the fetch:', error.message);
-        });
-    }
-
-
- async function FinalcallExamSubmissionProcedure(resultData, studentName, testId, transactionId) {
-   
-   let tid; 
-   try {
-
-        const response = await fetch('/StudentFinalSubmission_Preview', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                resultData: resultData,
-                studentName: studentName,
-                testId: testId,
-                transactionId: transactionId
-            }),
-        });
-
-        if (response.ok) {
-        alert("exam submitted sucessfully");
-            const responseData = await response.json();
-           tid = responseData.tid;
-            console.log('Exam submitted successfully! TID:', tid);
-           
-        } else {
-        alert("exam submitted failed");
-            console.error('Failed to submit exam. Server returned:', response.status, response.statusText);
-            return null; // or handle the failure accordingly
+          } catch (error) {
+            console.error('Error:2', error.message);
+          }
         }
-    } catch (error) {
-     alert("exam submitted failed with error" + error.message);
-        console.error('Error during the fetch:', error.message);
-        return null; // or handle the error accordingly
-    }
-      return tid; 
-    console.log('method executed');
-}
 
 
 
-      function submitQuestion(questionIndex, questionType) {
-    
-    
-    const questionIdElement = document.getElementById('lbl' + (questionIndex+1));
-const questionId = questionIdElement.getAttribute('value');
-
-const inputButton = document.querySelector(`button[buttonquestionid="${questionId}"]`);
-       let Questionstatus = "NA";
-
-       if(inputButton.style.backgroundColor == "green")
-         QuestionStatus="Attempted";
-         else if(inputButton.style.backgroundColor == "red")
-         QuestionStatus="NotAttempted";
-         else if(inputButton.style.backgroundColor == "orange")
-         QuestionStatus="AttemptReview";
-         else if(inputButton.style.backgroundColor == "blue")
-         QuestionStatus="AttemptNotReview";
 
 
-            // Handle checkbox or radio button submission
-          // const selectedOption = document.querySelector('input[dataquestionid=questionId]:checked');
-const submittedanswer = document.querySelector('input[dataquestionid="'+ questionId + '"]:checked').value
-       // alert(submittedanswer);
-        resultData.push({ QuestionID: questionId, Answer: submittedanswer, Status: QuestionStatus, Type: questionType });
-     
+          // Function to hide the current question
+          function hideCurrentQuestion() {
+         var checkbox1 = document.getElementById('reviewLater' + currentIndex);
+           // Assuming the radio group has an ID of 'radiobuttons'
+          const radioGroup = document.querySelector(`[dataradioid="${currentIndex}"]`);
+
+
+      // Use querySelector to find the checked radio input within the radio group
+      //const checkedOption = radioGroup.querySelector('input[type="radio"]:checked');
+      //const inputButton = document.querySelector(`button[buttonid="${currentIndex}"]`);
+      //if (checkedOption && inputButton.style.backgroundColor != 'orange') {
+           //  inputButton.style.backgroundColor = 'green';
+         // }
+         // else if(!checkedOption && inputButton.style.backgroundColor != 'blue')
+         // {
+
+          //    inputButton.style.backgroundColor = 'red';
+         // }
+
+              let currentLabel = document.getElementById(`lb-${currentIndex}`);
+              let currentTextbox = document.getElementById(`my-textbox${currentIndex}`);
+              let currentRadioGroup = document.getElementById(`radiobuttons${currentIndex}`);
+              let currentCheckboxGroup = document.getElementById(`checkboxes${currentIndex}`);
+
+
+              if (currentLabel) currentLabel.style.display = "none";
+              if (currentTextbox) currentTextbox.style.display = "none";
+              if (currentRadioGroup) currentRadioGroup.style.display = "none";
+              if (currentCheckboxGroup) currentCheckboxGroup.style.display = "none";
 
 
 
-        // Additional logic to handle the "Review Later" checkbox if needed
-
-        // Send the data to the server
-       // await postMethod(response, questionIndex, questionId, questionType);
-    }
-function setCheckedState(questionId, selectedOption,QuestionStatus) {
-    const inputElement = document.querySelector(`input[dataquestionid="${questionId}"][value="${selectedOption}"]`);
-const inputButton = document.querySelector(`button[buttonquestionid="${questionId}"]`);
-       
-
-    if (inputElement) {
-        inputElement.checked = true;
-    }
-
-    if(QuestionStatus=="Attempted")
-    inputButton.style.backgroundColor = "Green";
-    else if(QuestionStatus=="NotAttempted")
-     inputButton.style.backgroundColor = "Red";
-     else if(QuestionStatus=="AttemptReview")
-     inputButton.style.backgroundColor = "Orange"
-     else if(QuestionStatus=="AttemptNotReview")
-       inputButton.style.backgroundColor = "Blue"
-   
-}
-
-function setUnCheckedState(questionId, selectedOption,QuestionStatus) {
-    const inputElement = document.querySelector(`input[dataquestionid="${questionId}"][value="${selectedOption}"]`);
-const inputButton = document.querySelector(`button[buttonquestionid="${questionId}"]`);
-       
-
-    if (inputElement) {
-        inputElement.checked = false;
-    }
-
-   
-     inputButton.style.backgroundColor = "Red";
-    
-   
-}
-
-async function previewresult() {
-    // Redirect to the previous page
-    window.history.back();
-}
 
 
-   async function result() {
+
+              // Reset the background color of the current question
+              //document.getElementById(`my-textbox${currentIndex}`).style.backgroundColor = '';
+          }
+          function getStoredCurrentQuestion() {
+           let nusername =  localStorage.getItem('username');
+
+          const storedQuestion = localStorage.getItem(`currentIndex_${nusername}`);
+          if (storedQuestion==null){
+           localStorage.setItem(`currentIndex_${nusername}`,1);
+           }
+          return storedQuestion ? parseInt(storedQuestion) : 1;
+         }
+
+          // Function to show the current question
+          function showCurrentQuestion() {
 
 
-    if (timerExpired) {
-    shouldCallExamSubmission = false;
-                                                                                                       
-        // Perform any necessary actions when the exam is finished
-        localStorage.removeItem('examTimer');
 
-        // Reset the timer
-        resetTimer();
-        //let tid; 
-         
-                       const tid = await finalexamsubmission();
 
-        
-        console.log("tid");
-        console.log(tid);
-        if(tid != null)
-        {
 
-        localStorage.setItem('transactionID',tid);
 
-        // Redirect to the login homepage
+              let currentLabel = document.getElementById(`lb-${currentIndex}`);
+              let currentTextbox = document.getElementById(`my-textbox${currentIndex}`);
+              let currentRadioGroup = document.getElementById(`radiobuttons${currentIndex}`);
+              let currentCheckboxGroup = document.getElementById(`checkboxes${currentIndex}`);
 
-        // Get dynamic values
-const studentName = localStorage.getItem('username'); // Replace with actual student name
-const testId = ExamId; // Replace with actual test ID
-const transactionId = localStorage.getItem('transactionID'); // Replace with actual transaction ID
-       //document.getElementById("mainNav").style.display = "none";
-          //   document.getElementById("mainArticle").style.display = "none";
-          //   document.getElementById("legend").style.display = "none";
-// Build the URL with query parameters
-const url = '/studentResultPage';
+              if (currentLabel) currentLabel.style.display = "block";
+              if (currentTextbox) currentTextbox.style.display = "block";
+              if (currentRadioGroup) currentRadioGroup.style.display = "block";
+              if (currentCheckboxGroup) currentCheckboxGroup.style.display = "block";
 
-// Redirect to the studentResultPage with the dynamic values
- // Replace with the actual username
- 
-          resetTimer();
-             const key = `examTimer_${studentName}`;
-          timeRemaining = totalDuration;
-        localStorage.setItem(key, timeRemaining.toString());
-        localStorage.removeItem('resultData');
-              // document.getElementById("mainNav").style.display = "none";
-            // document.getElementById("mainArticle").style.display = "none";
-            // document.getElementById("legend").style.display = "none";
-window.location.href = url;
-}
-else
-{
-   alert('result not submiited successfully, please try again');
-}
-    } else {
-    shouldCallExamSubmission=false;
-        // Ask the user for confirmation before submitting
-        if (confirm('Are you sure you want to submit before the exam time expires?')) {
-            // Perform actions when the user decides to submit
-            // For example, you might save the current state of the exam or record the early submission
-            alert('Exam submitted!');
-            // Redirect to the login homepage or wherever needed
-                       const tid = await finalexamsubmission();                                                                            
+              // Highlight the background color of the current question
+              //document.getElementById(`my-textbox${currentIndex}`).style.backgroundColor = '#FFD700';
 
-                      console.log('value of tid');        
-                      console.log(tid);
+               // Update the question number display
+          document.getElementById('currentQuestionNumber').innerText = `Question ${currentIndex} of ${totalQuestions}`;
 
-        if(tid != null)    
-        {
 
-           localStorage.setItem('transactionID',tid);                                                                                                                                                                                     
 
-               // Get dynamic values
-const studentName = localStorage.getItem('username'); // Replace with actual student name
-const testId = ExamId                                                                          ; // Replace with actual test ID
-const transactionId = localStorage.getItem('transactionID'); // Replace with actual transaction ID
-     //  document.getElementById("mainNav").style.display = "none";
-            // document.getElementById("mainArticle").style.display = "none";
-           //  document.getElementById("legend").style.display = "none";
-// Build the URL with query parameters
-const url = '/studentResultPage';
-    
-          resetTimer();
-          resetTimer();
-             const key = `examTimer_${studentName}`;
-          timeRemaining = totalDuration;
-        localStorage.setItem(key, timeRemaining.toString());
-// Redirect to the studentResultPage with the dynamic values
-localStorage.removeItem('resultData');
-window.location.href = url;
-}
-else
-{
-alert('result not submiited successfully, please try again');
-}
 
-        } 
-        else {
-            // User decided not to submit early
-            alert('Please continue your exam.');
-        }
-    }
-}
+          let pusername =  localStorage.getItem('username');
 
-</script>
-</body>
+          // Store the current question number with the username in localStorage
+           localStorage.setItem(`currentIndex_${pusername}`, currentIndex);
+
+          }
+          async function postMethod(username) {
+          try {
+              const response = await fetch('/startExam', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      studentName: username,
+                      testId : ExamId
+                  }),
+              });
+
+              if (response.ok) {
+
+                  const responseData = await response.json();
+
+                  // Extract TransactionID from the response
+                  const transactionID = responseData.transactionID;
+                   var TID = getParameterValue("transactionId");
+                  if(TID == localStorage.getItem('transactionID'))
+                  {
+                  alert("continue your previous session exam with transactionId" + TID);
+                  const updatedquestions = responseData.updatedquestions;
+                  console.log(updatedquestions);
+                  updatedquestions.forEach(({ QuestionID, AttemptedAnswer,AttemptedStatus }) => {
+                  if ((AttemptedAnswer !== null  && AttemptedAnswer !='') || AttemptedStatus == "AttemptNotReview"  ) {
+          setUnCheckedState(QuestionID, AttemptedAnswer,AttemptedStatus);
+                         setCheckedState(QuestionID, AttemptedAnswer,AttemptedStatus);
+          }
+      });
+                 }
+                 else{
+                 var TID = getParameterValue("transactionId");
+
+                 alert("All the best , please note this transaction id for further reference" + TID);
+                 //resultData = [];
+                 const editupdatedquestions = responseData.updatedquestions;
+                  console.log(editupdatedquestions);
+                  editupdatedquestions.forEach(({ QuestionID, AttemptedAnswer,AttemptedStatus }) => {
+                  if ((AttemptedAnswer !== null  && AttemptedAnswer !='') || AttemptedStatus == "AttemptNotReview"  ) {
+          setUnCheckedState(QuestionID, AttemptedAnswer,AttemptedStatus);
+          }
+      });
+                  localStorage.setItem('transactionID', transactionID);
+                 }
+                  // Store TransactionID in the session
+
+
+                  // Use the stored TransactionID as needed
+                  console.log('TransactionID:', transactionID);
+
+                  // Continue with other logic or redirect as needed
+                 // examsubmission();
+              } else {
+                  console.error('Failed to submit username. Server returned:', response.status, response.statusText);
+              }
+          } catch (error) {
+              console.error('Error during the POST request:', error.message);
+          }
+      }
+           function examsubmission() {
+              var selectedAnswers = [];
+
+
+
+              // Loop through each question
+            //  attemptedStatus.forEach((attempted, index) => {
+               //   if (attempted) {
+                //     submitQuestion(index,'MCQ');
+               //   }
+             // });
+
+             const storedData = localStorage.getItem('resultData');
+
+      // Parse the JSON string back to an array
+      const retrievedResultData = JSON.parse(storedData);
+
+              callExamSubmissionProcedure(retrievedResultData,localStorage.getItem('username'), ExamId, localStorage.getItem('transactionID'))
+              // Log or send the selected answers and attempted status
+              console.log(selectedAnswers);
+          }
+
+
+          async function finalexamsubmission() {
+              var selectedAnswers = [];
+              var retruntid;
+              // Loop through each question
+              //attemptedStatus.forEach((attempted, index) => {
+               //   if (attempted) {
+                 //    submitQuestion(index,'MCQ');
+                //  }
+             // });
+
+               var TID = getParameterValue("transactionId");
+
+             // FinalcallExamSubmissionProcedure(resultData,localStorage.getItem('username'), ExamId, TID)
+              // Log or send the selected answers and attempted status
+
+               const storedData = localStorage.getItem('resultData');
+
+      // Parse the JSON string back to an array
+      const retrievedResultData = JSON.parse(storedData);
+       var TID = getParameterValue("transactionId");
+              retruntid = await FinalcallExamSubmissionProcedure(retrievedResultData,localStorage.getItem('username'), ExamId, TID)
+
+             return retruntid;
+             console.log(selectedAnswers);
+          }
+
+          function callExamSubmissionProcedure(resultData,studentName, testId, transactionId) {
+              fetch('/FinalSubmission', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      resultData: resultData,
+                      studentName: studentName,
+                      testId: testId,
+                      transactionId: transactionId
+                  }),
+              })
+              .then(response => {
+                  if (response.ok) {
+                      console.log('Exam submitted successfully!');
+                  } else {
+                      console.error('Failed to submit exam. Server returned:', response.status, response.statusText);
+                  }
+              })
+              .catch(error => {
+                  console.error('Error during the fetch:', error.message);
+              });
+          }
+
+
+       async function FinalcallExamSubmissionProcedure(resultData, studentName, testId, transactionId) {
+
+         let tid;
+         try {
+
+              const response = await fetch('/StudentFinalSubmission_Preview', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      resultData: resultData,
+                      studentName: studentName,
+                      testId: testId,
+                      transactionId: transactionId
+                  }),
+              });
+
+              if (response.ok) {
+              alert("exam submitted sucessfully");
+                  const responseData = await response.json();
+                 tid = responseData.tid;
+                  console.log('Exam submitted successfully! TID:', tid);
+
+              } else {
+              alert("exam submitted failed");
+                  console.error('Failed to submit exam. Server returned:', response.status, response.statusText);
+                  return null; // or handle the failure accordingly
+              }
+          } catch (error) {
+           alert("exam submitted failed with error" + error.message);
+              console.error('Error during the fetch:', error.message);
+              return null; // or handle the error accordingly
+          }
+            return tid;
+          console.log('method executed');
+      }
+
+
+
+            function submitQuestion(questionIndex, questionType) {
+
+
+          const questionIdElement = document.getElementById('lbl' + (questionIndex+1));
+      const questionId = questionIdElement.getAttribute('value');
+
+      const inputButton = document.querySelector(`button[buttonquestionid="${questionId}"]`);
+             let Questionstatus = "NA";
+
+             if(inputButton.style.backgroundColor == "green")
+               QuestionStatus="Attempted";
+               else if(inputButton.style.backgroundColor == "red")
+               QuestionStatus="NotAttempted";
+               else if(inputButton.style.backgroundColor == "orange")
+               QuestionStatus="AttemptReview";
+               else if(inputButton.style.backgroundColor == "blue")
+               QuestionStatus="AttemptNotReview";
+
+
+                  // Handle checkbox or radio button submission
+                // const selectedOption = document.querySelector('input[dataquestionid=questionId]:checked');
+      const submittedanswer = document.querySelector('input[dataquestionid="'+ questionId + '"]:checked').value
+             // alert(submittedanswer);
+              resultData.push({ QuestionID: questionId, Answer: submittedanswer, Status: QuestionStatus, Type: questionType });
+
+
+
+
+              // Additional logic to handle the "Review Later" checkbox if needed
+
+              // Send the data to the server
+             // await postMethod(response, questionIndex, questionId, questionType);
+          }
+      function setCheckedState(questionId, selectedOption,QuestionStatus) {
+          const inputElement = document.querySelector(`input[dataquestionid="${questionId}"][value="${selectedOption}"]`);
+      const inputButton = document.querySelector(`button[buttonquestionid="${questionId}"]`);
+
+
+          if (inputElement) {
+              inputElement.checked = true;
+          }
+
+          if(QuestionStatus=="Attempted")
+          inputButton.style.backgroundColor = "Green";
+          else if(QuestionStatus=="NotAttempted")
+           inputButton.style.backgroundColor = "Red";
+           else if(QuestionStatus=="AttemptReview")
+           inputButton.style.backgroundColor = "Orange"
+           else if(QuestionStatus=="AttemptNotReview")
+             inputButton.style.backgroundColor = "Blue"
+
+      }
+
+      function setUnCheckedState(questionId, selectedOption,QuestionStatus) {
+          const inputElement = document.querySelector(`input[dataquestionid="${questionId}"][value="${selectedOption}"]`);
+      const inputButton = document.querySelector(`button[buttonquestionid="${questionId}"]`);
+
+
+          if (inputElement) {
+              inputElement.checked = false;
+          }
+
+
+           inputButton.style.backgroundColor = "Red";
+
+
+      }
+
+      async function previewresult() {
+          // Redirect to the previous page
+          window.history.back();
+      }
+
+
+         async function result() {
+
+
+          if (timerExpired) {
+          shouldCallExamSubmission = false;
+
+              // Perform any necessary actions when the exam is finished
+              localStorage.removeItem('examTimer');
+
+              // Reset the timer
+              resetTimer();
+              //let tid;
+
+                             const tid = await finalexamsubmission();
+
+
+              console.log("tid");
+              console.log(tid);
+              if(tid != null)
+              {
+
+              localStorage.setItem('transactionID',tid);
+
+              // Redirect to the login homepage
+
+              // Get dynamic values
+      const studentName = localStorage.getItem('username'); // Replace with actual student name
+      const testId = ExamId; // Replace with actual test ID
+      const transactionId = localStorage.getItem('transactionID'); // Replace with actual transaction ID
+             //document.getElementById("mainNav").style.display = "none";
+                //   document.getElementById("mainArticle").style.display = "none";
+                //   document.getElementById("legend").style.display = "none";
+      // Build the URL with query parameters
+      const url = '/studentResultPage';
+
+      // Redirect to the studentResultPage with the dynamic values
+       // Replace with the actual username
+
+                resetTimer();
+                   const key = `examTimer_${studentName}`;
+                timeRemaining = totalDuration;
+              localStorage.setItem(key, timeRemaining.toString());
+              localStorage.removeItem('resultData');
+                    // document.getElementById("mainNav").style.display = "none";
+                  // document.getElementById("mainArticle").style.display = "none";
+                  // document.getElementById("legend").style.display = "none";
+      window.location.href = url;
+      }
+      else
+      {
+         alert('result not submiited successfully, please try again');
+      }
+          } else {
+          shouldCallExamSubmission=false;
+              // Ask the user for confirmation before submitting
+              if (confirm('Are you sure you want to submit before the exam time expires?')) {
+                  // Perform actions when the user decides to submit
+                  // For example, you might save the current state of the exam or record the early submission
+                  alert('Exam submitted!');
+                  // Redirect to the login homepage or wherever needed
+                             const tid = await finalexamsubmission();
+
+                            console.log('value of tid');
+                            console.log(tid);
+
+              if(tid != null)
+              {
+
+                 localStorage.setItem('transactionID',tid);
+
+                     // Get dynamic values
+      const studentName = localStorage.getItem('username'); // Replace with actual student name
+      const testId = ExamId                                                                          ; // Replace with actual test ID
+      const transactionId = localStorage.getItem('transactionID'); // Replace with actual transaction ID
+           //  document.getElementById("mainNav").style.display = "none";
+                  // document.getElementById("mainArticle").style.display = "none";
+                 //  document.getElementById("legend").style.display = "none";
+      // Build the URL with query parameters
+      const url = '/studentResultPage';
+
+                resetTimer();
+                resetTimer();
+                   const key = `examTimer_${studentName}`;
+                timeRemaining = totalDuration;
+              localStorage.setItem(key, timeRemaining.toString());
+      // Redirect to the studentResultPage with the dynamic values
+      localStorage.removeItem('resultData');
+      window.location.href = url;
+      }
+      else
+      {
+      alert('result not submiited successfully, please try again');
+      }
+
+              }
+              else {
+                  // User decided not to submit early
+                  alert('Please continue your exam.');
+              }
+          }
+      }
+    </script>
+  </body>
 </html>
