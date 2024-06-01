@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    padding: 1em;
+    background-color: #343a40;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logo-container {
+    width: 250px;
+}
+
+#logo {
+    width: 100%;
+    height: auto;
+}
+
+#adminInfo {
+    display: flex;
+    align-items: center;
+}
+
+#adminUsername {
+    margin-right: 10px;
+}
+
+.sidebar {
+    width: 250px;
+    padding: 20px;
+    background-color: #343a40;
+    color: #fff;
+}
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+            .sidebar ul li a {
+                color: #fff;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+.content {
+    flex: 1;
+    padding: 20px;
+}

@@ -1,0 +1,116 @@
+<!-- questionDisplay.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Display Page</title>
+    <!-- Add your styles here -->
+    <style>
+        /* Add your custom styles here */
+        .selected-question {
+            background-color: #ffcccb; /* Light red, you can change this color */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- Your header content goes here -->
+    </header>
+
+    <section>
+        <h2>Selected Questions</h2>
+
+        <!-- Display selected questions here -->
+        <div>
+            <!-- MCQ Questions -->
+            <h3>MCQ Questions</h3>
+           
+                <ul>
+                    <% for (let i = 0; i < mcqQuestions.length; i++) { %>
+                        <li>
+                          <label>
+                                <input type="checkbox" name="includeInTest"> Include in Test  
+                            </label>
+                            <label>
+                             <%= mcqQuestions[i].Question %>
+                                </label>
+                            <label>
+                                <input type="radio" name="mcqAnswer<%= i %>" value="Option_A"> <%= mcqQuestions[i].Option_A %>
+                            </label>
+                            <label>
+                                <input type="radio" name="mcqAnswer<%= i %>" value="Option_B"> <%= mcqQuestions[i].Option_B %>
+                            </label>
+                            <label>
+                                <input type="radio" name="mcqAnswer<%= i %>" value="Option_C"> <%= mcqQuestions[i].Option_C %>
+                            </label>
+                            <label>
+                                <input type="radio" name="mcqAnswer<%= i %>" value="Option_D"> <%= mcqQuestions[i].Option_D %>
+                            </label>
+                            
+                        </li>
+                    <% } %>
+                </ul>
+               
+              
+
+            <!-- Descriptive Questions -->
+            <h3>Descriptive Questions</h3>
+            <form action="/submitAnswers" method="post">
+                <ul>
+                    <% for (let i = 0; i < descriptiveQuestions.length; i++) { %>
+                        <li>
+                         <label>
+                                <input type="checkbox" name="includeInTest" value="<%= descriptiveQuestions[i].Question_Description %>"> Include in Test
+                            </label>
+                            <p><%= descriptiveQuestions[i].Question_Description %></p>
+                           
+                        </li>
+                    <% } %>
+                </ul>
+                <button type="submit">Submit Answers</button>
+                <button type="button" onclick="createTest()">Create Test</button>
+            </form>
+
+            <!-- Matching Questions -->
+            <h3>Matching Questions</h3>
+            <form action="/submitAnswers" method="post">
+                <ul>
+                    <% for (let i = 0; i < matchingQuestions.length; i++) { %>
+                        <li>
+                          <label>
+                                <input type="checkbox" name="includeInTest" value="<%= matchingQuestions[i].Description %>"> Include in Test
+                            </label>
+                            <p><%= matchingQuestions[i].Description %></p>
+                            <select name="matchingAnswer<%= i %>">
+                                <% const matchingOptions = matchingQuestions[i].Matching_Keyword.split(','); %>
+                                <% for (let j = 0; j < matchingOptions.length; j++) { %>
+                                    <option value="<%= matchingOptions[j] %>"><%= matchingOptions[j] %></option>
+                                <% } %>
+                            </select>
+                          
+                        </li>
+                    <% } %>
+                </ul>
+                <button type="submit">Submit Answers</button>
+                <button type="button" onclick="createTest()">Create Test</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <!-- Your footer content goes here -->
+    </footer>
+
+    <script>
+        function createTest() {
+            alert('Test Created!');
+            // You can add logic to send the selected questions to the server and create the test.
+        }
+    </script>
+</body>
+
+</html>

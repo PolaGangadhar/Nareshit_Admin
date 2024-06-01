@@ -1,0 +1,595 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naresh I Technologies</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" />
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-csharp.min.js"></script>
+   
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .today .icon-container {
+            display: flex;
+            gap: 5px;
+        }
+
+        .today .icon-container .icon {
+            font-size: 14px;
+            color: #007bff;
+        }
+        header {
+            padding: 1em;
+            background-color: #fff;
+            color: #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #logo-container {
+            width: 150px;
+            background-color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        #logo {
+            width: 100%;
+            height: auto;
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px;
+            color: #343a40;
+        }
+
+        #profilePicture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        #logoutLink {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #logoutLink:hover {
+            text-decoration: underline;
+        }
+
+        .blue-strip {
+            height: 5px;
+            background-color: #007bff;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .activity-card {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #e9e9e9;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #eee;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar-arrow {
+            cursor: pointer;
+            font-size: 20px;
+            color: #007bff;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .calendar-day.today {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .icon-container {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon {
+            font-size: 14px;
+            color: #007bff;
+        }
+
+        .student-performance {
+            flex: 1;
+            background-color: #eee;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40;
+            color: #fff;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .learning-roadmap {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .roadmap-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .topic {
+            display: inline-block;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 5px;
+            background-color: #eee;
+            color: #aaa;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .topic.active {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .arrow {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #eee transparent transparent;
+            border-style: solid;
+        }
+
+        .topic:last-child .arrow {
+            display: none;
+        }
+
+        .tasks-container {
+            display: none;
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .task {
+            margin-bottom: 10px;
+        }
+
+        .task a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .task a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div id="logo-container">
+            <img id="logo" src="https://www.nareshit.com/wp-content/uploads/2019/06/xNareshit-Logo-Png.png.pagespeed.ic.DS6ZMd4hME.png" alt="Naresh IT Logo">
+        </div>
+        <div id="adminInfo">
+            <h2 id="adminUsername">Welcome, <span></span>!</h2>
+            <img id="profilePicture" alt="Profile Picture" class="profile-picture">
+            <a id="logoutLink" href="#">Logout</a>
+        </div>
+    </header>
+
+    <div class="blue-strip"></div>
+
+    <div class="dashboard-container">
+        <div class="learning-roadmap">
+            <div class="roadmap-title">Learning Roadmap: C#.NET</div>
+            <div class="topic active">Introduction <span class="arrow"></span></div>
+            <div class="topic">Basics of C# <span class="arrow"></span></div>
+            <div class="topic">Advanced Concepts <span class="arrow"></span></div>
+            <div class="topic">Hands-on Projects <span class="arrow"></span></div>
+            <div class="topic">Final Assessment</div>
+        </div>
+
+        <div class="content">
+            <div class="activity-card">
+                <h3>My Tests Results</h3>
+                <p>Check your progress</p>
+                <a href="#">View Tests</a>
+            </div>
+
+            <div class="calendar">
+                <div class="calendar-header">
+                    <span class="calendar-arrow" onclick="navigateDate('prev')">&#9665;</span>
+                    <span id="calendarMonthYear">April 2023</span>
+                    <span class="calendar-arrow" onclick="navigateDate('next')">&#9655;</span>
+                </div>
+                <div class="calendar-days" id="calendarDays"></div>
+            </div>
+
+            <div class="tasks-container" id="tasksContainer">
+                <h4>Today Tasks</h4>
+
+                <div class="task">Task 1. <a href="/studentexampage">Complete the Assignment 1</a></div>
+                <div class="task">Task 2. <a href="/studentexampage">Complete the Assignment 2</a></div>
+                <!-- Add more tasks as needed -->
+          
+                <h4>Today Virtual Lab</h4>
+
+            <div class="code-editor">
+              <div class="task">Program Name:  <a href="/VirtualLab">Switch case demo for calculator</a></div>
+ 
+</div>
+
+
+
+        </div>
+    </div>
+  <div class="footer">
+        © 2023 Naresh i Technologies | Software Training - Online Training - Live Project Training - Weekend Training
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', () => {
+            // Clear the session storage
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('token');
+
+            // Redirect to the login page
+            window.location.href = '/'; // Replace '/login' with the actual login page URL
+        });
+
+        function setupUserInfo() {
+            // Extract username and token from sessionStorage
+            const username = sessionStorage.getItem('username');
+            const token = sessionStorage.getItem('token');
+
+            // Check if username and token are available
+            if (!username || !token) {
+                // Redirect to the login page
+                window.location.href = '/'; // Adjust the login page URL as needed
+                return;
+            }
+
+            // Display the username
+            document.getElementById('adminUsername').innerText = `Welcome, ${username}!`;
+
+            console.log('Token:', token);
+
+            // const username = 'your_username';
+
+            fetch(`/getimage/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Check if the response contains the image data
+                    if (data && data.Image) {
+                        // Convert the binary data to Base64
+                        const base64Image = arrayBufferToBase64(data.Image);
+
+                        // Set the Base64 string as the src attribute of the img element
+                        document.getElementById('profilePicture').src = `data:image/jpeg;base64,${base64Image}`;
+                    }
+                })
+                .catch((error) => console.error('Error fetching image:', error));
+        }
+        function addCalendarDay(day, type) {
+            const calendarDays = document.getElementById('calendarDays');
+            const calendarDay = document.createElement('div');
+            calendarDay.classList.add('calendar-day');
+            calendarDay.textContent = day;
+
+            const iconContainer = document.createElement('div');
+            iconContainer.classList.add('icon-container');
+
+            // Add Tasks icon for every day
+            const tasksIcon = document.createElement('i');
+            tasksIcon.classList.add('fas', 'fa-tasks', 'icon');
+            tasksIcon.title = 'Tasks';
+            iconContainer.appendChild(tasksIcon);
+
+            // Add Virtual Lab icon for every day
+            const labIcon = document.createElement('i');
+            labIcon.classList.add('fas', 'fa-chalkboard', 'icon');
+            labIcon.title = 'Virtual Lab';
+            iconContainer.appendChild(labIcon);
+
+            calendarDay.appendChild(iconContainer);
+
+            calendarDay.classList.add(type);
+
+            // Highlight today's date
+            const today = new Date();
+            if (
+                today.getFullYear() === currentDate.getFullYear() &&
+                today.getMonth() === currentDate.getMonth() &&
+                day === today.getDate()
+            ) {
+                calendarDay.classList.add('today');
+                showTasks(); // Show tasks on today's date
+            }
+
+            // Add click event to show tasks on click
+            calendarDay.addEventListener('click', () => {
+                showTasks();
+            });
+
+            calendarDays.appendChild(calendarDay);
+        }
+
+        function updateCalendar(date) {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const calendarDays = document.getElementById('calendarDays');
+            const calendarMonthYear = document.getElementById('calendarMonthYear');
+
+            calendarDays.innerHTML = '';
+
+            calendarMonthYear.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            const prevMonthDays = firstDay.getDay();
+
+            for (let i = prevMonthDays - 1; i >= 0; i--) {
+                const prevDate = new Date(date.getFullYear(), date.getMonth(), -i);
+                addCalendarDay(prevDate.getDate(), 'prev');
+            }
+
+            for (let i = 1; i <= lastDay; i++) {
+                const currentDate = new Date(date.getFullYear(), date.getMonth(), i);
+                addCalendarDay(i, 'current');
+            }
+
+            const nextMonthDays = 6 - new Date(date.getFullYear(), date.getMonth() + 1, lastDay).getDay();
+
+            for (let i = 1; i <= nextMonthDays; i++) {
+                const nextDate = new Date(date.getFullYear(), date.getMonth() + 1, i);
+                addCalendarDay(i, 'next');
+            }
+        }
+        function arrayBufferToBase64(buffer) {
+            if (!buffer || !Array.isArray(buffer.data) || buffer.data.length === 0) {
+                console.error('Invalid buffer structure:', buffer);
+                return null;
+            }
+
+            const binaryString = String.fromCharCode.apply(null, buffer.data);
+            const base64String = btoa(binaryString);
+
+            return base64String;
+        }
+
+        function navigateToPage(page) {
+            window.location.href = page;
+        }
+
+        function navigateDate(direction) {
+            const currentDate = new Date(document.getElementById('calendarMonthYear').textContent);
+            let newDate;
+
+            if (direction === 'prev') {
+                newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+            } else {
+                newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+            }
+
+            updateCalendar(newDate);
+        }
+
+        function updateCalendar(date) {
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const calendarDays = document.getElementById('calendarDays');
+            const calendarMonthYear = document.getElementById('calendarMonthYear');
+
+            calendarDays.innerHTML = '';
+
+            calendarMonthYear.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+            const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            const prevMonthDays = firstDay.getDay();
+
+            for (let i = prevMonthDays - 1; i >= 0; i--) {
+                const prevDate = new Date(date.getFullYear(), date.getMonth(), -i);
+                addCalendarDay(prevDate.getDate(), 'prev');
+            }
+
+            for (let i = 1; i <= lastDay; i++) {
+                const currentDate = new Date(date.getFullYear(), date.getMonth(), i);
+                addCalendarDay(i, 'current');
+            }
+
+            const nextMonthDays = 6 - new Date(date.getFullYear(), date.getMonth() + 1, lastDay).getDay();
+
+            for (let i = 1; i <= nextMonthDays; i++) {
+                const nextDate = new Date(date.getFullYear(), date.getMonth() + 1, i);
+                addCalendarDay(i, 'next');
+            }
+        }
+
+        function addCalendarDay(day, type) {
+            const calendarDays = document.getElementById('calendarDays');
+            const calendarDay = document.createElement('div');
+            calendarDay.classList.add('calendar-day');
+            calendarDay.textContent = day;
+
+            const iconContainer = document.createElement('div');
+            iconContainer.classList.add('icon-container');
+            const icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-tasks', 'icon');
+            icon.title = 'Tasks';
+            iconContainer.appendChild(icon);
+
+            // Add Virtual Lab icon
+            if (day % 2 === 0) {
+                const labIcon = document.createElement('i');
+                labIcon.classList.add('fas', 'fa-chalkboard', 'icon');
+                labIcon.title = 'Virtual Lab';
+                iconContainer.appendChild(labIcon);
+            }
+
+            calendarDay.appendChild(iconContainer);
+
+            calendarDay.classList.add(type);
+
+            // Highlight today's date
+            const today = new Date();
+            if (
+                today.getFullYear() === new Date().getFullYear() &&
+                today.getMonth() === new Date().getMonth() &&
+                day === today.getDate()
+            ) {
+                calendarDay.classList.add('today');
+                showTasks(); // Show tasks on today's date
+            }
+
+            // Add click event to show tasks on click
+            calendarDay.addEventListener('click', () => {
+                showTasks();
+            });
+
+            calendarDays.appendChild(calendarDay);
+        }
+
+        function showTasks() {
+            const tasksContainer = document.getElementById('tasksContainer');
+            tasksContainer.style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentDate = new Date(); // You can set your initial date here
+            updateCalendar(currentDate);
+        });
+        
+        function addCalendarDay(day, type) {
+            const calendarDays = document.getElementById('calendarDays');
+            const calendarDay = document.createElement('div');
+            calendarDay.classList.add('calendar-day');
+            calendarDay.textContent = day;
+
+            const iconContainer = document.createElement('div');
+            iconContainer.classList.add('icon-container');
+
+            // Add Tasks icon for every day
+            const tasksIcon = document.createElement('i');
+            tasksIcon.classList.add('fas', 'fa-tasks', 'icon');
+            tasksIcon.title = 'Tasks';
+            iconContainer.appendChild(tasksIcon);
+
+            // Add Virtual Lab icon for every day
+            const labIcon = document.createElement('i');
+            labIcon.classList.add('fas', 'fa-chalkboard', 'icon');
+            labIcon.title = 'Virtual Lab';
+            iconContainer.appendChild(labIcon);
+
+            calendarDay.appendChild(iconContainer);
+
+            calendarDay.classList.add(type);
+
+            // Highlight today's date
+            const today = new Date();
+            if (
+                today.getFullYear() === new Date().getFullYear() &&
+                today.getMonth() === new Date().getMonth() &&
+                day === today.getDate()
+            ) {
+                calendarDay.classList.add('today');
+                showTasks(); // Show tasks on today's date
+            }
+
+            // Add click event to show tasks on click
+            calendarDay.addEventListener('click', () => {
+                showTasks();
+            });
+
+            calendarDays.appendChild(calendarDay);
+        }
+        // Call the setupUserInfo function when the page is loaded
+        document.addEventListener('DOMContentLoaded', setupUserInfo);
+    </script>
+
+</body>
+
+</html>

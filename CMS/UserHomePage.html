@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Webpage Title</title>
+    <style>          
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header{
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey; 
+        }
+        #pageHeader {
+          grid-area: header;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+        }
+
+        #logo {
+         width: 250px; /* Adjust the width as needed */
+         height: auto;
+         margin-right: 20px; /* Adjust the margin as needed */
+         }
+
+        
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        #pageFooter {
+           grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+             /* Adjust as needed */
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            height: 100px;
+            background-color: azure;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            float: center; /* Align the dropdown to the right */
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+        .dropbtn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%; /* Position the dropdown below the button */
+            left: 0; /* Align the dropdown to the left */
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content button {
+            width: 100%; /* Make the buttons take the full width of the dropdown */
+            padding: 10px;
+            text-align: left;
+            border: none;
+            background-color: inherit;
+            cursor: pointer;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+    </header>
+
+    <main>
+        <!-- Your webpage content goes here -->
+        <h1>Welcome to User Webpage</h1>
+        <button onclick="navigateToPage('ExamPage.html')">Start Test</button>
+
+        <div class="dropdown">
+            <button class="dropbtn">Click me</button>
+            <div class="dropdown-content">
+                <button>Button 1</button>
+                <button>Button 2</button>
+                <button>Button 3</button>
+            </div>
+        </div>
+    </main>
+
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo" style="height: 25px; width: 180px; align-items: center; margin-top: 10px;">
+        <p style="margin: 0px px 0px 0px 300px;">© 2023 Naresh i Technologies | Software Training - Online Training - Live Project Training - Weekend Training.</p>
+    </footer>
+    <script>
+        // Function to navigate to another page
+        function navigateToPage(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+
+</html>

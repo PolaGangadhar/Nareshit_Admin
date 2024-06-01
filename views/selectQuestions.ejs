@@ -1,0 +1,296 @@
+<!-- selectQuestions.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Master Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+          
+        header{
+            padding: 0.6em;
+            background: white;
+            border: 1px solid grey; 
+        }
+        #pageHeader {
+          grid-area: header;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+        }
+
+        #logo {
+         width: 250px; /* Adjust the width as needed */
+         height: auto;
+         margin-right: 20px; /* Adjust the margin as needed */
+         }
+
+        #companyName {
+          flex-grow: 1;
+           text-align: center;
+           font-size: 24px; 
+           }
+
+        nav {
+            background-color: rgb(226, 223, 223);
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.932);
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        input[type="number"] {
+            display: inline-block;
+            height: 22px;
+            width: 100px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: white;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .typeofquestions {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+        }
+
+        .typeofquestions label {
+            display: flex;
+            align-items: center;
+            margin-right: 20px; /* Adjust the margin as needed to add space between items */
+        }
+
+        /* Optional: Adjust the styles for input[type="number"] */
+        .typeofquestions input[type="number"] {
+            width: 50px; /* Adjust the width as needed */
+            margin-left: 10px; /* Add some spacing between checkbox and textbox */
+        }
+
+        /* Added styles for better alignment */
+        form {
+            text-align: center;
+        }
+
+        label:hover,
+        input[type="number"]:hover {
+            background-color: white;
+        }
+
+        button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            margin-top: 2px;
+            padding: 10px 20px; /* Padding: 10px top/bottom, 20px left/right */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            width: 150px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        /* Adjustments for checkbox and number inputs */
+.label-with-checkbox {
+
+    align-items: center;
+}
+
+.label-with-checkbox input[type="checkbox"] {
+    margin-right: 5px; /* Adjust the margin as needed to add space between checkbox and text */
+}
+
+.label-with-checkbox input[type="number"] {
+    width: 50px; /* Adjust the width as needed */
+    margin-left: 10px; /* Add some spacing between checkbox and number input */
+    margin-right: 5px;
+    margin-bottom: 15px; /* Add space between number input and the next checkbox */
+}
+
+/* Style for the select dropdown */
+label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid darkgray #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 10%;
+}
+
+/* Style for the options within the dropdown */
+select option {
+    font-size: 16px;
+}
+
+/* Hover effect for the dropdown */
+select:hover,
+select:focus {
+    border-color: white;
+}
+#pageFooter {
+    grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+             /* Adjust as needed */
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <span id="companyName">Naresh I Technologies</span>
+    </header>
+    <section>
+        <h2>Welcome To Test Creation Page</h2>
+
+        <label for="Technology">Select Technology</label>
+<select name="Technology" id="Technology">
+    <option value="C#">C#</option>
+    <option value="Java">Java</option>
+    <option value="Python">Python</option>
+</select>
+
+        <br><br>
+        <div class="typeofquestions">
+            <label for="checkbox1">
+                <input type="checkbox" id="checkbox1" onchange="updateTextbox(this)">MCQ'S(RadioButtons)
+                <input type="number" id="textbox1">
+            </label>
+
+            <label for="checkbox2">
+         <input type="checkbox" id="checkbox2" onchange="updateTextbox(this)">Group Questions(Paragraph
+                Questions)
+                <input type="number" id="textbox2">
+            </label>
+
+            <label for="checkbox3">
+                <input type="checkbox" id="checkbox3" onchange="updateTextbox(this)">MCQ'S(CheckBoxes)
+                <input type="number" id="textbox3">
+            </label>
+
+            <label for="checkbox4">
+         <input type="checkbox" id="checkbox4" onchange="updateTextbox(this)">Free Text(Question with
+                textbox field)
+                <input type="number" id="textbox4">
+            </label>
+        </div>
+
+        <br>
+        <div class="label-with-checkbox">
+        <input type="checkbox" id="checkbox7" onchange="updateTextbox(this)"> Easy
+        <input type="number" id="textbox7">
+        <br>
+        
+        <input type="checkbox" id="checkbox8" onchange="updateTextbox(this)"> Medium
+        <input type="number" id="textbox8">
+        <br>
+        <input type="checkbox" id="checkbox9" onchange="updateTextbox(this)"> Hard
+        <input type="number" id="textbox9">
+    </div>
+<br>
+    
+    <form action="/startTest" method="post">
+        <label for="numberOfQuestions">Number of Questions:</label>
+        <input type="number" id="numberOfQuestions" name="numberOfQuestions" required>
+        <button type="submit">Start Test</button>
+    </form>
+<br>
+
+</section>
+<footer id="pageFooter">
+    <img src="Naresh_IT_Logo.png" alt="Logo" id="logo" style="height: 25px; width: 180px; align-items: center; margin-top: 10px;">
+    <p style="margin: 0px px 0px 0px 300px;">© 2023 Naresh i Technologies | Software Training - Online Training - Live Project Training - Weekend Training.</p>
+</footer>
+<script>
+
+     // Add hover effect for label
+document.querySelector('label[for="numberOfQuestions"]').addEventListener('mouseover', function () {
+    this.style.backgroundColor = '#ddd'; // Change to your preferred hover color
+});
+
+document.querySelector('label[for="numberOfQuestions"]').addEventListener('mouseout', function () {
+    this.style.backgroundColor = 'transparent'; // Change to your preferred normal color
+});
+
+// Add hover effect for input
+document.getElementById('numberOfQuestions').addEventListener('mouseover', function () {
+    this.style.backgroundColor = '#ddd'; // Change to your preferred hover color
+});
+
+document.getElementById('numberOfQuestions').addEventListener('mouseout', function () {
+    this.style.backgroundColor = 'transparent'; // Change to your preferred normal color
+});
+
+
+    function updateTextbox(checkbox) {
+        var textboxId = checkbox.id.replace("checkbox", "textbox");
+        var textbox = document.getElementById(textboxId);
+        var value = parseInt(textbox.value) || 0;
+
+        // Call calculateTotal to update the count dynamically
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        var total = 0;
+
+        // Loop through the checkboxes and add the values to the total
+        for (var i = 1; i <= 4; i++) {
+            var checkbox = document.getElementById("checkbox" + i);
+            var textbox = document.getElementById("textbox" + i);
+
+            if (checkbox.checked) {
+                total += parseInt(textbox.value) || 0;
+            }
+        }
+
+        // Update the "Number of Questions" input
+        document.getElementById("numberOfQuestions").value = total;
+    }
+
+    function saveNumberOfQuestions() {
+        sessionStorage.setItem('numberOfQuestions', document.getElementById("numberOfQuestions").value);
+    }
+</script>
+
+
+
+</body>
+
+</html>

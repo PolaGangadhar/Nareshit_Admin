@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Master Page</title>
+    <style>
+        /* Your existing styles go here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #companyName {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        nav {
+            background-color: rgb(226, 223, 223);
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.932);
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        input[type="number"] {
+            display: inline-block;
+            height: 22px;
+            width: 100px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: white;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .typeofquestions {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+        }
+
+        .typeofquestions label {
+            display: flex;
+            align-items: center;
+            margin-right: 20px; /* Adjust the margin as needed to add space between items */
+        }
+
+        /* Optional: Adjust the styles for input[type="number"] */
+        .typeofquestions input[type="number"] {
+            width: 50px; /* Adjust the width as needed */
+            margin-left: 10px; /* Add some spacing between checkbox and textbox */
+        }
+
+        /* Added styles for better alignment */
+        form {
+            text-align: center;
+        }
+
+        label:hover,
+        input[type="number"]:hover {
+            background-color: white;
+        }
+
+        button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            margin-top: 2px;
+            padding: 10px 20px; /* Padding: 10px top/bottom, 20px left/right */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            width: 150px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        /* Adjustments for checkbox and number inputs */
+        .label-with-checkbox {
+            display: flex;
+            align-items: center;
+        }
+
+        .label-with-checkbox input[type="checkbox"] {
+            margin-right: 10px; /* Adjust the margin as needed to add space between checkbox and text */
+        }
+
+        .label-with-checkbox input[type="number"] {
+            width: 50px; /* Adjust the width as needed */
+            margin-left: 10px; /* Add some spacing between checkbox and number input */
+        }
+
+        /* Style for the select dropdown */
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid darkgray #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 10%;
+        }
+
+        /* Style for the options within the dropdown */
+        select option {
+            font-size: 16px;
+        }
+
+        /* Hover effect for the dropdown */
+        select:hover,
+        select:focus {
+            border-color: white;
+        }
+
+        #pageFooter {
+            grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+            /* Adjust as needed */
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            height: 100px;
+            background-color: azure;
+        }
+
+           .custom-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-toggle {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    .dropdown-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+  
+
+    .dropdown-list label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+
+        #subtopicTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#subtopicTable th, #subtopicTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#subtopicTable th {
+    background-color: #f2f2f2;
+}
+    </style>
+</head>
+
+<body>
+
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <span id="companyName">Naresh I Technologies</span>
+    </header>
+    <section>
+        <h2>Welcome To Test Creation Page</h2>
+
+         <h3>Type of Questions</h2>
+                <div class="typeofquestions">
+            <label for="checkbox1">
+                <input type="checkbox" id="checkbox1" onchange="updateTextbox(this)"> MCQ'S(RadioButtons)
+                <input type="number" id="textbox1">
+            </label>
+
+            <label for="checkbox2">
+                <input type="checkbox" id="checkbox2" onchange="updateTextbox(this)"> Group Questions(Paragraph
+                Questions)
+                <input type="number" id="textbox2">
+            </label>
+
+            <label for="checkbox3">
+                <input type="checkbox" id="checkbox3" onchange="updateTextbox(this)"> MCQ'S(CheckBoxes)
+                <input type="number" id="textbox3">
+            </label>
+
+            <label for="checkbox4">
+                <input type="checkbox" id="checkbox4" onchange="updateTextbox(this)"> Free Text(Question with
+                textbox field)
+                <input type="number" id="textbox4">
+            </label>
+        </div>
+
+
+
+        <label for="Technology">Select Technology</label>
+        <select name="Technology" id="technologyDropdown">
+            <option value="">Select Technology</option>
+        </select>
+
+        <br><br>
+
+        <label for="moduleDropdown">Select Module</label>
+        <select name="moduleDropdown" id="moduleDropdown">
+            <option value="">Select Module</option>
+        </select>
+
+        <br><br>
+
+        <label for="topicDropdown">Select Topic</label>
+        <select name="topicDropdown" id="topicDropdown">
+            <option value="">Select Topic</option>
+        </select>
+
+        <br><br>
+<label for="subtopicDropdown">Select Subtopics</label>
+<select name="subtopicDropdown" id="subtopicDropdown" multiple="multiple">
+    <!-- Options will be dynamically added here using JavaScript -->
+</select>
+
+<button onclick="addSubtopicsToTable()">Add Subtopics to Table</button>
+
+    <table id="subtopicTable">
+        <thead>
+            <tr>
+                <th rowspan="2">Subtopic Name</th>
+                <th colspan="3">No. of MCQs</th>
+                <th colspan="3">No. of Group Questions</th>
+                <th colspan="3">No. of Free Text Questions</th>
+                <!-- Add similar rows for Matching, Coding, etc. -->
+            </tr>
+            <tr>
+                <th>Easy</th>
+                <th>Medium</th>
+                <th>Hard</th>
+                <th>Easy</th>
+                <th>Medium</th>
+                <th>Hard</th>
+                <th>Easy</th>
+                <th>Medium</th>
+                <th>Hard</th>
+                <!-- Add similar cells for Matching, Coding, etc. -->
+            </tr>
+
+        </thead>
+        <tbody>
+            <!-- Subtopic information will be dynamically added here using JavaScript -->
+        </tbody>
+    </table>
+
+
+        <br><br>
+
+
+
+        <br>
+
+       
+
+        <br><br>
+
+        <button onclick="submitForm()">Submit</button>
+
+        <script>
+            function updateTextbox(checkbox) {
+                var textboxId = checkbox.id.replace('checkbox', 'textbox');
+                var textbox = document.getElementById(textboxId);
+                if (checkbox.checked) {
+                    textbox.disabled = false;
+                } else {
+                    textbox.disabled = true;
+                    textbox.value = '';
+                }
+            }
+
+            function submitForm() {
+                // You can access the selected values using JavaScript and perform further actions
+                var selectedTechnology = document.getElementById('Technology').value;
+                var selectedModule = document.getElementById('moduleDropdown').value;
+                var selectedTopic = document.getElementById('topicDropdown').value;
+                var selectedSubtopic = document.getElementById('subtopicDropdown').value;
+                var mcqRadioCount = document.getElementById('textbox1').value;
+                var groupQuestionsCount = document.getElementById('textbox2').value;
+                var mcqCheckboxCount = document.getElementById('textbox3').value;
+                var freeTextCount = document.getElementById('textbox4').value;
+                var easyCount = document.getElementById('textbox7').value;
+                var mediumCount = document.getElementById('textbox8').value;
+                var hardCount = document.getElementById('textbox9').value;
+
+                // Perform actions with the selected values (e.g., send to the server)
+                console.log('Selected Technology:', selectedTechnology);
+                console.log('Selected Module:', selectedModule);
+                console.log('Selected Topic:', selectedTopic);
+                console.log('Selected Subtopic:', selectedSubtopic);
+                console.log('MCQ Radio Count:', mcqRadioCount);
+                console.log('Group Questions Count:', groupQuestionsCount);
+                console.log('MCQ Checkbox Count:', mcqCheckboxCount);
+                console.log('Free Text Count:', freeTextCount);
+                console.log('Easy Count:', easyCount);
+                console.log('Medium Count:', mediumCount);
+                console.log('Hard Count:', hardCount);
+            }
+        </script>
+
+        <!-- Include jQuery library -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- Additional script for fetching technologies -->
+        <script>
+            // Fetch technologies and populate the dropdown
+            $(document).ready(function () {
+                $.ajax({
+                    url: '/fetchTechnologies',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Assuming you have a dropdown with id="technologyDropdown"
+                        var technologyDropdown = $('#technologyDropdown');
+
+                        // Clear existing options
+                        technologyDropdown.empty();
+
+                        // Add default option
+                        technologyDropdown.append('<option value="">Select Technology</option>');
+
+                        // Add options based on fetched data
+                        data.forEach(function (technology) {
+                            technologyDropdown.append(`<option value="${technology.TechnologyID}">${technology.TechnologyName}</option>`);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching technologies:', error);
+                        // Handle error
+                    }
+                });
+            });
+
+            // Fetch modules based on the selected technology
+            $('#technologyDropdown').change(function () {
+                var selectedTechnologyId = $(this).val();
+
+                // Make an AJAX request to fetch modules
+                $.ajax({
+                    url: `/fetchModules/${selectedTechnologyId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (modules) {
+                        // Assuming you have a dropdown with id="moduleDropdown"
+                        var moduleDropdown = $('#moduleDropdown');
+
+                        // Clear existing options
+                        moduleDropdown.empty();
+
+                        // Add default option
+                        moduleDropdown.append('<option value="">Select Module</option>');
+
+                        // Add options based on fetched data
+                        modules.forEach(function (module) {
+                            moduleDropdown.append(`<option value="${module.ModuleID}">${module.ModuleName}</option>`);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching modules:', error);
+                        // Handle error
+                    }
+                });
+            });
+
+            // Fetch topics based on the selected module
+            $('#moduleDropdown').change(function () {
+                var selectedModuleId = $(this).val();
+
+                // Make an AJAX request to fetch topics
+                $.ajax({
+                    url: `/fetchTopics/${selectedModuleId}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (topics) {
+                        // Assuming you have a dropdown with id="topicDropdown"
+                        var topicDropdown = $('#topicDropdown');
+
+                        // Clear existing options
+                        topicDropdown.empty();
+
+                        // Add default option
+                        topicDropdown.append('<option value="">Select Topic</option>');
+
+                        // Add options based on fetched data
+                        topics.forEach(function (topic) {
+                            topicDropdown.append(`<option value="${topic.TopicID}">${topic.TopicName}</option>`);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching topics:', error);
+                        // Handle error
+                    }
+                });
+            });
+
+            // Fetch subtopics based on the selected topic
+         $('#topicDropdown').change(function () {
+    var selectedTopicId = $(this).val();
+
+    // Make an AJAX request to fetch subtopics
+    $.ajax({
+        url: `/fetchSubtopics/${selectedTopicId}`,
+        method: 'GET',
+        dataType: 'json',
+        success: function (subtopics) {
+            // Assuming you have a dropdown with id="subtopicDropdown"
+            var subtopicDropdown = $('#subtopicDropdown');
+
+            // Clear existing options
+            subtopicDropdown.empty();
+
+            // Add default option
+            subtopicDropdown.append('<option value="">Select Subtopic</option>');
+
+            // Add options with checkboxes based on fetched data
+           
+                subtopics.forEach(function (subtopic) {
+    subtopicDropdown.append(`<option value="${subtopic.SubTopicID}">${subtopic.SubTopicName}</option>`);
+});
+
+
+
+        },
+        error: function (error) {
+            console.error('Error fetching subtopics:', error);
+            // Handle error
+        }
+    });
+});
+$('#subtopicDropdown').change(function () {
+    var selectedSubtopicIds = $(this).val();
+    var selectedSubtopicNames = $(this).find(':selected').map(function () {
+        return $(this).text();
+    }).get();
+
+    addSubtopicsToTable(selectedSubtopicIds, selectedSubtopicNames);
+});
+
+function addSubtopicsToTable(selectedSubtopicIds, selectedSubtopicNames) {
+    // Assuming your table has the following IDs for input fields
+    var tableBody = $('#subtopicTable tbody');
+
+    // Clear existing rows
+    tableBody.empty();
+
+    // Add a row for each selected subtopic
+    for (var i = 0; i < selectedSubtopicIds.length; i++) {
+        var subtopicId = selectedSubtopicIds[i];
+        var subtopicName = selectedSubtopicNames[i];
+
+        tableBody.append(`<tr>
+                            <td>${subtopicName}</td>
+                            <td><input type="text" name="mcqEasy" id="mcqEasy_${subtopicId}" /></td>
+                            <td><input type="text" name="mcqMedium" id="mcqMedium_${subtopicId}" /></td>
+                            <td><input type="text" name="mcqHard" id="mcqHard_${subtopicId}" /></td>
+                        </tr>`);
+    }
+}
+function getSubtopicNameById(subtopicId) {
+    // Make an AJAX request or use a local data structure to get the subtopic name
+    // Return the subtopic name based on the provided subtopicId
+    // Example:
+    // return "SubtopicName";
+}
+        </script>
+    </section>
+
+    <footer id="pageFooter">
+        <!-- Footer content goes here -->
+        <p>&copy; 2023 Naresh I Technologies. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

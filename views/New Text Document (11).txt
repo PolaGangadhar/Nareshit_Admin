@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Case Demo - Calculator</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Add your additional styles for the new page here */
+        .code-editor-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .code-editor {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #codeSnippet {
+            width: 100%;
+            height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        #submitCode {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #validationResult {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div id="logo-container">
+            <img id="logo" src="https://www.nareshit.com/wp-content/uploads/2019/06/xNareshit-Logo-Png.png.pagespeed.ic.DS6ZMd4hME.png" alt="Naresh IT Logo">
+        </div>
+        <div id="adminInfo">
+            <h2 id="adminUsername">Welcome, <span></span>!</h2>
+            <img id="profilePicture" alt="Profile Picture" class="profile-picture">
+            <a id="logoutLink" href="#">Logout</a>
+        </div>
+    </header>
+
+    <div class="blue-strip"></div>
+
+    <div class="dashboard-container">
+        <div class="learning-roadmap">
+            <div class="roadmap-title">Switch Case Demo: Calculator</div>
+            <div class="topic">Step 1: Create variables<span class="arrow"></span></div>
+            <div class="topic">Step 2: Check Pascal and Camel Case<span class="arrow"></span></div>
+            <div class="topic">Step 3: Implement Switch Case<span class="arrow"></span></div>
+            <div class="topic">Step 4: Finalize and Test</div>
+        </div>
+
+        <div class="content">
+            <div class="code-editor-container">
+                <div class="code-editor">
+                    <textarea id="codeSnippet" placeholder="Write your code here"></textarea>
+                </div>
+                <button id="submitCode" onclick="validateCode()">Submit Code</button>
+                <div id="validationResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2023 Your Company Name. All rights reserved.
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', () => {
+            // Clear the session storage
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('token');
+
+            // Redirect to the login page
+            window.location.href = '/'; // Replace '/login' with the actual login page URL
+        });
+
+        function setupUserInfo() {
+            // Extract username and token from sessionStorage
+            const username = sessionStorage.getItem('username');
+            const token = sessionStorage.getItem('token');
+
+            // Check if username and token are available
+            if (!username || !token) {
+                // Redirect to the login page
+                window.location.href = '/'; // Adjust the login page URL as needed
+                return;
+            }
+
+            // Display the username
+            document.getElementById('adminUsername').innerText = `Welcome, ${username}!`;
+
+            console.log('Token:', token);
+
+            // Load user image
+            fetch(`/getimage/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Check if the response contains the image data
+                    if (data && data.Image) {
+                        // Convert the binary data to Base64
+                        const base64Image = arrayBufferToBase64(data.Image);
+
+                        // Set the Base64 string as the src attribute of the img element
+                        document.getElementById('profilePicture').src = `data:image/jpeg;base64,${base64Image}`;
+                    }
+                })
+                .catch((error) => console.error('Error fetching image:', error));
+        }
+
+        // Call the setupUserInfo function when the page is loaded
+        document.addEventListener('DOMContentLoaded', setupUserInfo);
+
+        function validateCode() {
+            // Get the code snippet from the textarea
+            const codeSnippet = document.getElementById('codeSnippet').value;
+
+            // Perform validation for each step
+            let validationResult = '';
+
+            // Step 1: Create variables
+            if (!codeSnippet.includes('int num1') || !codeSnippet.includes('int num2') || !codeSnippet.includes('char operator')) {
+                validationResult += 'Step 1: Create variables - Incomplete or incorrect.\n';
+            }
+
+            // Step 2: Check Pascal and Camel Case
+            const variableNames = ['num1', 'num2', 'operator'];
+            for (const variable of variableNames) {
+                if (!isCamelCase(variable, codeSnippet)) {
+                    validationResult += `Step 2: Check Pascal and Camel Case - Variable '${variable}' is not in camelCase.\n`;
+                }
+            }
+
+            // Step 3: Implement Switch Case
+            if (!codeSnippet.includes('switch (operator)') || !codeSnippet.includes('case \'+\':') || !codeSnippet.includes('case \'-\':') || !codeSnippet.includes('case \'*\':') || !codeSnippet.includes('case \'/\':')) {
+                validationResult += 'Step 3: Implement Switch Case - Incomplete or incorrect.\n';
+            }
+
+            // Step 4: Finalize and Test
+            // You can add custom validations for the final step based on your requirements
+
+            // Display the validation result
+            const validationResultDiv = document.getElementById('validationResult');
+            validationResultDiv.textContent = validationResult.trim();
+
+            // Optionally, you can perform additional actions based on the validation result
+        }
+
+        function isCamelCase(variable, code) {
+            const variableRegex = new RegExp(`\\b${variable}\\b`, 'g');
+            const matches = code.match(variableRegex) || [];
+            return matches.every(match => match[0] === match[0].toLowerCase());
+        }
+
+        function arrayBufferToBase64(buffer) {
+            if (!buffer || !Array.isArray(buffer.data) || buffer.data.length === 0) {
+                console.error('Invalid buffer structure:', buffer);
+                return null;
+            }
+
+            const binaryString = String.fromCharCode.apply(null, buffer.data);
+            const base64String = btoa(binaryString);
+
+            return base64String;
+        }
+    </script>
+
+</body>
+
+</html>

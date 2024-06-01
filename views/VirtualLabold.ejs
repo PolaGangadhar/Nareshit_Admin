@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Code Tester</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div id="container">
+        <div id="editor-container">
+            <textarea id="code-editor" rows="10" cols="80">// Enter your code here</textarea>
+            <button onclick="executeCode()">Execute</button>
+        </div>
+        <div id="test-cases">
+            <h2>Test Cases</h2>
+            <% for (let i = 0; i < testCases.length; i++) { %>
+                <div class="test-case">
+                    <h3>Test Case <%= i + 1 %></h3>
+                    <div class="input">Input: <%= testCases[i].input %></div>
+                    <div class="output">Expected Output: <%= testCases[i].expectedOutput %></div>
+                </div>
+            <% } %>
+        </div>
+        <div id="output-container">
+            <h2>Output</h2>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>

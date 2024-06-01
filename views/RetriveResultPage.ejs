@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .loading-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <title>Exam Result</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.15/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Button to view results -->
+    <button id="showresult" onclick="showResults()">Get Results</button>
+     <button id="downloadButton" style="display: none;">DownLoad Results</button>
+    <div class="result-container" id="resultContainer">
+        <h2>Exam Result</h2>
+
+        <!-- Loading Container -->
+        <div class="loading-container" id="loadingContainer">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+        <!-- Result Summary and Question Result Grid will be dynamically updated here -->
+    </div>
+
+    <script>
+        async function fetchAndRenderData(testId, studentName, transactionId) {
+            try {
+                // Simulate loading by showing the spinner
+                //document.getElementById('loadingContainer').style.display = 'block';
+
+                // Replace the URL with your actual server endpoint
+                const response = await fetch('/studentResults', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add any additional headers if needed
+                    },
+                    // Add request body with parameters
+                    body: JSON.stringify({
+                        testId: testId,
+                        studentName: studentName,
+                        transactionId: transactionId,
+                    }),
+                });
+
+                const resultData = await response.json();
+
+                // Hide the loading container
+                document.getElementById('loadingContainer').style.display = 'none';
+
+                // Update the content with the fetched data
+                updateContent(resultData,transactionId);
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+                // Handle errors (show an error message, etc.)
+            }
+        }
+
+        // Function to show loading container when the button is clicked
+   function showResults() {
+    // Get student name from user input
+    const studentName = prompt('Enter student name:');
+
+    // Get transaction ID from user input
+    const transactionId = prompt('Enter transaction ID:');
+
+    // Replace with actual test ID
+    const testId = 16352;
+
+    fetchAndRenderData(testId, studentName, transactionId);
+    document.getElementById('downloadButton').style.display = 'inline-block';
+}
+
+        function getGrade(percentage) {
+    if (percentage >= 80) return 'Outstanding';
+    else if (percentage >= 60) return 'Excellent';
+    else if (percentage >= 50) return 'Good';
+    else if (percentage >= 40) return 'Pass';
+    else return 'Fail';
+}
+async function downloadCompleteReport() {
+document.getElementById('downloadButton').style.display = 'none';  
+document.getElementById('showresult').style.display = 'none';  
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Capture the entire HTML content using html2canvas
+    const html2canvasOptions = {
+        scale: 2,
+        useCORS: true,
+        logging: true,
+        foreignObjectRendering: true,
+    };
+
+    const fullPageCanvas = await html2canvas(document.body, html2canvasOptions);
+
+    // Convert the full page capture to data URL
+    const fullPageImgData = fullPageCanvas.toDataURL('image/png');
+
+    // Calculate adjusted height based on the aspect ratio
+    const adjustedHeight = (fullPageCanvas.height / fullPageCanvas.width) * 190;
+
+    // Set font options for jsPDF
+    doc.setFont('times', 'normal');
+    doc.setFontSize(12);
+
+    // Add the full page capture to the PDF
+    doc.addImage(fullPageImgData, 'PNG', 10, 10, 190, adjustedHeight);
+
+    // Download the PDF
+    doc.save('complete_report.pdf');
+}
+
+
+// Attach the downloadPDF function to a button click or call it when required
+document.getElementById('downloadButton').addEventListener('click', downloadCompleteReport);
+
+
+
+        // Function to update the content with fetched data
+        function updateContent(response,transactionId) {
+        const resultData = response.resultData;
+
+         console.log('Received resultData:', resultData);
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = '';
+
+            // Result Summary
+            const resultSummary = document.createElement('div');
+            resultSummary.className = 'result-summary';
+
+            if (Array.isArray(resultData) && resultData.length > 0) {
+    const totalQuestions = resultData.length;
+    const correctAnswers = resultData.filter(item => item.Result === true).length;
+    const attempted = resultData.filter(item => item.Status === 'Attempted').length;
+    const nonAttempted = totalQuestions - attempted;
+    const percentage = (correctAnswers / totalQuestions) * 100;
+    const grade = getGrade(percentage);
+
+    resultSummary.innerHTML = `
+        <p>Student Name: ${resultData[0].StudentName || 'Data Not Available'}</p>
+           <p>Transaction Id: ${transactionId}</p>
+        <p>Grade: ${grade}</p>
+        <p>Total Questions: ${totalQuestions}</p>
+        <p>Correct Answers: ${correctAnswers}</p>
+        <p>Attempted: ${attempted}</p>
+        <p>Non-Attempted: ${nonAttempted}</p>
+    `;
+}
+// We can remove the else if block that handles a single object because resultData's length will be 1 if it has only one object
+// We keep the last else block as is for when no data is available
+else {
+    resultSummary.innerHTML = '<p>No data available</p>';
+}
+
+            resultContainer.appendChild(resultSummary);
+
+            // Question Result Grid
+            const questionResultGrid = document.createElement('table');
+            questionResultGrid.className = 'question-grid';
+            questionResultGrid.id = 'questionResultGrid';
+
+            if (Array.isArray(resultData) && resultData.length > 0) {
+                questionResultGrid.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Question Description</th>
+                    <th>Attempted Answer</th>
+                    <th>Right Answer</th>
+                    <th>Result</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${resultData.map(question => `
+                    <tr>
+                        <td>${question.QuestionDescription || 'Data Not Available'}</td>
+                        <td>${question.Answer}</td>
+                        <td>${question.CorrectAnswer || 'Data Not Available'}</td>
+                        <td>
+                            <input type="checkbox" ${question.Result ? 'checked' : ''} disabled class="dark-checkbox">
+                        </td>
+                        <td>${question.Status || 'Data Not Available'}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+            } else {
+                questionResultGrid.innerHTML = '<tbody><tr><td colspan="5">No data available</td></tr></tbody>';
+            }
+
+            resultContainer.appendChild(questionResultGrid);
+        }
+    </script>
+</body>
+
+</html>

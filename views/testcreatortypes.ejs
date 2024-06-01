@@ -1,0 +1,768 @@
+<html>R
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #logo {
+            width: 250px;
+            height: auto;
+            margin-right: 20px;
+        }
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+        #adminUsername {
+            margin-right: 10px;
+        }
+        #sideLogo {
+            width: 30px;
+            height: auto;
+            margin-right: 20px;
+        }
+        nav {
+            background-color: grey;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #555;
+            color: #fff;
+        }
+        #assessment{
+            color: #fff;
+            font-weight: bold;
+            background-color: #555;
+        }
+        .next-button{
+            margin: 10px 0px 0px 200px;
+            display: flex;
+            align-items: center;
+        }
+        .next-button button{
+            cursor: pointer;
+            width: 80px;
+            height: 40px;
+            padding: 2px;
+            font-weight: bold;
+            font-size: 0.9em;
+            background-color: grey;
+            color: white;
+            border-radius: 10px solid grey;
+        }
+        .form-control {
+    width: 80px; /* Change the width as needed */
+    height: 30px; /* Change the height as needed */
+    /* Add any other desired styles */
+}
+
+/* Additional styling for the difficulty input boxes */
+/* You can modify these styles based on your preferences */
+#easyInput,
+#mediumInput,
+#hardInput {
+    width: 60px; /* Adjust width for each difficulty input */
+        height: 25px; /* Adjust width for each difficulty input */
+    /* Adjust height for each difficulty input */
+    /* Add any other desired styles */
+}
+.container{
+    margin-top: 15px;
+}
+.mb-3{
+    display: flex;
+}
+.numberofquestion{
+  margin-left: 10px;
+  margin-top: 15px;
+}
+
+
+
+</style>
+</head>
+<body>
+    <header id="pageHeader">
+        <img  alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+        <a href="#" id="module">List of Selection</a>
+        <a href="#" id="technology">Technology</a>  
+        <a href="#" id="assessment">Assessment</a>
+        <a href="#">Question View</a>
+        <a href="#">SheduleTime</a>
+    </nav>
+
+
+
+ 
+    <div id="technologyNameElement"></div>
+      
+     <label style="margin: 20px 0PX 0PX 12PX;">Types of Question: </label>
+    <form id="assessmentForm" action="/assessment" method="post" onsubmit="submitAssessmentForm(event)">
+      <div class="numberofquestion" style="display: flex; align-items: center;">
+        <label class="form-check-label" for="numberofquestions">No. Of Questions</label>
+        <input style="width: 200px; margin-left: 20px;" type="number" class="form-control" id="numberofquestions">
+    </div>
+    <div class="container">    
+        <div class="form-check" style="margin-top: 25px; margin-left: 12px;">
+            <input class="form-check-input" type="checkbox" id="mcqCheckbox" onchange="toggleQuestions()">
+            <label class="form-check-label" for="mcqCheckbox">MCQ(Checkbox)</label>
+        </div>
+        <div class="mt-4" id="questionsSection" style="display: none;">
+            <div class="mb-3">
+                <label for="questionsInput" class="form-label">Number of Questions:</label>
+                <input style="width: 200px; margin-left: 20px" type="number" class="form-control" id="questionsInput" oninput="checkQuestionsInput()">
+                <div id="questionsInputValidation" class="text-danger"></div>
+            </div>
+            <div class="row" style="margin-top: 25px; display: flex;">
+                <div style="display: flex;">
+                <div style="margin-top: 15px;">
+                <label>Difficulty Levels: </label>
+            </div>
+                <div class="col-2" style="margin-left: 50px;">
+                    <label for="easyInput" class="form-label">Easy:</label>
+                    <input style="width: 150px;" type="number" class="form-control" id="easyInput" oninput="checkDifficultyInput()">
+                    <div id="easyInputValidation" class="text-danger"></div>
+                </div>
+                <div class="col-2">
+                    <label for="mediumInput" class="form-label" style="margin-left: 10px;">Medium:</label>
+                    <input style="width: 150px;" type="number" class="form-control" id="mediumInput" oninput="checkDifficultyInput()">
+                    <div id="mediumInputValidation" class="text-danger"></div>
+                </div>
+                <div class="col-2">
+                    <label for="hardInput" class="form-label">Hard:</label>
+                    <input style="width: 150px;" type="number" class="form-control" id="hardInput" oninput="checkDifficultyInput()">
+                    <div id="hardInputValidation" class="text-danger"></div>
+                </div>
+            </div>
+            </div>
+            <div id="difficultyInputValidation" class="text-danger mt-2"></div>
+
+ 
+        </div>
+            
+      
+    <script>    
+    const urlParams = new URLSearchParams(window.location.search);
+const technologyId = urlParams.get('languageId');
+const technologyName = urlParams.get('languageName');
+
+// Bind technologyName to a specific element on the page
+const technologyNameElement = document.getElementById('technologyNameElement');
+technologyNameElement.innerText = "Selected Technology Name: " + technologyName;
+
+        function toggleQuestions() {
+            var checkbox = document.getElementById("mcqCheckbox");
+            var questionsSection = document.getElementById("questionsSection");
+
+            if (checkbox.checked) {
+                questionsSection.style.display = "block";
+            } else {
+                questionsSection.style.display = "none";
+            }
+        }   
+
+        function checkQuestionsInput() {
+            var questionsInput = document.getElementById("questionsInput");
+            var easyInput = document.getElementById("easyInput");
+            var mediumInput = document.getElementById("mediumInput");
+            var hardInput = document.getElementById("hardInput");
+            var questionsInputValidation = document.getElementById("questionsInputValidation");
+            var difficultyInputValidation = document.getElementById("difficultyInputValidation");
+
+            if (questionsInput.value.trim() !== "") {
+                questionsInputValidation.innerHTML = "";
+                difficultyInputValidation.innerHTML = "";
+                toggleDifficultyInputs(true);
+            } else {
+                questionsInputValidation.innerHTML = "Please enter a number.";
+                difficultyInputValidation.innerHTML = "";
+                toggleDifficultyInputs(false);
+            }
+        }
+
+        function checkDifficultyInput() {
+            var questionsInput = document.getElementById("questionsInput");
+            var easyInput = document.getElementById("easyInput");
+            var mediumInput = document.getElementById("mediumInput");
+            var hardInput = document.getElementById("hardInput");
+            var easyInputValidation = document.getElementById("easyInputValidation");
+            var mediumInputValidation = document.getElementById("mediumInputValidation");
+            var hardInputValidation = document.getElementById("hardInputValidation");
+            var difficultyInputValidation = document.getElementById("difficultyInputValidation");
+
+            var questionsValue = parseInt(questionsInput.value);
+            var easyValue = parseInt(easyInput.value);
+            var mediumValue = parseInt(mediumInput.value);
+            var hardValue = parseInt(hardInput.value);
+
+            if (isNaN(easyValue) || isNaN(mediumValue) || isNaN(hardValue)) {
+                easyInputValidation.innerHTML = "Please enter a number.";
+                mediumInputValidation.innerHTML = "Please enter a number.";
+                hardInputValidation.innerHTML = "Please enter a number.";
+                difficultyInputValidation.innerHTML = "";
+            } else if (questionsValue !== easyValue + mediumValue + hardValue) {
+                easyInputValidation.innerHTML = "";
+                mediumInputValidation.innerHTML = "";
+                hardInputValidation.innerHTML = "";
+                difficultyInputValidation.innerHTML = "Total number of questions should match the sum of difficulty levels.";
+            } else {
+                easyInputValidation.innerHTML = "";
+                mediumInputValidation.innerHTML = "";
+                hardInputValidation.innerHTML = "";
+                difficultyInputValidation.innerHTML = "";
+            }
+        }
+
+        function toggleDifficultyInputs(enable) {
+            var easyInput = document.getElementById("easyInput");
+            var mediumInput = document.getElementById("mediumInput");
+            var hardInput = document.getElementById("hardInput");
+
+            easyInput.disabled = !enable;
+            mediumInput.disabled = !enable;     
+            hardInput.disabled = !enable;
+        }
+    </script>
+    </div>
+
+    
+   
+    <div class="container">
+        <div class="form-check" style="margin-top: 25px; margin-left: 12px;">
+            <input class="form-check-input" type="checkbox" id="FreetextCheckbox3" onchange="toggleQuestions3()">
+            <label class="form-check-labe2" for="FreetextCheckbox3">Free Text</label>
+        </div>
+        <div class="mt-4" id="questionsSection3" style="display: none;">
+            <div class="mb-3">
+                <label for="questionsInput3" class="form-label">Number of Questions:</label>
+                <input style="width: 200px; margin-left: 20px;" type="number" class="form-control" id="questionsInput3" oninput="checkQuestionsInput3()">
+                <div id="questionsInputValidation3" class="text-danger"></div>
+            </div>
+            <div class="row">
+                <div style="display: flex;">
+                    <div style="margin-top: 15px;">
+                        <label>Difficulty Levels: </label>
+                    </div>
+                <div class="col-2" style="margin-left: 50px;">
+                    <label for="easyInput3" class="form-label">Easy:</label>
+                    <input style="width: 150px;" type="number" class="form-control" id="easyInput3" oninput="checkDifficultyInput3()">
+                    <div id="easyInputValidation3" class="text-danger"></div>
+                </div>
+                <div class="col-2">
+                    <label for="mediumInput3" class="form-label">Medium:</label>
+                    <input style="width: 150px;" type="number" class="form-control" id="mediumInput3" oninput="checkDifficultyInput3()">
+                    <div id="mediumInputValidation3" class="text-danger"></div>
+                </div>
+                <div class="col-2">
+                    <label for="hardInput3" class="form-label">Hard:</label>
+                    <input style="width: 150px;" type="number" class="form-control" id="hardInput3" oninput="checkDifficultyInput3()">
+                    <div id="hardInputValidation3" class="text-danger"></div>
+                </div>
+                </div>
+            </div>
+            <div id="difficultyInputValidation3" class="text-danger mt-2"></div>
+        </div>
+        
+    <script>    
+        function toggleQuestions3() {
+            var checkbox3 = document.getElementById("FreetextCheckbox3");
+            var questionsSection3 = document.getElementById("questionsSection3");
+
+            if (checkbox3.checked) {
+                questionsSection3.style.display = "block";
+            } else {
+                questionsSection3.style.display = "none";
+            }
+        }   
+
+        function checkQuestionsInput3() {
+            var questionsInput3 = document.getElementById("questionsInput3");
+            var easyInput3 = document.getElementById("easyInput3");
+            var mediumInput3 = document.getElementById("mediumInput3");
+            var hardInput3 = document.getElementById("hardInput3");
+            var questionsInputValidation3 = document.getElementById("questionsInputValidation3");
+            var difficultyInputValidation3 = document.getElementById("difficultyInputValidation3");
+
+            if (questionsInput3.value.trim() !== "") {
+                questionsInputValidation3.innerHTML = "";
+                difficultyInputValidation3.innerHTML = "";
+                toggleDifficultyInputs3(true);
+            } else {
+                questionsInputValidation.innerHTML = "Please enter a number.";
+                difficultyInputValidation3.innerHTML = "";
+                toggleDifficultyInputs3(false);
+            }
+        }
+
+        function checkDifficultyInput3() {
+            var questionsInput3 = document.getElementById("questionsInput3");
+            var easyInput3 = document.getElementById("easyInput3");
+            var mediumInput3 = document.getElementById("mediumInput3");
+            var hardInput3 = document.getElementById("hardInput3");
+            var easyInputValidation3 = document.getElementById("easyInputValidation3");
+            var mediumInputValidation3 = document.getElementById("mediumInputValidation3");
+            var hardInputValidation3 = document.getElementById("hardInputValidation3");
+            var difficultyInputValidation3 = document.getElementById("difficultyInputValidation3");
+
+            var questionsValue3 = parseInt(questionsInput3.value);
+            var easyValue3 = parseInt(easyInput3.value);
+            var mediumValue3 = parseInt(mediumInput3.value);
+            var hardValue3 = parseInt(hardInput3.value);
+
+            if (isNaN(easyValue3) || isNaN(mediumValue3) || isNaN(hardValue3)) {
+                easyInputValidation3.innerHTML = "Please enter a number.";
+                mediumInputValidation3.innerHTML = "Please enter a number.";
+                hardInputValidation3.innerHTML = "Please enter a number.";
+                difficultyInputValidation3.innerHTML = "";
+            } else if (questionsValue3 !== easyValue3 + mediumValue3 + hardValue3) {
+                easyInputValidation3.innerHTML = "";
+                mediumInputValidation3.innerHTML = "";
+                hardInputValidation3.innerHTML = "";
+                difficultyInputValidation3.innerHTML = "Total number of questions should match the sum of difficulty levels.";
+            } else {
+                easyInputValidation3.innerHTML = "";
+                mediumInputValidation3.innerHTML = "";
+                hardInputValidation3.innerHTML = "";
+                difficultyInputValidation3.innerHTML = "";
+            }
+        }
+
+        function toggleDifficultyInputs3(enable) {
+            var easyInput3 = document.getElementById("easyInput3");
+            var mediumInput3= document.getElementById("mediumInput3");
+            var hardInput3 = document.getElementById("hardInput3");
+
+            easyInput3.disabled = !enable;
+            mediumInput3.disabled = !enable;
+       
+            hardInput3.disabled = !enable;
+        }
+    </script>
+    </div>
+    <div class="container">
+        <div class="form-check"  style="margin-top: 25px; margin-left: 12px;">
+            <input class="form-check-input" type="checkbox" id="CodingCheckbox4" onchange="toggleQuestions4()">
+            <label class="form-check-label" for="CodingCheckbox4">Coding</label>
+        </div>
+        <div class="mt-4" id="questionsSection4" style="display: none;">
+            <div class="mb-3">
+                <label for="questionsInput4" class="form-label">Number of Questions:</label>
+                <input style="width: 200px; margin-left: 20px;" type="number" class="form-control" id="questionsInput4" oninput="checkQuestionsInput4()">
+                <div id="questionsInputValidation4" class="text-danger"></div>
+            </div>
+            <div class="row" id="difficultySection4">
+                <div style="display: flex;">
+                    <div style="margin-top: 15px;">
+                        <label>Difficulty Levels: </label>
+                    </div>
+                    <div class="col-2" style="margin-left: 50px;">
+                        <label for="easyInput4" class="form-label">Easy:</label>
+                        <input style="width: 150px;" type="number" class="form-control" id="easyInput4" oninput="checkDifficultyInput4()">
+                        <div id="easyInputValidation4" class="text-danger"></div>
+                    </div>
+                    <div class="col-2">
+                        <label for="mediumInput4" class="form-label">Medium:</label>
+                        <input style="width: 150px;" type="number" class="form-control" id="mediumInput4" oninput="checkDifficultyInput4()">
+                        <div id="mediumInputValidation4" class="text-danger"></div>
+                    </div>
+                    <div class="col-2">
+                        <label for="hardInput4" class="form-label">Hard:</label>
+                        <input style="width: 150px;" type="number" class="form-control" id="hardInput4" oninput="checkDifficultyInput4()">
+                        <div id="hardInputValidation4" class="text-danger"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="difficultyInputValidation4" class="text-danger mt-2"></div>
+        </div>
+    
+        <script>
+            function toggleQuestions4() {
+                var checkbox4 = document.getElementById("CodingCheckbox4");
+                var questionsSection4 = document.getElementById("questionsSection4");
+                var difficultySection4 = document.getElementById("difficultySection4");
+        
+                if (checkbox4.checked) {
+                    questionsSection4.style.display = "block";
+                    difficultySection4.style.display = "flex";
+                } else {
+                    questionsSection4.style.display = "none";
+                    difficultySection4.style.display = "none";
+                }
+            }
+        
+            function checkQuestionsInput4() {
+                var questionsInput4 = document.getElementById("questionsInput4");
+                var difficultySection4 = document.getElementById("difficultySection4");
+                var questionsInputValidation4 = document.getElementById("questionsInputValidation4");
+        
+                if (questionsInput4.value.trim() !== "") {
+                    questionsInputValidation4.innerHTML = "";
+                    toggleDifficultyInputs4(true);
+                    difficultySection4.style.display = "flex";
+                } else {
+                    questionsInputValidation4.innerHTML = "Please enter a number.";
+                    toggleDifficultyInputs4(false);
+                    difficultySection4.style.display = "none";
+                }
+            }
+        
+            function checkDifficultyInput4() {
+                var questionsInput4 = document.getElementById("questionsInput4");
+                var easyInput4 = document.getElementById("easyInput4");
+                var mediumInput4 = document.getElementById("mediumInput4");
+                var hardInput4 = document.getElementById("hardInput4");
+                var easyInputValidation4 = document.getElementById("easyInputValidation4");
+                var mediumInputValidation4 = document.getElementById("mediumInputValidation4");
+                var hardInputValidation4 = document.getElementById("hardInputValidation4");
+                var difficultyInputValidation4 = document.getElementById("difficultyInputValidation4");
+        
+                var questionsValue4 = parseInt(questionsInput4.value);
+                var easyValue4 = parseInt(easyInput4.value);
+                var mediumValue4 = parseInt(mediumInput4.value);
+                var hardValue4 = parseInt(hardInput4.value);
+        
+                if (isNaN(easyValue4) || isNaN(mediumValue4) || isNaN(hardValue4)) {
+                    easyInputValidation4.innerHTML = "Please enter a number.";
+                    mediumInputValidation4.innerHTML = "Please enter a number.";
+                    hardInputValidation4.innerHTML = "Please enter a number.";
+                    difficultyInputValidation4.innerHTML = "";
+                } else if (questionsValue4 !== easyValue4 + mediumValue4 + hardValue4) {
+                    easyInputValidation4.innerHTML = "";
+                    mediumInputValidation4.innerHTML = "";
+                    hardInputValidation4.innerHTML = "";
+                    difficultyInputValidation4.innerHTML = "Total number of questions should match the sum of difficulty levels.";
+                } else {
+                    easyInputValidation4.innerHTML = "";
+                    mediumInputValidation4.innerHTML = "";
+                    hardInputValidation4.innerHTML = "";
+                    difficultyInputValidation4.innerHTML = "";
+                }
+            }
+        
+            function toggleDifficultyInputs4(enable) {
+                var easyInput4 = document.getElementById("easyInput4");
+                var mediumInput4 = document.getElementById("mediumInput4");
+                var hardInput4 = document.getElementById("hardInput4");
+        
+                easyInput4.disabled = !enable;
+                mediumInput4.disabled = !enable;
+                hardInput4.disabled = !enable;
+            }
+            </script>
+            </div>
+             <div class="container">
+              <div class="form-check" style="margin-top: 25px; margin-left: 12px;">
+                  <input class="form-check-input" type="checkbox" id="MultipleChoiceCheckbox2" onchange="toggleQuestions2()">
+                  <label class="form-check-labe2" for="MultipleChoiceCheckbox2">Mcq(Radiobutton)</label>
+              </div>
+              <div class="mt-4" id="questionsSection2" style="display: none;">
+                  <div class="mb-3">
+                      <label for="questionsInput2" class="form-label">Number of Questions:</label>
+                      <input style="width: 200px; margin-left: 20px;" type="number" class="form-control" id="questionsInput2" oninput="checkQuestionsInput2()">
+                      <div id="questionsInputValidation2" class="text-danger"></div>
+                  </div>
+                  <div class="row">
+                      <div style="display: flex;">
+                          <div style="margin-top: 15px;">
+                              <label>Difficulty Levels: </label>
+                          </div>
+                      <div class="col-2" style="margin-left: 50px;">
+                          <label for="easyInput2" class="form-label">Easy:</label>
+                          <input style="width: 150px;" type="number" class="form-control" id="easyInput2" oninput="checkDifficultyInput2()">
+                          <div id="easyInputValidation2" class="text-danger"></div>
+                      </div>
+                      <div class="col-2">
+                          <label for="mediumInput2" class="form-label">Medium:</label>
+                          <input style="width: 150px;" type="number" class="form-control" id="mediumInput2" oninput="checkDifficultyInput2()">
+                          <div id="mediumInputValidation2" class="text-danger"></div>
+                      </div>
+                      <div class="col-2">
+                          <label for="hardInput2" class="form-label">Hard:</label>
+                          <input style="width: 150px;" type="number" class="form-control" id="hardInput2" oninput="checkDifficultyInput2()">
+                          <div id="hardInputValidation2" class="text-danger"></div>
+                      </div>
+                      </div>
+                  </div>
+                  <div id="difficultyInputValidation2" class="text-danger mt-2"></div>
+              </div>
+              
+          <script>    
+              function toggleQuestions2() {
+                  var checkbox2 = document.getElementById("MultipleChoiceCheckbox2");
+                  var questionsSection2 = document.getElementById("questionsSection2");
+      
+                  if (checkbox2.checked) {
+                      questionsSection2.style.display = "block";
+                  } else {
+                      questionsSection2.style.display = "none";
+                  }
+              }   
+      
+              function checkQuestionsInput2() {
+                  var questionsInput2 = document.getElementById("questionsInput2");
+                  var easyInput2 = document.getElementById("easyInput2");
+                  var mediumInput2 = document.getElementById("mediumInput2");
+                  var hardInput2 = document.getElementById("hardInput2");
+                  var questionsInputValidation2 = document.getElementById("questionsInputValidation2");
+                  var difficultyInputValidation2 = document.getElementById("difficultyInputValidation2");
+      
+                  if (questionsInput2.value.trim() !== "") {
+                      questionsInputValidation2.innerHTML = "";
+                      difficultyInputValidation2.innerHTML = "";
+                      toggleDifficultyInputs2(true);
+                  } else {
+                      questionsInputValidation.innerHTML = "Please enter a number.";
+                      difficultyInputValidation2.innerHTML = "";
+                      toggleDifficultyInputs2(false);
+                  }
+              }
+      
+              function checkDifficultyInput2() {
+                  var questionsInput2 = document.getElementById("questionsInput2");
+                  var easyInput2 = document.getElementById("easyInput2");
+                  var mediumInput2 = document.getElementById("mediumInput2");
+                  var hardInput2 = document.getElementById("hardInput2");
+                  var easyInputValidation2 = document.getElementById("easyInputValidation2");
+                  var mediumInputValidation2 = document.getElementById("mediumInputValidation2");
+                  var hardInputValidation2 = document.getElementById("hardInputValidation2");
+                  var difficultyInputValidation2 = document.getElementById("difficultyInputValidation2");
+      
+                  var questionsValue2 = parseInt(questionsInput2.value);
+                  var easyValue2 = parseInt(easyInput2.value);
+                  var mediumValue2 = parseInt(mediumInput2.value);
+                  var hardValue2 = parseInt(hardInput2.value);
+      
+                  if (isNaN(easyValue2) || isNaN(mediumValue2) || isNaN(hardValue2)) {
+                      easyInputValidation2.innerHTML = "Please enter a number.";
+                      mediumInputValidation2.innerHTML = "Please enter a number.";
+                      hardInputValidation2.innerHTML = "Please enter a number.";
+                      difficultyInputValidation2.innerHTML = "";
+                  } else if (questionsValue2 !== easyValue2 + mediumValue2 + hardValue2) {
+                      easyInputValidation2.innerHTML = "";
+                      mediumInputValidation2.innerHTML = "";
+                      hardInputValidation2.innerHTML = "";
+                      difficultyInputValidation2.innerHTML = "Total number of questions should match the sum of difficulty levels.";
+                  } else {
+                      easyInputValidation2.innerHTML = "";
+                      mediumInputValidation2.innerHTML = "";
+                      hardInputValidation2.innerHTML = "";
+                      difficultyInputValidation2.innerHTML = "";
+                  }
+              }
+      
+              function toggleDifficultyInputs2(enable) {
+                  var easyInput2 = document.getElementById("easyInput2");
+                  var mediumInput2 = document.getElementById("mediumInput2");
+                  var hardInput2 = document.getElementById("hardInput2");
+      
+                  easyInput2.disabled = !enable;
+                  mediumInput2.disabled = !enable;
+             
+                  hardInput2.disabled = !enable;
+              }
+       
+        
+
+            
+
+          
+
+    </script>
+        
+    </div>
+   
+    <div id="next">
+      <button type="submit" style="border-radius: 3px; height: 35px; width: 78px; margin: 50px 0px 0px 600px; color: white; background-color: #007bff; border: none;" >Next</button>
+  </div>
+   </form>
+    <br>
+    <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 169px;">
+        &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script>
+       function navigateToPage(page) {
+            window.location.href = '/assessment';
+        }
+        function submitAssessmentForm(event) {
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Retrieve input values
+
+
+
+    let isMCQCheckboxchecked = "false";
+    
+    if ($('#mcqCheckbox').is(':checked')) {
+     isMCQCheckboxchecked = "true";
+} else {
+  isMCQCheckboxchecked = "false";
+}
+
+   let MCQCheckboxQuestionInput =0;
+
+    MCQCheckboxQuestionInput = $("#questionsInput").val();
+
+    let MCQCheckboxEasyCount = 0;
+
+    MCQCheckboxEasyCount = $("#easyInput").val();
+
+    let MCQCheckboxMediumCount =0;
+
+    MCQCheckboxMediumCount = $("#mediumInput").val();
+
+
+    let MCQCheckboxHardCount =0;
+
+    MCQCheckboxHardCount = $("#hardInput").val();
+
+
+    let isradiochecked = "false";
+    
+    if ($('#MultipleChoiceCheckbox2').is(':checked')) {
+     isradiochecked = "true";
+} else {
+  isradiochecked = "false";
+}
+
+   let MCQRadioQuestionInput =0;
+
+    MCQRadioQuestionInput = $("#questionsInput2").val();
+
+    let MCQRadioEasyCount = 0;
+
+    MCQRadioEasyCount = $("#easyInput2").val();
+
+    let MCQRadioMediumCount =0;
+
+    MCQRadioMediumCount = $("#mediumInput2").val();
+
+
+    let MCQRadioHardCount =0;
+
+    MCQRadioHardCount = $("#hardInput2").val();
+
+      let isfreetextchecked = "false";
+    
+    if ($('#FreetextCheckbox3').is(':checked')) {
+     isfreetextchecked = "true";
+} else {
+  isfreetextchecked = "false";
+}
+
+   let FreeQuestionInput =0;
+
+    FreeQuestionInput = $("#questionsInput3").val();
+
+    let FreeQuestionEasyCount = 0;
+
+    FreeQuestionEasyCount = $("#easyInput3").val();
+
+    let FreeQuestionMediumCount =0;
+
+    FreeQuestionMediumCount = $("#mediumInput3").val();
+
+
+    let FreeQuestionHardCount =0;
+
+    FreeQuestionHardCount = $("#hardInput3").val();
+
+
+
+      let iscodingchecked = "false";
+    
+    if ($('#CodingCheckbox4').is(':checked')) {
+     iscodingchecked = true;
+} else {
+  iscodingchecked = "false";
+}
+
+   let CodingQuestionInput =0;
+
+     CodingQuestionInput = $("#questionsInput4").val();
+
+    let CodingQuestionEasyCount = 0;
+
+    CodingQuestionEasyCount = $("#easyInput4").val();
+
+    let CodingQuestionMediumCount =0;
+
+    CodingQuestionMediumCount = $("#mediumInput4").val();
+
+
+    let CodingQuestionHardCount =0;
+
+    CodingQuestionHardCount = $("#hardInput4").val();
+
+    let jsonData = {
+  technologyId: technologyId,
+  technologyName: technologyName,
+  
+  MCQCheckboxQuestionInput: MCQCheckboxQuestionInput,
+  MCQCheckboxEasyCount: MCQCheckboxEasyCount,
+  MCQCheckboxMediumCount: MCQCheckboxMediumCount,
+  MCQCheckboxHardCount: MCQCheckboxHardCount,
+  
+  MCQRadioQuestionInput: MCQRadioQuestionInput,
+  MCQRadioEasyCount: MCQRadioEasyCount,
+  MCQRadioMediumCount: MCQRadioMediumCount,
+  MCQRadioHardCount: MCQRadioHardCount,
+  
+  FreeQuestionInput: FreeQuestionInput,
+  FreeQuestionEasyCount: FreeQuestionEasyCount,
+  FreeQuestionMediumCount: FreeQuestionMediumCount,
+  FreeQuestionHardCount: FreeQuestionHardCount,
+  
+  CodingQuestionInput: CodingQuestionInput,
+  CodingQuestionEasyCount: CodingQuestionEasyCount,
+  CodingQuestionMediumCount: CodingQuestionMediumCount,
+  CodingQuestionHardCount: CodingQuestionHardCount
+};     
+
+
+// Create and send a POST request with JSON data
+console.log(JSON.stringify(jsonData));
+ sessionStorage.setItem('questionselectiondata', JSON.stringify(jsonData));
+
+window.location.href = '/assessment';
+
+}
+    // Create a FormData object to send the data in the POST request
+   
+    </script>
+</body>
+</html>

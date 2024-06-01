@@ -1,0 +1,825 @@
+s<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Grids</title>
+    <style>
+        .grid-container {
+            display: none; /* Initially hide all grid containers */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ecbfbf;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px;
+        }
+
+        #sideLogo {
+            width: 30px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+       /* Add these styles for grid layout in the nav section */
+nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 10px;
+    background-color: rgb(226, 236, 233);
+    padding: 10px;
+    text-align: center;
+    border: none;
+   
+}
+ 
+
+
+nav label{
+    color: rgb(59, 56, 56);
+    text-decoration: none;
+    padding: 10px;
+    font-weight: bold;
+    display: block;
+    border: 1px solid #222020; /* Add border for a neat look */
+    border-radius: 5px; /* Add border radius for rounded corners */
+    cursor: pointer;
+}
+
+nav label input[text]{
+border: #000;
+}
+nav label.active {
+    background-color: #fdfdfd;
+   
+}
+
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #pageFooter {
+            border: 1px solid grey;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            height: 100px;
+            background-color: azure;
+        }
+        .difficulty-buttons{
+            display: flex;
+            gap: 20px;
+        }
+        input[type="number"] {
+    width: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #5466b9;
+    border-radius: 5px;
+}
+ .difficulty-buttons button {
+    cursor: pointer;
+    width: 80px;
+    height: 40px;
+    padding: 2px;
+  /* Add border for a neat look */
+    border-radius: 5px;
+    margin-top: 10px; /* Adjust spacing as needed */
+}
+.question-grid {
+    display: none;
+    text-decoration: solid;
+}
+
+.difficulty-buttons .Easy {
+    background-color: #d7ddd9; /* Green color */
+    color: #0b0c0c; /* Text color */
+    width: 65px;
+    font-size: 0.9em;
+}
+
+.difficulty-buttons .Easy:focus {
+    box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+.difficulty-buttons .Easy:hover {
+    box-shadow: rgba(46, 164, 79, .4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #6ad878 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+.difficulty-buttons .Easy:active {
+    box-shadow: #298e46 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+.difficulty-buttons .Medium {
+    background-color: rgb(224, 224, 215); /* Yellow color for Medium */
+    color: #72b4e0; /* Text color */
+    width: 65px;
+    font-size: 0.9em;
+}
+.difficulty-buttons .Medium:focus {
+    box-shadow: #94cc3b(46, 164, 79, .4) 0 0 0 3px, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #a7df4d 0 -3px 0 inset;
+}
+
+.difficulty-buttons .Medium:hover {
+    box-shadow: rgb(205, 250, 100) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #6ad878 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+.difficulty-buttons .Hard {
+    background-color: rgb(219, 217, 213); /* Orange color for Hard */
+    color: #e72626; /* Text color */
+    width: 65px;
+    font-size: 0.9em;
+}
+.difficulty-buttons .Hard:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #df923b 0 -3px 0 inset;
+}
+
+.difficulty-buttons .Hard:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+.difficulty-buttons .Hard:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+
+.difficulty-buttons .Medium:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+
+}
+.difficulty-buttons .Medium:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.difficulty-buttons .Medium:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+.difficulty-buttons .Hard :focus{
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+
+}
+.difficulty-buttons .Hard:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.difficulty-buttons .Hard:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+.difficulty-buttons .Exclude :focus{
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+
+}
+.difficulty-buttons .Exclude:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.difficulty-buttons .Exclude:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+.difficulty-buttons .Exclude{
+    margin-left: 850px;
+    width: 65px;
+}
+.difficulty-buttons .Include:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+
+}
+.difficulty-buttons .Include:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.difficulty-buttons .Include:active {
+  box-shadow: #f77c7c 0 3px 7px inset;
+  transform: translateY(2px);
+}
+.difficulty-buttons .Exclude {
+    background-color: rgba(158, 202, 243, 0.904); /* Color for Exclude */
+    color: #0b0c0c; /* Text color */
+}
+
+.difficulty-buttons .Include {
+    background-color: rgb(206, 171, 164); /* Color for Include */
+    color: #0b0c0c; /* Text color */
+    width: 65px;
+}
+/* Add these styles for the explanation column buttons */
+.grid-container .excludeBtn,
+.grid-container .includeBtn {
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.grid-container .excludeBtn {
+    background-color: #f77c7c; /* Red color for Exclude button */
+    color: #fff; /* White text color */
+}
+
+.grid-container .includeBtn {
+    background-color: #aecfd4; /* Blue color for Include button */
+    color: #fff; /* White text color */
+}
+
+/* Add these styles for the explanation column buttons */
+.grid-container .excludeBtn,
+.grid-container .includeBtn {
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    display: block; /* Change display to block for vertical stacking */
+}
+
+.grid-container .excludeBtn:hover,
+.grid-container .includeBtn:hover {
+    opacity: 0.8; /* Reduce opacity on hover for a visual effect */
+}
+
+/* Add these styles for checkbox styling */
+.grid-container input[type="checkbox"] {
+    width: 20px; /* Set the width of the checkbox */
+    height: 20px; /* Set the height of the checkbox */
+    border: 2px solid #222020; /* Border color of the checkbox */
+    border-radius: 5px; /* Border radius for rounded corners */
+    cursor: pointer; /* Set cursor to pointer on hover */
+}
+
+.grid-container input[type="checkbox"]:checked {
+    background-color: #7fdb9b; /* Background color when checkbox is checked */
+    border-color: #7fdb9b; /* Border color when checkbox is checked */
+}
+
+/* Decrease the width of the "select questions" column */
+.grid-container th:first-child,
+.grid-container td:first-child {
+    width: 50px; /* Set the desired width for the first column */
+}
+
+/* Adjust padding and styling as needed */
+.grid-container th:first-child,
+.grid-container td:first-child input[type="checkbox"] {
+    margin: 0; /* Remove default margin */
+    padding: 5px; /* Adjust padding as needed */
+}
+.labelinsidelabel{
+    display: flex;
+    height: 60px;
+   margin-right: 25px;
+ }
+.labelinsidelabel label {
+        border: none; /* Remove borders */
+        padding: 0; /* Remove padding */
+        margin-right: 30px;
+        margin-top: 15px;
+      width: 40px;
+         display: inline-block;
+    }
+    .HardNav {
+      
+    margin-left: 10px;
+    }
+
+/* Add any additional styles as needed */
+    </style>
+</head>
+<body>
+    <header id="pageHeader">
+        <img src="http://49.207.10.13/CMSRoot/Images/Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img src="http://49.207.10.13/CMSRoot/Images/adminlogo.png" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+        <label for="Mcq(Checkbox)"><input type="radio" name="select" onclick="showGrid('Mcq(Checkbox)')">Mcq(Checkbox)
+            <span class="count">
+                <input type="number" name="Mcq(checkbox)" style="width: 40px" readonly>
+            </span>
+            <br>
+            <div class="labelinsidelabel">
+                <label for="EasyNav" >Easy
+                    <input type="number" name="EasyNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="MediumNav" >Medium
+                    <input type="number" name="MediumNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="HardNav" >Hard
+                    <input type="number" name="HardNav" style="width: 30px" readonly>
+                </label>
+            </div>
+        </label>
+    </div>
+        </label>
+        <label for="FreeText"><input type="radio" name="select" onclick="showGrid('FreeText')">FreeText
+            <span class="count">
+                <input type="number" name="FreeText" style="width: 40px" readonly>
+            </span>
+            <br>
+            <div class="labelinsidelabel">
+                <label for="EasyNav" >Easy
+                    <input type="number" name="EasyNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="MediumNav" >Medium
+                    <input type="number" name="MediumNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="HardNav" >Hard
+                    <input type="number" name="HardNav" style="width: 30px" readonly>
+                </label>
+            </div>
+        </label>        
+        <label for="Coding"><input type="radio" name="select" onclick="showGrid('Coding')">Coding
+            <span class="count">
+                <input type="number" name="Coding" style="width: 40px" readonly>
+            </span>
+            <br>
+            <div class="labelinsidelabel">
+                <label for="EasyNav" >Easy
+                    <input type="number" name="EasyNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="MediumNav" >Medium
+                    <input type="number" name="MediumNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="HardNav" >Hard
+                    <input type="number" name="HardNav" style="width: 30px" readonly>
+                </label>
+            </div>
+        </label>
+        <label for="Matching"><input type="radio" name="select" onclick="showGrid('Matching')">Matching
+            <span class="count">
+                <input type="number" name="Matching" style="width: 40px" readonly>
+            </span>
+            <br>
+            <div class="labelinsidelabel">
+                <label for="EasyNav" >Easy
+                    <input type="number" name="EasyNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="MediumNav" >Medium
+                    <input type="number" name="MediumNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="HardNav" >Hard
+                    <input type="number" name="HardNav" style="width: 30px" readonly>
+                </label>
+            </div>
+        </label>
+        <label for="Group-Questions"><input type="radio" name="select" onclick="showGrid('Group-Questions')">Group-Questions
+            <span class="count">
+                <input type="number" name="Group-Questions" style="width: 40px" readonly>
+            </span>
+            <br>
+            <div class="labelinsidelabel">
+                <label for="EasyNav" >Easy
+                    <input type="number" name="EasyNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="MediumNav" >Medium
+                    <input type="number" name="MediumNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="HardNav" >Hard
+                    <input type="number" name="HardNav" style="width: 30px" readonly>
+                </label>
+            </div>
+        </label>
+        <label for="Mcq(Radiobutton)"><input type="radio" name="select" onclick="showGrid('Mcq(Radiobutton)')">Mcq(Radiobutton)
+            <span class="count">
+                <input type="number" name="Mcq(Radiobutton)" style="width: 40px" readonly>
+            </span>
+            <br>
+            <div class="labelinsidelabel">
+                <label for="EasyNav" >Easy
+                    <input type="number" name="EasyNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="MediumNav" >Medium
+                    <input type="number" name="MediumNav" style="width: 30px" readonly>
+                </label>
+                
+                <label for="HardNav" >Hard
+                    <input type="number" name="HardNav" style="width: 30px" readonly>
+                </label>
+            </div>
+        </label>
+
+
+        <!-- Add more labels for other grids as needed -->
+    </nav>
+    <div class="difficulty-buttons">
+        <button class="Easy">Easy</button>
+        <button class="Medium">Medium</button>
+        <button class="Hard">Hard</button>
+        <button class="Exclude" onclick="excludeRows()">Exclude</button>
+        <button class="Include" onclick="includeRows()">Include</button>
+      </div>
+
+    <div id="Mcq(Checkbox)" class="grid-container">
+        <table >
+            <!-- Table Header Row -->
+            <thead>
+            <tr>
+                <th>select questions</th> 
+               <th>Description</th>   
+                <th>Option 1</th> 
+                <th>Option 2</th> 
+                <th>Option 3</th>  
+                <th>Option 4</th> 
+                <th>Option 5</th> 
+                <th>Option 6</th> 
+                <th>Correct Answer</th>
+                <th>Explanation</th>
+                <!-- Add more table cells for additional columns if needed -->
+          
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                <td>Row 1, Cell 2</td>
+                <td>Row 1, Cell 3</td>
+                <td>Row 1, Cell 4</td>
+                <td>Row 1, Cell 5</td>
+                <td>Row 1, Cell 6</td>
+                <td>Row 1, Cell 7</td>
+                <td>Row 1, Cell 8</td>
+                <td>Row 1, Cell 9</td>
+                <td>Row 1, Cell 10</td>
+              
+                <!-- Add more cells as needed -->
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                <td>Row 2, Cell 2</td>
+                <td>Row 2, Cell 3</td>
+                <td>Row 2, Cell 4</td>
+                <td>Row 2, Cell 5</td>
+                <td>Row 2, Cell 6</td>
+                <td>Row 2, Cell 7</td>
+                <td>Row 2, Cell 8</td>
+                <td>Row 2, Cell 9</td>
+                <td>Row 2, Cell 10</td>
+           
+                <!-- Add more cells as needed -->
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+        </table>
+    </div>
+    <div id="Mcq(Radiobutton)" class="grid-container">
+       
+        <table>
+            <thead>
+                <tr>
+              <th>select questions</th>
+                <th>Description</th>   
+                <th>Option 1</th> 
+                <th>Option 2</th> 
+                <th>Option 3</th>  
+                <th>Option 4</th>               
+                <th>Correct Answer</th>
+                <th>Explanation</th>
+                <!-- Add more table cells for additional columns if needed -->
+                    <!-- Add more columns as needed -->
+                    
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 1, Cell 2</td>
+                    <td>Row 1, Cell 3</td>
+                    <td>Row 1, Cell 4</td>
+                    <td>Row 1, Cell 5</td>
+                    <td>Row 1, Cell 6</td>
+                    <td>Row 1, Cell 7</td>
+                    <td>Row 1, Cell 8</td>
+                    <!-- Add more cells as needed -->
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 2, Cell 2</td>
+                    <td>Row 3, Cell 3</td>
+                    <td>Row 3, Cell 4</td>
+                    <td>Row 3, Cell 5</td>
+                    <td>Row 3, Cell 6</td>
+                    <td>Row 3, Cell 7</td>
+                    <td>Row 3, Cell 8</td>
+                    <!-- Add more cells as needed -->
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    <div id="FreeText" class="grid-container">
+    
+        <table>
+            <thead>
+                <tr>
+                    <th>select questions</th>
+                    <th>Description</th>                 
+                    <th>Correct Answer</th>
+                    <th>Explanation</th>
+                    <!-- Add more columns as needed -->
+        
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 1, Cell 2</td>
+                    <td>Row 1, Cell 3</td>
+                    <td>Row 1, Cell 4</td>
+                  
+                    <!-- Add more cells as needed -->
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 2, Cell 2</td>
+                    <td>Row 3, Cell 3</td>
+                    <td>Row 3, Cell 4</td>
+            
+                    <!-- Add more cells as needed -->
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    <div id="Group-Questions" class="grid-container">
+   
+        <table>
+            <thead>
+                <tr>
+                    <th>select questions</th>
+                    <th>Description</th>                 
+                    <th>Correct Answer</th>
+                    <th>Explanation</th>
+                    <!-- Add more columns as needed -->
+                
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 1, Cell 2</td>
+                    <td>Row 1, Cell 3</td>
+                    <td>Row 1, Cell 4</td>
+                    <!-- Add more cells as needed -->
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 2, Cell 2</td>
+                    <td>Row 2, Cell 3</td>
+                    <td>Row 2, Cell 4</td>
+                    
+                    <!-- Add more cells as needed -->
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    <div id="Matching" class="grid-container">
+  
+        <table>
+            <thead>
+                <tr>
+                    <th>select questions</th>
+                    <th>Description</th>                 
+                    <th>Correct Answer</th>
+                    <th>Explanation</th>
+                    <!-- Add more columns as needed -->
+                  
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 1, Cell 2</td>
+                    <td>Row 1, Cell 3</td>
+                    <td>Row 1, Cell 4</td>
+                   
+                    <!-- Add more cells as needed -->
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 3, Cell 1</td>
+                    <td>Row 3, Cell 2</td>
+                    <td>Row 3, Cell 3</td>
+              
+                  
+                    <!-- Add more cells as needed -->
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    <div id="Coding" class="grid-container">
+      
+        <table>
+            <thead>
+                <tr>
+                    <th>select questions</th>
+                    <th>Description</th>                 
+                    <th>Correct Answer</th>
+                    <th>Explanation</th>
+           
+                    <!-- Add more columns as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 1, Cell 2</td>
+                    <td>Row 1, Cell 3</td>
+                    <td>Row 1, Cell 4</td>
+                 
+                 
+                    <!-- Add more cells as needed -->
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="questionCheckbox[]" /></td>
+                    <td>Row 2, Cell 2</td>
+                    <td>Row 2, Cell 3</td>
+                    <td>Row 2, Cell 4</td>
+                
+                  
+                   
+                    <!-- Add more cells as needed -->
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+
+        </table>
+    </div>
+    <!-- Add more grid containers as needed -->
+
+   <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 400px;">
+        &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script src="script.js"></script>
+<script>
+function showGrid(gridId)
+ { 
+    var labels = document.querySelectorAll('nav label');
+        labels.forEach(function(label) {
+            label.classList.remove('active');
+        });
+
+        // Add 'active' class to the selected label
+        var selectedLabel = document.querySelector('nav label[for="' + gridId + '"]');
+        if (selectedLabel) {
+            selectedLabel.classList.add('active');
+        }
+    // Hide all grid containers
+    var gridContainers = document.querySelectorAll('.grid-container');
+    gridContainers.forEach(function(container) {
+        container.style.display = 'none';
+
+    });
+ 
+    // Show the selected grid container
+    var selectedGrid = document.getElementById(gridId);
+    if (selectedGrid) {
+        selectedGrid.style.display = 'block';
+    } 
+ }
+ ///this is the function to exclude selected questions when we click on exclude button
+    function excludeRows() {
+    const table1 = document.getElementById('Mcq(Checkbox)');
+    const table2 = document.getElementById('Mcq(Radiobutton)');
+    const table3 = document.getElementById('FreeText');
+    const table4 = document.getElementById('Group-Questions');
+    const table5 = document.getElementById('Matching');
+    const table6 = document.getElementById('Coding');
+    excludeRowsFromEachGrd(table1);
+    excludeRowsFromEachGrd(table2);
+    excludeRowsFromEachGrd(table3);
+    excludeRowsFromEachGrd(table4);
+    excludeRowsFromEachGrd(table5);
+    excludeRowsFromEachGrd(table6);
+
+ 
+  }
+
+  function excludeRowsFromEachGrd(table1){
+    const checkboxes = table1.querySelectorAll('input[type="checkbox"]:checked');   
+    checkboxes.forEach(checkbox => {
+      const row = checkbox.closest('tr');
+      row.parentNode.removeChild(row);
+    });
+  }
+  function excludeRowsFromEachGrd(table2){
+    const checkboxes = table2.querySelectorAll('input[type="checkbox"]:checked');   
+    checkboxes.forEach(checkbox => {
+      const row = checkbox.closest('tr');
+      row.parentNode.removeChild(row);
+    });
+  }
+  function excludeRowsFromEachGrd(table3){
+    const checkboxes = table3.querySelectorAll('input[type="checkbox"]:checked');   
+    checkboxes.forEach(checkbox => {
+      const row = checkbox.closest('tr');
+      row.parentNode.removeChild(row);
+    });
+  }
+  function excludeRowsFromEachGrd(table4){
+    const checkboxes = table4.querySelectorAll('input[type="checkbox"]:checked');   
+    checkboxes.forEach(checkbox => {
+      const row = checkbox.closest('tr');
+      row.parentNode.removeChild(row);
+    });
+  }
+  function excludeRowsFromEachGrd(table5){
+    const checkboxes = table5.querySelectorAll('input[type="checkbox"]:checked');   
+    checkboxes.forEach(checkbox => {
+      const row = checkbox.closest('tr');
+      row.parentNode.removeChild(row);
+    });
+  }
+  function excludeRowsFromEachGrd(table6){
+    const checkboxes = table6.querySelectorAll('input[type="checkbox"]:checked');   
+    checkboxes.forEach(checkbox => {
+      const row = checkbox.closest('tr');
+      row.parentNode.removeChild(row);
+    });
+  }
+    </script>
+</body>
+</html>

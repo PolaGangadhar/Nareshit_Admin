@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px;
+        }
+
+        #sideLogo {
+            width: 30px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        nav {
+            background-color: grey;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #pageFooter {
+            border: 1px solid grey;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            height: 100px;
+            background-color: azure;
+        }
+
+        #technology {
+            color: #fff;
+            font-weight: bold;
+            background-color: #555;
+        }
+
+        .language-selection {
+            margin: 30px;
+            display: flex; /* Make the container a flex container */
+            align-items: center; /* Center items vertically */
+        }
+
+        .language-selection label {
+            margin-right: 10px; /* Add some right margin for spacing */
+        }
+
+        .language-selection select {
+            width: 8%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            color: #555;
+        }
+
+        .assessmentselection,
+        .typeofquestion {
+            margin: 30px;
+            display: flex;
+        }
+
+
+        .typeofquestions label {
+            margin-right: 70px; /* Add some right margin for spacing */
+            cursor: pointer;
+        }
+
+        .typeofquestions input {
+            margin-right: 5px; /* Add some right margin for spacing */
+        }
+        .nature-assessement{
+            margin: 30px;
+            display: flex; 
+        }
+        .next-button{
+            margin: 100px;
+            display: flex;
+            align-items: center;
+        }
+        .next-button button{
+            cursor: pointer;
+            width: 80px;
+            height: 40px;
+            padding: 2px;
+            background-color: white;
+            border-radius: 5px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img src="Images\adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+       <a href="#" id="listallpages">List All Assessment</a>
+      <a href="#" id="Sheduletime">SheduleTime</a>
+        <a href="#" id="technology">Technology</a>
+        <a href="#">Assessment</a>
+        <a href="#">Module & Topic Selection</a>
+        <a href="#">Question</a>
+    </nav>
+
+    <div class="language-selection">
+        <label for="Technology">Select Technology:</label>
+        <select name="Technology" id="technologyDropdown">
+            <option value="">Select Technology</option>
+        </select>
+    </div>
+
+      <div class="assessmentselection">
+        <label>Types of Assessment: </label>
+        <div class="typeofquestions">
+            <label for="radio1" style="margin-left: 8px;">
+                <input type="radio" id="radio1">Self Assessment
+            </label>
+            <label for="radio2">
+                <input type="radio" id="radio2">Assessment
+            </label>
+            <label for="radio3">
+                <input type="radio" id="radio3">Protored Assessment
+            </label>
+            <label for="radio4">
+                <input type="radio" id="radio4">Company Assessment
+            </label>    
+        </div>
+    </div>
+
+
+    <div class="nature-assessement">
+        <label>Nature of Assessment: </label>
+        <div class="typeofquestions">
+            <label for="radio1" style="margin-left: 8px;">
+                <input type="radio" id="radio1">Dyamic
+            </label>
+            <label for="radio2">
+                <input type="radio" id="radio2">Fixed
+            </label>
+    </div>
+
+    <div class="next-button">
+        <button type="submit">Next</button>
+    </div>
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo" style="height: 25px; width: 180px; align-items: center; margin-top: 10px;">
+        <p style="margin: 0px px 0px 0px 300px;">© 2023 Naresh i Technologies | Software Training - Online
+        </p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script>
+            // Fetch technologies and populate the dropdown
+            $(document).ready(function () {
+                $.ajax({
+                    url: '/fetchTechnologies',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Assuming you have a dropdown with id="technologyDropdown"
+                        var technologyDropdown = $('#technologyDropdown');
+
+                        // Clear existing options
+                        technologyDropdown.empty();
+
+                        // Add default option
+                        technologyDropdown.append('<option value="">Select Technology</option>');
+
+                        // Add options based on fetched data
+                        data.forEach(function (technology) {
+                            technologyDropdown.append(`<option value="${technology.TechnologyID}">${technology.TechnologyName}</option>`);
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching technologies:', error);
+                        // Handle error
+                    }
+                });
+            });
+ </script>
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Webpage Title</title>
+    <style>          
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header{
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey; 
+        }
+        #pageHeader {
+          grid-area: header;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+        }
+
+        #logo {
+         width: 250px; /* Adjust the width as needed */
+         height: auto;
+         margin-right: 20px; /* Adjust the margin as needed */
+         }
+
+        
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        #pageFooter {
+           grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+             /* Adjust as needed */
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            height: 100px;
+            background-color: azure;
+        }
+        
+        nav {
+    background-color: grey; /* Background color */
+    padding: 10px; /* Padding for the navigation bar */
+    text-align: center;
+}
+
+nav a {
+    color: white; /* Text color for the links */
+    text-decoration: none; /* Remove underlines from links */
+    padding: 10px; /* Padding for the links */
+    margin: 0 10px; /* Margin between links */
+    font-weight: bold; /* Bold text for links */
+    display: inline-block; /* Display links horizontally */
+}
+
+nav a:hover {
+    background-color: #555; /* Background color on hover */
+}
+/* Style for form container */
+table {
+    max-width: 50%;
+    border-collapse: collapse;
+    margin: 20px auto; /* Center the table horizontally with auto margin */
+}
+
+thead {
+    background-color: lightgrey;
+    color: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Custom styling for specific columns */
+th:first-child,
+td:first-child {
+    width: 10%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 30%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 30%;
+}
+
+th:last-child,
+td:last-child {
+    width: 30%;
+}
+
+button {
+    display: block;
+    margin: 1px auto; /* Center the button horizontally with auto margin */
+    padding: 10px; /* Add padding for better appearance */
+}
+.selectall {
+    display: flex;
+    align-items: center;
+    margin: 20px 0px 0px 380px; /* Adjust margin as needed */
+}
+
+.selectall input[type="checkbox"] {
+    margin-right: 6px; /* Adjust margin as needed */
+}
+
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+    </header>
+    <nav>
+        <a href="#">Test Details</a>
+        <a href="#">Test Schedule</a>
+      </nav>
+      <table>
+        <div class="selectall">
+            <input type="checkbox">
+            <label>Select All</label>
+        </div>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Sno.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>1</td>
+                <td>John Doe</td>
+                <td>john@example.com</td>
+                <td>123-456-7890</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>2</td>
+                <td>Jane Smith</td>
+                <td>jane@example.com</td>
+                <td>987-654-3210</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>3</td>
+                <td>Bob Johnson</td>
+                <td>bob@example.com</td>
+                <td>555-123-4567</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>4</td>
+                <td>Alice Williams</td>
+                <td>alice@example.com</td>
+                <td>789-012-3456</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>5</td>
+                <td>John Doe</td>
+                <td>john@example.com</td>
+                <td>123-456-7890</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>6</td>
+                <td>Jane Smith</td>
+                <td>jane@example.com</td>
+                <td>987-654-3210</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>7</td>
+                <td>John Doe</td>
+                <td>john@example.com</td>
+                <td>123-456-7890</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <button type="submit">Invite</button>
+
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo" style="height: 25px; width: 180px; align-items: center; margin-top: 10px;">
+        <p style="margin: 0px px 0px 0px 300px;">© 2023 Naresh i Technologies | Software Training - Online Training - Live Project Training - Weekend Training.</p>
+    </footer>
+    <script>
+        // Function to navigate to another page
+        function navigateToPage(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+
+</html>

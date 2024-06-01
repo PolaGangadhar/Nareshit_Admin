@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid Template 1</title>
+    <style>
+        body {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "nav article ads"
+                "nav footer footer";
+            grid-template-rows: 80px 1fr 0fr; /* Change the third row to 1fr */
+            grid-template-columns: 18% 1fr 15%;
+            grid-row-gap: 10px;
+            grid-column-gap: 2px;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            position: relative; /* Added position relative to body */
+        }
+
+        header, article, nav{
+            padding: 0.4em;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid grey; /* Add border styling */
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            border-radius: 5px;
+            justify-content: space-between;
+            align-items: center;
+            background-color: azure;
+            position: relative; /* Added position relative to header */
+        }
+
+        #logo1 {
+            width: 250px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #companyName {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px; 
+        }
+
+        #timer {
+            position: absolute;
+            top: 28px;
+            right: 10px;
+            font-size: 18px;
+        }
+
+        footer{
+            display: flex;
+        }
+
+        #pageFooter {
+            grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            grid-column: 1 / span 3; /* Span across all columns */
+            background-color: azure;
+            height: 100px;
+        }
+
+        #mainArticle {
+            grid-area: article;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            max-height: calc(100vh - 200px);
+            /* Set max height for the article */
+        }
+
+        #mainNav {
+            grid-area: nav;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            max-height: calc(100vh - 200px);
+            /* Set max height for the nav */
+        }
+
+        #siteAds {
+            grid-area: ads;
+        }
+
+        /* Stack the layout on small devices/viewports. */
+        @media all and (max-width: 575px) {
+            body {
+                grid-template-areas:
+                    "header"
+                    "article"
+                    "ads"
+                    "nav"
+                    "footer";
+                grid-template-rows: 80px 1fr 70px 1fr 70px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .question-btn {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .question-btn button {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: gray;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .next-button {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #214c64;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        #submitBtn {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #35a84e;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .question-label {
+            font-size: 20px; /* Adjust the font size as needed */
+        }
+
+        #mainArticle {
+            margin: 1.5em;
+        }
+
+        #logo2 {
+            height: 25px;
+            width: 180px;
+            align-self: center; /* Align the image vertically in the center */
+            margin-top: 10px;
+        }
+
+        #footerText {
+            margin: 0px 0px 0px 20px; /* Adjust the margin as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo1">
+        <span id="companyName">Naresh I Technologies</span>
+        <div id="timer"></div> <!-- Timer div added -->
+    </header>
+    <article id="mainArticle"></article>
+    <nav id="mainNav">
+        <div class="question-btn">
+            <!-- No of question should display here -->
+        </div>
+    </nav>
+    <div id="siteAds">
+        <button id="submitBtn">Submit</button>
+    </div>
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo2">
+        <p id="footerText">© 2023 Naresh i Technologies | Software Training - Online Training - Live Project Training - Weekend Training.</p>
+    </footer>
+    <script>
+        var currentQuestion = 0; // Variable to keep track of the current question
+        var numberOfQuestions; // Variable to store the total number of questions
+        var timer; // Variable to store the timer interval
+
+        function generateButtons() {
+            numberOfQuestions = sessionStorage.getItem('numberOfQuestions');
+            var questionBtnDiv = document.querySelector('.question-btn');
+            var mainArticle = document.getElementById('mainArticle');
+            var timerDisplay = document.getElementById('timer');
+            var questions = generateQuestions(numberOfQuestions); // Generate questions
+
+            // Display the number of questions in the question-btn div
+            var numberOfQuestionsLabel = document.createElement('p');
+            numberOfQuestionsLabel.textContent = 'Number of Questions: ' + numberOfQuestions;
+            questionBtnDiv.appendChild(numberOfQuestionsLabel);
+
+            // Display the first question initially
+            mainArticle.appendChild(questions[currentQuestion].cloneNode(true));
+
+            // Create buttons for navigation
+            for (var k = 1; k <= numberOfQuestions; k++) {
+                var button = document.createElement('button');
+                button.textContent = 'Question ' + k;
+                button.classList.add('question-button');
+                button.dataset.questionIndex = k - 1; // Store the index in the dataset
+                button.addEventListener('click', displayQuestion);
+                questionBtnDiv.appendChild(button);
+            }
+
+            // Create "Next" button
+            createNextButton();
+
+            // Start the timer
+            startTimer();
+
+            // Function to display the selected question
+            function displayQuestion(event) {
+                var questionIndex = event.currentTarget.dataset.questionIndex;
+                currentQuestion = parseInt(questionIndex);
+                mainArticle.innerHTML = ''; // Clear previous articles
+                mainArticle.appendChild(questions[questionIndex].cloneNode(true));
+
+                // Remove existing "Next" button
+                var existingNextButton = document.querySelector('.next-button');
+                if (existingNextButton) {
+                    existingNextButton.remove();
+                }
+
+                // Create new "Next" button
+                createNextButton();
+            }
+
+            // Function to switch to the next question
+            function nextQuestion() {
+                if (currentQuestion < numberOfQuestions - 1) {
+                    currentQuestion++;
+                    mainArticle.innerHTML = ''; // Clear previous question
+                    mainArticle.appendChild(questions[currentQuestion].cloneNode(true));
+
+                    // Remove existing "Next" button
+                    var existingNextButton = document.querySelector('.next-button');
+                    if (existingNextButton) {
+                        existingNextButton.remove();
+                    }
+
+                    // Create new "Next" button
+                    createNextButton();
+                }
+            }
+
+            // Function to create the "Next" button
+            function createNextButton() {
+                var nextButton = document.createElement('button');
+                nextButton.textContent = 'Next';
+                nextButton.classList.add('next-button');
+                nextButton.addEventListener('click', nextQuestion);
+                mainArticle.appendChild(nextButton);
+            }
+
+            // Function to generate questions based on the number
+            function generateQuestions(number) {
+                var questions = [];
+                for (var i = 1; i <= number; i++) {
+                    var questionContainer = document.createElement('div');
+                    questionContainer.classList.add('question-container');
+                    var question = document.createElement('p');
+                    question.textContent = 'Question ' + i + ': What is the correct answer?';
+                    questionContainer.appendChild(question);
+
+                    for (var j = 1; j <= 4; j++) {
+                        var radioLabel = document.createElement('label');
+                        var radioButton = document.createElement('input');
+                        radioButton.type = 'radio';
+                        radioButton.name = 'question' + i;
+                        radioButton.value = 'Option ' + j;
+                        radioLabel.appendChild(radioButton);
+                        radioLabel.appendChild(document.createTextNode(' Option ' + j));
+                        questionContainer.appendChild(radioLabel);
+                    }
+
+                    questions.push(questionContainer);
+                }
+                return questions;
+            }
+
+            // Function to start the timer
+            function startTimer() {
+                var totalTime = numberOfQuestions * 60 * 1000; // Convert minutes to milliseconds
+                var currentTime = totalTime;
+
+                timer = setInterval(function () {
+                    var minutes = Math.floor(currentTime / 60000);
+                    var seconds = ((currentTime % 60000) / 1000).toFixed(0);
+                    timerDisplay.textContent = 'Time Remaining: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+                    if (currentTime <= 0) {
+                        clearInterval(timer);
+                        timerDisplay.textContent = 'Time Expired!';
+                        // You can add logic here when the time is expired, e.g., submitting the quiz.
+                    }
+
+                    currentTime -= 1000;
+                }, 1000);
+            }
+        }
+
+        // Call the generateButtons function when the page loads
+        window.onload = generateButtons;
+    </script>
+</body>
+
+</html>

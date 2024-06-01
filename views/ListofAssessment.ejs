@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Grids</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {s
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px;
+        }
+
+        #sideLogo {
+            width: 30px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        nav {
+            background-color: grey;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #pageFooter {
+            border: 1px solid grey;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            height: 100px;
+            background-color: azure;
+        }
+        #listofassessment {
+            color: #fff;
+            font-weight: bold;
+            background-color: #555;
+        }
+
+        .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: auto; /* Enable scrolling if needed */
+    height: 500px;
+}
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 100px);
+            gap: 20px;
+            
+        }
+
+        table {
+            margin-top: 2px;
+            width: 800px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            padding: 10px auto;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header id="pageHeader">
+        <img src="/Images/Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img src="/Images/adminlogo.jpg" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+       
+        <a href="#" id="listofassessment">List Of Assessment</a>
+        <a href="#" id="technology">Technology</a>
+        <a href="#" id="technology">Assessment</a>
+         <a href="#" id="assessment">Question Views</a>
+         <a href="#" id="sheduletime">SheduleTime</a>
+          
+    </nav>
+
+    <div class="container">
+         <a href="/technology">
+         <div class="next-button">
+            <button>Create New</button>
+        </div>
+        </a>
+        <div class="grid">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Name</th>
+                        <th>IsActive</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://google.com">
+                           Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a>
+                       </td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://google.com">
+                            Test
+                        </a></td>
+                        <td>1</td>
+                        <td>2011-04-25</td>
+                        <td>2011-04-28</td>
+                        <td>9:00</td>
+                        <td>12:00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+   <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 400px;">
+        &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+    </footer>
+    <script>
+        function navigateToPage(page) {
+             window.location.href = page;
+         }
+     </script>
+</body>
+</html>

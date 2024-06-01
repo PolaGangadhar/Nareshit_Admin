@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Case Demo - Calculator</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.22.3/min/vs/loader.js"></script>
+    <style>
+        /* Your existing styles... */
+
+        .code-editor {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 300px; /* Set a specific height for the editor */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Your existing HTML code... -->
+
+    <div class="code-editor" id="editorContainer"></div>
+    <button id="submitCode" onclick="validateCode()">Submit Code</button>
+    <div id="validationResult"></div>
+
+    <!-- Initialize Monaco Editor -->
+    <script>
+        // Initialize Monaco Editor
+        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.22.3/min/vs' } });
+
+        require(['vs/editor/editor.main'], function () {
+            // Use Monaco Editor
+            var editor = monaco.editor.create(document.getElementById('editorContainer'), {
+                value: [
+                    'using System;',
+                    '',
+                    'class Program',
+                    '{',
+                    '    static void Main()',
+                    '    {',
+                    '        Console.WriteLine("Hello, world!");',
+                    '    }',
+                    '}'
+                ].join('\n'),
+                language: 'csharp',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: {
+                    enabled: false
+                }
+            });
+        });
+
+        // Event listener for logout
+        document.getElementById('logoutLink').addEventListener('click', () => {
+            initializeMonacoEditor();
+            // Clear the session storage
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('token');
+
+            // Redirect to the login page
+            window.location.href = '/'; // Replace '/login' with the actual login page URL
+        });
+
+        // Function to set up user information
+        function setupUserInfo() {
+            // Extract username and token from sessionStorage
+            const username = sessionStorage.getItem('username');
+            const token = sessionStorage.getItem('token');
+
+            // Check if username and token are available
+            if (!username || !token) {
+                // Redirect to the login page
+                window.location.href = '/'; // Adjust the login page URL as needed
+                return;
+            }
+
+            // Display the username
+            document.getElementById('adminUsername').innerText = `Welcome, ${username}!`;
+
+            console.log('Token:', token);
+
+            // Load user image
+            fetch(`/getimage/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Check if the response contains the image data
+                    if (data && data.Image) {
+                        // Convert the binary data to Base64
+                        const base64Image = arrayBufferToBase64(data.Image);
+
+                        // Set the Base64 string as the src attribute of the img element
+                        document.getElementById('profilePicture').src = `data:image/jpeg;base64,${base64Image}`;
+                    }
+                })
+                .catch((error) => console.error('Error fetching image:', error));
+        }
+
+        // Call the setupUserInfo function when the page is loaded
+        document.addEventListener('DOMContentLoaded', setupUserInfo);
+
+        // Function to validate code
+        function validateCode() {
+            // Get the code snippet from the Monaco Editor
+            const codeSnippet = editor.getValue();
+
+            // Perform validation for each step
+            let validationResult = '';
+
+            // Step 1: Create variables
+            if (!codeSnippet.includes('int num1') || !codeSnippet.includes('int num2') || !codeSnippet.includes('char operator')) {
+                validationResult += 'Step 1: Create variables - Incomplete or incorrect.\n';
+            }
+
+            // Step 2: Check Pascal and Camel Case
+            const variableNames = ['num1', 'num2', 'operator'];
+            for (const variable of variableNames) {
+                if (!isCamelCase(variable, codeSnippet)) {
+                    validationResult += `Step 2: Check Pascal and Camel Case - Variable '${variable}' is not in camelCase.\n`;
+                }
+            }
+
+            // Step 3: Implement Switch Case
+            if (!codeSnippet.includes('switch (operator)') || !codeSnippet.includes('case \'+\':') || !codeSnippet.includes('case \'-\':') || !codeSnippet.includes('case \'*\':') || !codeSnippet.includes('case \'/\':')) {
+                validationResult += 'Step 3: Implement Switch Case - Incomplete or incorrect.\n';
+            }
+
+            // Step 4: Finalize and Test
+            // You can add custom validations for the final step based on your requirements
+
+            // Display the validation result
+            const validationResultDiv = document.getElementById('validationResult');
+            validationResultDiv.textContent = validationResult.trim();
+
+            // Optionally, you can perform additional actions based on the validation result
+        }
+
+        // Function to initialize Monaco Editor
+        function initializeMonacoEditor() {
+            require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.26.1/min/vs' } });
+
+            require(['vs/editor/editor.main'], function () {
+                var editor = monaco.editor.create(document.getElementById('editorContainer'), {
+                    value: [
+                        'using System;',
+                        '',
+                        'class Program',
+                        '{',
+                        '    static void Main()',
+                        '    {',
+                        '        Console.WriteLine("Hello, world!");',
+                        '    }',
+                        '}'
+                    ].join('\n'),
+                    language: 'csharp',
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    minimap: {
+                        enabled: false
+                    }
+                });
+            });
+        }
+
+        // Function to check if a variable is in camelCase
+        function isCamelCase(variable, code) {
+            const variableRegex = new RegExp(`\\b${variable}\\b`, 'g');
+            const matches = code.match(variableRegex) || [];
+            return matches.every(match => match[0] === match[0].toLowerCase());
+        }
+
+        // Function to convert ArrayBuffer to Base64
+        function arrayBufferToBase64(buffer) {
+            if (!buffer || !Array.isArray(buffer.data) || buffer.data.length === 0) {
+                console.error('Invalid buffer structure:', buffer);
+                return null;
+            }
+
+            const binaryString = String.fromCharCode.apply(null, buffer.data);
+            const base64String = btoa(binaryString);
+
+            return base64String;
+        }
+    </script>
+</body>
+
+</html>

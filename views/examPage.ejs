@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Page</title>
+    <style>
+        /* Add some basic styling for layout */
+        body {
+    display: flex;
+    flex-direction: column; /* Change to column layout to align items vertically */
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    height: 100vh; /* Make the body take the full height of the viewport */
+    margin: 0; /* Remove default margin */
+    font-family: Arial, sans-serif; /* Use a common font */
+}
+
+#container {
+    text-align: center; /* Center the text within the container */
+    margin-top: 20px; /* Add some top margin for better spacing */
+}
+
+#questionsList {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center buttons horizontally within the list */
+}
+
+/* Style for the button */
+.question-btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: auto; /* Set width to auto to allow flexible button width */
+}
+        #container {
+            text-align: center; /* Center the text within the container */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .question {
+            display: none;
+            text-align: left; /* Align text within the question div to the left */
+        }
+
+        .question.active {
+            display: block;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            margin-bottom: 5px;
+        }
+
+        /* Style for the button */
+        .question-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1>DotNet Assignment 3</h1>
+        <ul id="questionsList">
+            <!-- Use the question array from your JSON here -->
+            <!-- Replace 'YOUR_JSON_ARRAY' with the actual variable or data structure holding your questions -->
+            <% questions.forEach((question) => { %>
+                <li>
+                    <button class="question-btn" onclick="displayQuestion('<%= question.id %>')">
+                        Question <%= question.id %>
+                    </button>
+                </li>
+            <% }); %>
+        </ul>
+
+        <div id="questionContainer">
+            <!-- All questions will be displayed here initially -->
+            <!-- Use the question array from your JSON here -->
+            <!-- Replace 'YOUR_JSON_ARRAY' with the actual variable or data structure holding your questions -->
+            <% questions.forEach((question) => { %>
+                <div class="question" data-id="<%= question.id %>">
+                    <p><strong>Question <%= question.id %>:</strong> <%= question.question %></p>
+                    <ul class="options">
+                        <li>
+                            <input type="radio" name="question<%= question.id %>" value="A">
+                            <%= question.optionA %>
+                        </li>
+                        <li>
+                            <input type="radio" name="question<%= question.id %>" value="B">
+                            <%= question.optionB %>
+                        </li>
+                        <li>
+                            <input type="radio" name="question<%= question.id %>" value="C">
+                            <%= question.optionC %>
+                        </li>
+                        <li>
+                            <input type="radio" name="question<%= question.id %>" value="D">
+                            <%= question.optionD %>
+                        </li>
+                    </ul>
+                </div>
+            <% }); %>
+        </div>
+
+        <form id="examForm" action="/submit-exam" method="post">
+            <!-- The form content can be added here if needed -->
+        </form>
+    </div>
+
+    <script>
+        // Logging function for debugging
+        function log(message) {
+            console.log(message);
+        }
+
+        // Function to display a specific question by updating visibility
+        function displayQuestion(questionId) {
+            // Log the selected id for debugging
+            log(`Selected Question ID: ${questionId}`);
+
+            // Hide all questions
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(question => {
+                question.classList.remove('active');
+            });
+
+            // Show the selected question
+            const selectedQuestion = document.querySelector(`.question[data-id="${questionId}"]`);
+            if (selectedQuestion) {
+                selectedQuestion.classList.add('active');
+                log(`Displaying Question: ${selectedQuestion.textContent}`);
+            } else {
+                log('Selected question not found.');
+            }
+        }
+
+        // Show the first question by default
+        displayQuestion('<%= questions[0].id %>');
+    </script>
+</body>
+
+</html>

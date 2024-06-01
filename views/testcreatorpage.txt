@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images/Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img src="Images/adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+        <a href="#" id="technology">Technology</a>
+        <a href="#">Assessment</a>
+        <a href="#">Module & Topic Selection</a>
+        <a href="#">Question</a>
+    </nav>
+
+    <div class="language-selection">
+        <label for="Technology">Select Technology:</label>
+        <select name="Technology" id="Technology" aria-placeholder="eg: Java">
+            <option value="C#">C#</option>
+            <option value="Java">Java</option>
+            <option value="Python">Python</option>
+        </select>
+    </div>
+
+    <div class="assessmentselection">
+        <label>Types of Assessment: </label>
+        <div class="typeofquestions">
+            <label for="radio1" style="margin-left: 8px;">
+                <input type="radio" id="radio1" name="assessmentType">Self Assessment
+            </label>
+            <label for="radio2">
+                <input type="radio" id="radio2" name="assessmentType">Assessment
+            </label>
+            <label for="radio3">
+                <input type="radio" id="radio3" name="assessmentType">Protored Assessment
+            </label>
+            <label for="radio4">
+                <input type="radio" id="radio4" name="assessmentType">Company Assessment
+            </label>
+        </div>
+    </div>
+
+    <div class="nature-assessement">
+        <label>Nature of Assessment: </label>
+        <div class="typeofquestions">
+            <label for="radio1" style="margin-left: 8px;">
+                <input type="radio" id="radio1" name="assessmentNature">Dynamic
+            </label>
+            <label for="radio2">
+                <input type="radio" id="radio2" name="assessmentNature">Fixed
+            </label>
+        </div>
+    </div>
+
+    <div class="next-button">
+        <button onclick="navigateToPage('Test2.html')" type="submit">Next</button>
+    </div>
+
+    <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 252px;">
+        &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script>
+       function navigateToPage(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+
+</html>

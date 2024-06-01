@@ -1,0 +1,169 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>NodejsWebApp1</Name>
+    <RootNamespace>NodejsWebApp1</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>2f6ccee4-3145-4e19-9ab9-3f5edff10372</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>server.js</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <NodejsPort>1337</NodejsPort>
+    <StartWebBrowser>true</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\NodejsWebApp120231205221143 - Web Deploy.pubxml" />
+    <Content Include="backup" />
+    <Content Include="CMS\AdminHomePage.html" />
+    <Content Include="CMS\Exam.html" />
+    <Content Include="CMS\Images\adminlogo.webp" />
+    <Content Include="CMS\Images\Naresh_IT_Logo.png" />
+    <Content Include="CMS\Legends.html" />
+    <Content Include="CMS\LoginPage.html" />
+    <Content Include="CMS\sideBox.html" />
+    <Content Include="CMS\StaticExamPage.html" />
+    <Content Include="CMS\TestModule.html" />
+    <Content Include="CMS\TestModule1.html" />
+    <Content Include="CMS\TestModule2.html" />
+    <Content Include="CMS\TestModule3.html" />
+    <Content Include="CMS\TestModule4.html" />
+    <Content Include="CMS\testone.html" />
+    <Content Include="CMS\TestSelection.html" />
+    <Content Include="CMS\text.html" />
+    <Content Include="CMS\UserHomePage.html" />
+    <Content Include="Images\adminlogo.jpg" />
+    <Content Include="Images\Naresh_IT_Logo.png" />
+    <Content Include="path\certificate.crt" />
+    <Content Include="path\private.key" />
+    <Content Include="script.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="styles.css">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="views\7075052502-boy.txt" />
+    <Content Include="views\AdminHomePage.ejs" />
+    <Content Include="views\assessment.ejs" />
+    <Content Include="views\CodeEditor.ejs" />
+    <Content Include="views\enrollStudent.ejs" />
+    <Content Include="views\examPage.ejs" />
+    <Content Include="views\ListofAssessment.ejs" />
+    <Content Include="views\codeResults.ejs" />
+    <Content Include="views\LoginPage.ejs" />
+    <Content Include="views\LoginPage.html" />
+    <Content Include="Naresh_IT_Logo.png" />
+    <Content Include="questions.csv" />
+    <Content Include="routes\exam.js" />
+    <Content Include="server.js" />
+    <Content Include="views\MainPage.EJS" />
+    <Content Include="views\New Text Document %2810%29.txt" />
+    <Content Include="views\New Text Document %2811%29.txt" />
+    <Content Include="views\New Text Document %282%29.txt" />
+    <Content Include="views\New Text Document %283%29.txt" />
+    <Content Include="views\New Text Document %284%29.txt" />
+    <Content Include="views\New Text Document %285%29.txt" />
+    <Content Include="views\New Text Document %286%29.txt" />
+    <Content Include="views\New Text Document %287%29.txt" />
+    <Content Include="views\New Text Document %288%29.txt" />
+    <Content Include="views\New Text Document %289%29.txt" />
+    <Content Include="views\New Text Document.txt" />
+    <Content Include="views\ExamMainPage.ejs" />
+    <Content Include="views\previewExamPage.ejs" />
+    <Content Include="views\qr.txt" />
+    <Content Include="views\quesitontreeview.ejs" />
+    <Content Include="views\questionDisplay.ejs" />
+    <Content Include="views\questions.ejs" />
+    <Content Include="views\questionSelection.ejs" />
+    <Content Include="views\questionsSelectionViews.ejs" />
+    <Content Include="views\QuestionViews.ejs" />
+    <Content Include="views\Register.ejs" />
+    <Content Include="views\selectQuestions.ejs" />
+    <Content Include="views\sheduletime.ejs" />
+    <Content Include="views\studentexampagev1.ejs" />
+    <Content Include="views\studentExamPage.ejs" />
+    <Content Include="views\studentExamPageModified.ejs" />
+    <Content Include="views\RetriveResultPage.ejs" />
+    <Content Include="views\studentResultPage.ejs" />
+    <Content Include="views\studentResultpageview.ejs" />
+    <Content Include="views\technology.ejs" />
+    <Content Include="views\testcreator.ejs" />
+    <Content Include="views\testcreatorpage.txt" />
+    <Content Include="views\testcreatortypes.ejs" />
+    <Content Include="views\TestSelection.ejs" />
+    <Content Include="views\TestSelectionView.ejs" />
+    <Content Include="views\testviewpage1.ejs" />
+    <Content Include="views\UserHomePage.ejs" />
+    <Content Include="views\VirtualLab.ejs" />
+    <Content Include="views\VirtualLabold.ejs" />
+    <Content Include="views\workingversion.txt" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CMS\" />
+    <Folder Include="CMS\Images\" />
+    <Folder Include="Images\" />
+    <Folder Include="path\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="routes\" />
+    <Folder Include="views\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

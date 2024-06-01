@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Case Demo - Calculator</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.22.3/min/vs/loader.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .today .icon-container {
+            display: flex;
+            gap: 5px;
+        }
+
+        .today .icon-container .icon {
+            font-size: 14px;
+            color: #007bff;
+        }
+
+        header {
+            padding: 1em;
+            background-color: #fff;
+            color: #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #logo-container {
+            width: 150px;
+            background-color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        #logo {
+            width: 100%;
+            height: auto;
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px;
+            color: #343a40;
+        }
+
+        #profilePicture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        #logoutLink {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #logoutLink:hover {
+            text-decoration: underline;
+        }
+
+        .blue-strip {
+            height: 5px;
+            background-color: #007bff;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .activity-card {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #e9e9e9;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-editor-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .code-editor {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 300px; /* Set a specific height for the editor */
+        }
+
+        #codeSnippet {
+            width: 100%;
+            height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        #submitCode {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #validationResult {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div id="logo-container">
+            <img id="logo" src="https://www.nareshit.com/wp-content/uploads/2019/06/xNareshit-Logo-Png.png.pagespeed.ic.DS6ZMd4hME.png" alt="Naresh IT Logo">
+        </div>
+        <div id="adminInfo">
+            <h2 id="adminUsername">Welcome, <span></span>!</h2>
+            <img id="profilePicture" alt="Profile Picture" class="profile-picture">
+            <a id="logoutLink" href="#">Logout</a>
+        </div>
+    </header>
+
+    <div class="blue-strip"></div>
+    <iframe src="https://try.dot.net/?fromGist=df44833326fcc575e8169fccb9d41fc7">
+</iframe>
+    <div class="dashboard-container">
+        <div class="learning-roadmap">
+            <div class="roadmap-title"> Question: Reverse an Array </div>
+            <h4>Write a function in the programming language using C#.Net that takes an array of integers as input and returns the reversed array. 
+            The function should reverse the array in-place, meaning it should modify the original array without creating a new one. </h4>
+        </div>
+
+          <div class="content">
+            <div class="code-editor-container">
+                <div class="code-editor" id="editorContainer"></div>
+                <div class="buttons-container">
+                    
+                    <button id="runButton" onclick="runCode()">
+                        <i class="fas fa-play"></i> Run
+                    </button>
+                    <button id="executeTestCasesButton" onclick="executeTestCases()">
+                        <i class="fas fa-terminal"></i> Execute Test Cases
+                    </button>
+                    <button id="finishTestButton" onclick="finishTest()">
+                        <i class="fas fa-check-circle"></i> Finish Test
+                    </button>
+                </div>
+                <div id="buildErrors" style="color: red;"></div>
+                <div id="validationResult"></div>
+            </div>
+        </div>
+    </div>
+
+   
+    <!-- Initialize Monaco Editor -->
+    <script>
+        // Initialize Monaco Editor
+            require.config({
+        paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.22.3/min/vs' }
+    });
+
+    let editor; // Declare editor as a global variable
+
+    require(['vs/editor/editor.main'], function () {
+        // Use Monaco Editor
+        editor = monaco.editor.create(document.getElementById('editorContainer'), {
+            value: [
+                'using System;',
+                '',
+                'class Program',
+                '{',
+                '    static void Main()',
+                '    {',
+                '        Console.WriteLine("Hello, world!");',
+                '    }',
+                '}'
+            ].join('\n'),
+            language: 'csharp',
+            theme: 'vs-dark',
+            automaticLayout: true,
+            minimap: {
+                enabled: false
+            }
+        });
+    });
+
+        // Event listener for logout
+        document.getElementById('logoutLink').addEventListener('click', () => {
+            initializeMonacoEditor();
+            // Clear the session storage
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('token');
+
+            // Redirect to the login page
+            window.location.href = '/'; // Replace '/login' with the actual login page URL
+        });
+
+        // Function to set up user information
+        function setupUserInfo() {
+            // Extract username and token from sessionStorage
+            const username = sessionStorage.getItem('username');
+            const token = sessionStorage.getItem('token');
+
+            // Check if username and token are available
+            if (!username || !token) {
+                // Redirect to the login page
+                window.location.href = '/'; // Adjust the login page URL
+            }
+
+            // Display username in the header
+            document.getElementById('adminUsername').textContent = `Welcome, ${username}!`;
+
+            // Fetch user profile picture and display it
+            fetchUserProfilePicture(username, token);
+        }
+
+        // Function to fetch and display user profile picture
+        function fetchUserProfilePicture(username, token) {
+            // Fetch user profile picture using the provided username and token
+            // You can implement this based on your backend API
+            // For example, you can use the fetch API or Axios for the HTTP request
+
+            // Placeholder URL for the user profile picture (replace with actual endpoint)
+            const profilePictureUrl = 'https://via.placeholder.com/40';
+
+            // Display the profile picture
+            document.getElementById('profilePicture').src = profilePictureUrl;
+        }
+
+        // Function to validate the code
+        function validateCode() {
+            const code = editor.getValue();
+
+            // Implement code validation logic here
+            // You can use the fetch API or Axios to send the code to your backend for validation
+
+            // Placeholder logic (replace with actual validation)
+            const validationResult = code.includes('Console.WriteLine');
+
+            // Display the validation result
+            const resultContainer = document.getElementById('validationResult');
+            resultContainer.textContent = validationResult ? 'Code is valid!' : 'Code is not valid!';
+        }
+
+
+           // Function to handle the "Build" button click
+        function buildCode() {
+            // Implement build logic here
+            // You can use the fetch API or Axios to send the code to your backend for building
+            console.log("Building code...");
+
+            const code = editor.getValue();
+
+            // Send the code to the .NET Try-Compiler API for dynamic compilation
+            fetch('https://dotnetfiddle.net/api/try-compiler', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    Language: 'csharp',
+                    Code: code,
+                    CompilerOptions: '',
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultContainer = document.getElementById('validationResult');
+                    if (data.Success) {
+                        resultContainer.textContent = 'Build successful!';
+                    } else {
+                        resultContainer.textContent = `Build failed: ${data.Errors}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during build:', error);
+                    const resultContainer = document.getElementById('validationResult');
+                    resultContainer.textContent = 'Error during build. Please try again.';
+                });
+
+
+        }
+
+        // Function to handle the "Run" button click
+       // Function to handle the "Run" button click
+function runCode() {
+    const code = editor.getValue();
+
+    // Send the code to the .NET Try-Compiler API for execution
+    fetch('https://localhost:7185/api/CodeExecution/execute', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            Code: code,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+           const resultContainer = document.getElementById('validationResult');
+            const buildErrorsContainer = document.getElementById('buildErrors');
+             buildErrorsContainer.innerHTML = '';
+            if (data.success) {
+                resultContainer.textContent = 'Build successful!';
+            } else {
+                resultContainer.textContent = 'Build failed.';
+                
+                // Display build errors line by line
+               
+                buildErrorsContainer.innerHTML = data.output
+                    .split('\n')
+                    .map(error => `<p>${error}</p>`)
+                    .join('');
+            }
+        })
+        .catch(error => {
+            console.error('Error during run:', error);
+        });
+}
+
+// Placeholder function for executing code (replace with your actual run logic)
+function executeCode(code) {
+    try {
+        // Your code execution logic here
+        // You might need to use eval or other techniques depending on your environment
+        // For security reasons, be cautious about using eval in a production environment
+        const output = eval(code);
+        return { output };
+    } catch (error) {
+        // Extract line number from the error message
+        const match = /line (\d+)/.exec(error.message);
+        const lineNumber = match ? parseInt(match[1]) : 1;
+        return { error: error.message, lineNumber };
+    }
+}
+
+        // Function to handle the "Execute Test Cases" button click
+        function executeTestCases() {
+            // Implement test case execution logic here
+            // You can use the fetch API or Axios to send the code to your backend for executing test cases
+            console.log("Executing test cases...");
+        }
+
+        // Function to handle the "Finish Test" button click
+        function finishTest() {
+            // Implement finish test logic here
+            // You can use the fetch API or Axios to send the code to your backend for finishing the test
+            console.log("Finishing test...");
+        }
+
+        // Call the setupUserInfo function when the page is loaded
+        document.addEventListener('DOMContentLoaded', setupUserInfo);
+    </script>
+
+</body>
+
+</html>
