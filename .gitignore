@@ -138,4 +138,6 @@ views_backup/
 views.zip
 0-pm2.json
 NodejsWebApp1.sln
+obj/
+bin/
 
