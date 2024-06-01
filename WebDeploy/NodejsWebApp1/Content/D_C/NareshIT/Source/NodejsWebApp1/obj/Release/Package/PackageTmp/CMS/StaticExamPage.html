@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid Template 1</title>
+    <style>
+        body {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "nav article ads"
+                "nav footer footer";
+            grid-template-rows: 80px 1fr 0fr; /* Change the third row to 1fr */
+            grid-template-columns: 18% 1fr 15%;
+            grid-row-gap: 10px;
+            grid-column-gap: 2px;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            position: relative; /* Added position relative to body */
+        }
+
+        header, article, nav{
+            padding: 0.4em;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid grey; /* Add border styling */
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            border-radius: 5px;
+            justify-content: space-between;
+            align-items: center;
+            background-color: azure;
+            position: relative; /* Added position relative to header */
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+
+        #sideLogo {
+            width: 30px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #companyName {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px; 
+        }
+
+        #timer {
+            position: absolute;
+            top: 28px;
+            right: 10px;
+            font-size: 18px;
+        }
+
+        footer{
+            display: flex;
+        }
+
+        #pageFooter {
+            grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            grid-column: 1 / span 3; /* Span across all columns */
+            background-color: azure;
+            height: 100px;
+        }
+
+        #mainArticle {
+            grid-area: article;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            max-height: calc(100vh - 200px);
+            /* Set max height for the article */
+        }
+
+        #mainNav {
+            text-align: center;
+            grid-area: nav;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            max-height: calc(100vh - 200px);
+            /* Set max height for the nav */
+        }
+
+        #siteAds {
+            grid-area: ads;
+        }
+
+        /* Stack the layout on small devices/viewports. */
+        @media all and (max-width: 575px) {
+            body {
+                grid-template-areas:
+                    "header"
+                    "article"
+                    "ads"
+                    "nav"
+                    "footer";
+                grid-template-rows: 80px 1fr 70px 1fr 70px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .question-btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .additional-buttons {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .additional-buttons button {
+            display: block;
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #28A745;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .question-btn button {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: gray;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .next-button {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #214c64;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        #submitBtn {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #35a84e;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .question-label {
+            font-size: 20px; /* Adjust the font size as needed */
+        }
+
+        #mainArticle {
+            margin: 1.5em;
+        }
+
+        #logo2 {
+            height: 25px;
+            width: 180px;
+            align-self: center; /* Align the image vertically in the center */
+            margin-top: 10px;
+        }
+
+        #footerText {
+            margin: 0px 0px 0px 20px; /* Adjust the margin as needed */
+        }
+
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">         
+            <img src="Images\adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <article id="mainArticle"></article>
+    <nav id="mainNav">
+        <button class="question-btn" onclick="loadQuestions('MCQ')">MCQ's RadioButtons</button>
+        <button class="question-btn" onclick="loadQuestions('FreeText')">Free Text</button>
+        <button class="question-btn" onclick="loadQuestions('CheckBoxes')">MCQ's CheckBoxes</button>
+        <button class="question-btn" onclick="loadQuestions('Paragraph')">Paragraph Questions</button>
+        <button class="question-btn" onclick="loadQuestions('Coding')">Coding Questions</button>
+        <button class="question-btn" onclick="loadQuestions('Image')">Image Questions</button>
+        <button class="question-btn" onclick="loadQuestions('Matching')">Matching Questions</button>
+        <button class="question-btn" onclick="showBox(1)">Button 1</button>
+        <button class="question-btn" onclick="showBox(2)">Button 2</button>
+        <button class="question-btn" onclick="showBox(3)">Button 3</button>
+        <button class="question-btn" onclick="showBox(4)">Button 4</button>
+        <button class="question-btn" onclick="showBox(5)">Button 5</button>
+    </nav>
+    <div id="siteAds">
+        <button id="submitBtn">Submit</button>
+    </div>
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo2">
+        <p id="footerText">© 2023 Naresh i Technologies | Software Training - Online Training - Live Project Trai   ning - Weekend Training.</p>
+    </footer>
+    <script>
+        let currentQuestionIndex = 0; // Track the current question index
+    
+        // Function to display questions
+        function displayQuestion(questionType) {
+            // Hide all questions
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(question => {
+                question.classList.remove('active');
+            });
+    
+            // Show the selected question
+            const selectedQuestion = document.querySelector(`.${questionType}`);
+            if (selectedQuestion) {
+                selectedQuestion.classList.add('active');
+            }
+        }
+    
+        // Function to load questions
+        function loadQuestions(questionType) {
+            // Fetch questions based on the selected button
+            // You can replace this with your logic to fetch questions dynamically
+            const questionIds = ["question1", "question2", "question3", "question4", "question5"];
+    
+            // Generate question elements
+            const questionContainer = document.getElementById('mainArticle');
+            questionContainer.innerHTML = ''; // Clear previous content
+    
+            if (currentQuestionIndex < questionIds.length) {
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('question', questionType);
+                questionElement.setAttribute('data-id', questionIds[currentQuestionIndex]);
+    
+                questionElement.innerHTML = `
+                    <div class="question-label">Question ${currentQuestionIndex + 1}</div>
+                    <ul class="options">
+                        <li>
+                            <input type="radio" name="${questionIds[currentQuestionIndex]}" value="Option A">
+                            Option A
+                        </li>
+                        <li>
+                            <input type="radio" name="${questionIds[currentQuestionIndex]}" value="Option B">
+                            Option B
+                        </li>
+                        <li>
+                            <input type="radio" name="${questionIds[currentQuestionIndex]}" value="Option C">
+                            Option C
+                        </li>
+                        <li>
+                            <input type="radio" name="${questionIds[currentQuestionIndex]}" value="Option D">
+                            Option D
+                        </li>
+                    </ul>
+                `;
+    
+                questionContainer.appendChild(questionElement);
+    
+                // Display the question by default
+                displayQuestion(questionType);
+    
+                // Add Next button dynamically
+                const nextButton = document.createElement('button');
+                nextButton.classList.add('next-button');
+                nextButton.textContent = 'Next';
+                nextButton.addEventListener('click', () => {
+                    currentQuestionIndex++;
+                    loadQuestions(questionType);
+                });
+                questionContainer.appendChild(nextButton);
+            } else {
+                // Generate dynamic textboxes and "Next" buttons
+                for (let i = 1; i <= 5; i++) {
+                    const textboxElement = document.createElement('input');
+                    textboxElement.type = 'text';
+                    textboxElement.id = `textbox${i}`;
+                    textboxElement.placeholder = `Textbox ${i}`;
+                    textboxElement.classList.add('dynamic-textbox');
+                    questionContainer.appendChild(textboxElement);
+    
+                    const nextButton = document.createElement('button');
+                    nextButton.classList.add('next-button');
+                    nextButton.textContent = `Next for Button ${i}`;
+                    nextButton.addEventListener('click', () => {
+                        // Implement logic for the "Next" button click
+                        alert(`Next button for Button ${i} clicked`);
+                    });
+                    questionContainer.appendChild(nextButton);
+                }
+            }
+        }
+    
+        // Load questions when the page loads
+        loadQuestions('MCQ');
+    </script>
+</body>
+</html>

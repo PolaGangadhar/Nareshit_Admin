@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+
+        #sideLogo {
+            width: 30px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #pageFooter {
+            grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+            /* Adjust as needed */
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            height: 100px;
+            background-color: azure;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+            background-color: #fff; /* Change the background color as needed */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        }
+
+        h1 {
+            color: #333; /* Change the text color as needed */
+        }
+
+        p {
+            color: #666; /* Change the text color as needed */
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            width: 200px;
+            height: 40px;
+            background-color: #3498db; /* Change the button background color as needed */
+            color: #fff; /* Change the button text color as needed */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Add a smooth transition effect */
+
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Change the button background color on hover as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Inside the header section in AdminHomePage.html -->
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">         
+            <img src="Images\adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Your webpage content goes here -->
+        <h1>Welcome to Admin Webpage</h1>
+        <p>This is the Admin to Create for a Test Page</p>
+
+        <!-- Buttons to navigate to other pages -->
+        <button onclick="navigateToPage('TestSelection.html')">Test Creation Page</button>
+        <button onclick="navigateToPage('Page2.html')">Student Exam Invite Portal</button>
+    </main>
+
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo"
+            style="height: 25px; width: 180px; align-items: center; margin-top: 10px;">
+        <p style="margin: 0px px 0px 0px 300px;">© 2023 Naresh i Technologies | Software Training - Online
+            Training - Live Project Training - Weekend Training.</p>
+    </footer>
+
+    <!-- Inside the script tag in AdminHomePage.html -->
+    <script>
+        // Function to get URL parameters by name
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Retrieve admin username from URL
+        var adminUsername = getParameterByName('username');
+
+        // Display admin username in the header
+        document.getElementById('adminUsername').innerText = adminUsername;
+
+        // Function to navigate to another page
+        function navigateToPage(page) {
+            window.location.href = page;
+        }
+    </script>
+
+</body>
+
+</html>

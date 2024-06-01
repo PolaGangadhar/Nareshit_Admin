@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Box Example</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            height: 100vh;
+        }
+
+        #buttonContainer {
+            width: 20%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column; /* Arrange buttons vertically */
+        }
+
+        #boxContainer {
+            width: 80%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .box {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="buttonContainer">
+        <button onclick="showBox(1)">Button 1</button>
+        <button onclick="showBox(2)">Button 2</button>
+        <button onclick="showBox(3)">Button 3</button>
+        <button onclick="showBox(4)">Button 4</button>
+        <button onclick="showBox(5)">Button 5</button>
+    </div>
+
+    <div id="boxContainer">
+        <div id="box1" class="box" onclick="box1Clicked()">Box 1 Content</div>
+        <div id="box2" class="box" onclick="box2Clicked()">Box 2 Content</div>
+        <div id="box3" class="box" onclick="box3Clicked()">Box 3 Content</div>
+        <div id="box4" class="box" onclick="box4Clicked()">Box 4 Content</div>
+        <div id="box5" class="box" onclick="box5Clicked()">Box 5 Content</div>
+    </div>
+
+    <script>
+        function showBox(boxNumber) {
+            // Hide all boxes
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('box' + i).style.display = 'none';
+            }
+
+            // Show the selected box
+            const selectedBox = document.getElementById('box' + boxNumber);
+            selectedBox.style.display = 'block';
+           
+            
+            }
+    </script>
+
+</body>
+</html>

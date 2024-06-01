@@ -129,22 +129,13 @@ dist
 .yarn/install-state.gz
 .pnp.*node_modules
 
-bin/
+
 CMD/
-obj/
-path/
-Properties/
-routes/
-Web.Debug.config
-Web.config
 backup
 desktop.ini
 views_backup.zip
 views_backup/
 views.zip
-NodejsWebApp1.njsproj.user
-NodejsWebApp1.njsproj
-server-pm2.json
 0-pm2.json
 NodejsWebApp1.sln
 
