@@ -131,12 +131,10 @@ dist
 
 bin/
 CMD/
-Images/
 obj/
 path/
 Properties/
 routes/
-key.pem
 Web.Debug.config
 Web.config
 backup
