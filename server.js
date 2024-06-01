@@ -5121,7 +5121,7 @@ app.get("/previewExamPage", async (req, res) => {
     // Fetch questions using the executeGetTestQuestions function
     const questions = await GetTestQuestionsPreview(
       testID,
-      "gangadharpola@gmail.com",
+      "john.doe@example.com",
       transactionId
     );
     //console.log('Fetched questions in route handler:', questions);
@@ -5154,7 +5154,7 @@ app.get("/ExamMainPage", async (req, res) => {
     // Fetch questions using the executeGetTestQuestions function
     const questions = await GetTestQuestionsPreview(
       testID,
-      "gangadharpola@gmail.com",
+      "john.doe@example.com",
       transactionId
     );
     //console.log('Fetched questions in route handler:', questions);
