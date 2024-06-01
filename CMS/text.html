@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Box Example</title>
+    <style>
+        /* Your existing styles... */
+    </style>
+</head>
+<body>
+    <header id="pageHeader">
+        <!-- Your existing header content... -->
+    </header>
+
+    <div id="buttonContainer">
+        <button onclick="showBox(1)">Button 1</button>
+        <button onclick="showBox(2)">Button 2</button>
+        <button onclick="showBox(3)">Button 3</button>
+        <button onclick="showBox(4)">Button 4</button>
+        <button onclick="showBox(5)">Button 5</button>
+    </div>
+
+    <div id="boxContainer">
+        <div id="box1" class="box">Box 1 Content
+            <div class="mcq"></div>
+        </div>
+        <div id="box2" class="box">Box 2 Content</div>
+        <div id="box3" class="box">Box 3 Content</div>
+        <div id="box4" class="box">Box 4 Content</div>
+        <div id="box5" class="box">Box 5 Content
+            <div class="mcq"></div>
+        </div>
+    </div>
+
+    <div id="siteAds">
+        <button id="submitBtn">Submit</button>
+    </div>
+
+    <script>
+        function showBox(boxNumber) {
+            // Hide all boxes
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('box' + i).style.display = 'none';
+            }
+
+            // Show the selected box
+            let a = document.getElementById('box' + boxNumber);
+            a.style.display = 'block';
+
+            // Load questions based on box number
+            switch (boxNumber) {
+                case 1:
+                    loadMCQs(boxNumber, [
+                        {
+                            question: 'What is the capital of France?',
+                            options: ['Paris', 'London', 'Berlin', 'Madrid'],
+                            correctAnswer: 'Paris'
+                        },
+                        {
+                            question: 'What is the largest planet in our solar system?',
+                            options: ['Mercury', 'Venus', 'Earth', 'Jupiter'],
+                            correctAnswer: 'Jupiter'
+                        },
+                        {
+                            question: 'What is the largest planet in our solar system?',
+                            options: [],
+                            correctAnswer: 'Jupiter'
+                        }
+                        // Add more MCQs as needed
+                    ]);
+                    break;
+                case 5:
+                    loadMCQs(boxNumber, [
+                        {
+                            question: 'What is the capital of France?'
+                        },
+                        {
+                            question: 'What is the largest planet in our solar system?',
+                        },
+                        {
+                            question: 'What is the largest planet in our solar system?',
+                        }
+                        // Add more MCQs as needed
+                    ]);
+                    break;
+            }
+        }
+
+        function loadMCQs(boxNumber, mcqArray) {
+            // Generate HTML for MCQs
+            let mcqHtml = '';
+            for (const mcq of mcqArray) {
+                mcqHtml += `<div>${mcq.question}</div>`;
+                // You can add options handling here if needed
+            }
+
+            // Set inner HTML of the "mcq" div
+            document.querySelector(`#box${boxNumber} .mcq`).innerHTML = mcqHtml;
+        }
+    </script>
+</body>
+</html>

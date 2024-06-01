@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .result-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            color: #3498db;
+        }
+        .result-summary {
+            margin-bottom: 20px;
+        }
+        .question-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .question-grid th, .question-grid td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .dark-checkbox {
+            width: 20px;
+            height: 20px;
+        }
+        #viewResultsBtn, #viewResultsBtnTop {
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+    <title>Exam Result</title>
+</head>
+<body>
+
+    <!-- Button to view results at the top -->
+    <button id="viewResultsBtnTop" onclick="fetchAndShowResults()">View Results</button>
+
+    <div class="result-container" id="resultContainer" style="display: none;">
+        <h2>Exam Result</h2>
+
+        <!-- Result Summary -->
+        <div class="result-summary" id="resultSummary">
+            <p>Fetching results, please wait. If it takes time, refresh the page.</p>
+        </div>
+
+        <!-- Question Result Grid -->
+        <table class="question-grid" id="questionResultGrid">
+            <thead>
+                <tr>
+                    <th>Question Description</th>
+                    <th>Attempted Answer</th>
+                    <th>Right Answer</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="4">No data available</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Button to view results at the bottom -->
+    <button id="viewResultsBtn" onclick="fetchAndShowResults()">View Results</button>
+
+    <script>
+        // Function to update result data in the HTML
+        function updateResultData(resultData) {
+            const questionResultGrid = document.getElementById('questionResultGrid');
+            const resultSummary = document.getElementById('resultSummary');
+
+            // Check if resultData is defined and not empty
+            if (resultData && resultData.length > 0) {
+                // Clear existing rows
+                questionResultGrid.innerHTML = '';
+
+                // Add headers
+                const headerRow = document.createElement('tr');
+                const headers = ['Question Description', 'Attempted Answer', 'Right Answer', 'Result'];
+
+                headers.forEach(headerText => {
+                    const th = document.createElement('th');
+                    th.textContent = headerText;
+                    headerRow.appendChild(th);
+                });
+
+                questionResultGrid.appendChild(headerRow);
+
+                // Populate question result data
+                resultData.forEach(question => {
+                    const row = document.createElement('tr');
+                    const tds = ['QuestionDescription', 'AttemptedAnswer', 'RightAnswer', 'Result'];
+
+                    tds.forEach((tdName, index) => {
+                        const td = document.createElement('td');
+
+                        if (tdName === 'Result' && question[tdName] !== undefined) {
+                            // Create checkbox for the 'Result' column
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.checked = question[tdName]; // Set the checkbox state based on the result value
+                            checkbox.disabled = true; // Disable the checkbox for display only
+                            checkbox.classList.add('dark-checkbox'); // Add the class for styling
+                            td.appendChild(checkbox);
+                        } else {
+                            // Display the actual value if it's available, otherwise show 'Data Not Available'
+                            td.textContent = question[tdName] !== undefined ? question[tdName] : 'Data Not Available';
+                        }
+
+                        row.appendChild(td);
+                    });
+
+                    questionResultGrid.appendChild(row);
+                });
+
+                // Hide the "Fetching results" message
+                resultSummary.style.display = 'none';
+            } else {
+                // Handle the case when resultData is undefined or empty
+                console.error('No result data available.');
+
+                // Show the "No data available" message
+                resultSummary.innerHTML = '<p>No data available</p>';
+            }
+        }
+
+        // Function to fetch and show results
+        async function fetchAndShowResults() {
+            const viewResultsBtn = document.getElementById('viewResultsBtn');
+            const viewResultsBtnTop = document.getElementById('viewResultsBtnTop');
+            const resultContainer = document.getElementById('resultContainer');
+
+            try {
+                // Get the current URL and extract query parameters
+                const queryParams = new URLSearchParams(window.location.search);
+                const testId = queryParams.get('testId');
+                const studentName = queryParams.get('studentName');
+                const transactionId = queryParams.get('transactionId');
+
+                // Make an asynchronous request to fetch the data
+                const response = await fetch(`/fetchAndShowResults?testId=${testId}&studentName=${studentName}&transactionId=${transactionId}`);
+                const resultData = await response.json();
+
+                // Check if the response is successful and data is available
+                if (response.ok && resultData && resultData.length > 0) {
+                    // Update the HTML with the fetched result data
+                    updateResultData(resultData);
+
+                    // Show the result container and hide the buttons
+                    resultContainer.style.display = 'block';
+                    viewResultsBtn.style.display = 'none';
+                    viewResultsBtnTop.style.display = 'none';
+                } else {
+                    // Handle the case when the response is not successful or data is not available
+                    console.error('Error fetching or no result data available.');
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error.message);
+            }
+        }
+    </script>
+</body>
+</html>

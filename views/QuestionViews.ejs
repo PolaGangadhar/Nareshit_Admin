@@ -1,0 +1,67 @@
+<!-- views/your-page.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- ... Your existing head content ... -->
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">         
+            <img src="Images\adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+        <a href="#" id="technology">Technology</a>
+        <a href="#">Assessment</a>
+        <a href="#" id="module">Module & Topic Selection</a>
+        <a href="#">Question</a>
+    </nav>
+
+    <div class="items" style="margin: 20px 0px 0px 500px;">
+        <ul id="myUL">
+            <li>Module Selection: <span class="caret"><%= selectedTechnology.name %></span>
+                <ul class="nested">
+                    <% modules.forEach(module => { %>
+                        <li><span class="caret"><%= module.name %></span>
+                            <ul class="nested">
+                                <% topics.forEach(topic => { %>
+                                    <li><span class="caret"><%= topic.name %></span>
+                                        <ul class="nested">
+                                            <% subtopics.forEach(subtopic => { %>
+                                                <li><input type="checkbox"><%= subtopic.name %></li>
+                                            <% }); %>
+                                        </ul>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        </li>
+                    <% }); %>
+                </ul>
+            </li>
+        </ul>
+    </div>
+  
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo2">
+        <p id="footerText">© 2023 Naresh i Technologies | Software Training - Online Training - Live Project Trai   ning - Weekend Training.</p>
+    </footer>
+    <script>
+        // Your existing script
+        var toggler = document.getElementsByClassName("caret");
+        var i;
+
+        for (i = 0; i < toggler.length; i++) {
+            toggler[i].addEventListener("click", function() {
+                this.parentElement.querySelector(".nested").classList.toggle("active");
+                this.classList.toggle("caret-down");
+            });
+        }
+    </script>
+</body>
+
+</html>

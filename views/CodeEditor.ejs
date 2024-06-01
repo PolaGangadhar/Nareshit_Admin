@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Editor</title>
+  <!-- CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.css">
+  <!-- CodeMirror Theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/theme/dracula.css">
+  <!-- CodeMirror JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.js"></script>
+  <!-- CodeMirror Mode for JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/javascript/javascript.js"></script>
+  <!-- CodeMirror Mode for C# -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/csharp/csharp.js"></script>
+  <!-- CodeMirror Mode for Java -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/clike/clike.js"></script>
+  <!-- CodeMirror Mode for C -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/clike/clike.js"></script>
+  <!-- CodeMirror Autocomplete Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/hint/show-hint.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/hint/show-hint.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/hint/javascript-hint.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/hint/anyword-hint.js"></script>
+  <!-- Tern.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tern/0.12.0/tern.js"></script>
+  <!-- Tern CodeMirror Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/tern/tern.js"></script>
+
+  <style>
+    /* Custom styles for the dropdown and button */
+    #language-select {
+      background-color: #333;
+      color: #fff;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    #run-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #output {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body style="background-color: #000;">
+  <select id="language-select">
+    <option value="javascript">JavaScript</option>
+    <option value="text/x-csharp">C#</option>
+    <option value="text/x-java">Java</option>
+    <option value="text/x-csrc">C</option>
+  </select>
+  <button id="run-button">Run</button>
+  <textarea id="code-editor"></textarea>
+  <div id="output"></div>
+
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+      lineNumbers: true,
+      mode: "javascript",
+      theme: "dracula", // Change to 'dracula' theme
+      autofocus: true, // Autofocus the editor
+      extraKeys: {
+        "Ctrl-Space": "autocomplete" // Enable autocomplete on Ctrl+Space
+      },
+      hintOptions: {
+        completeSingle: false // Show autocomplete dropdown with multiple options
+      }
+    });
+
+    // Code snippets for different languages
+    var codeSnippets = {
+      "javascript": "console.log('Hello, world!');",
+      "text/x-csharp": "using System;\n\npublic class Program\n{\n    public static void Main(string[] args)\n    {\n        Console.WriteLine(\"Hello, world!\");\n    }\n}",
+      "text/x-java": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}",
+      "text/x-csrc": "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, world!\\n\");\n    return 0;\n}"
+    };
+
+    document.getElementById("language-select").addEventListener("change", function() {
+      var selectedLanguage = this.value;
+      editor.setOption("mode", selectedLanguage);
+
+      // Insert code snippet for the selected language
+      editor.setValue(codeSnippets[selectedLanguage]);
+    });
+
+   document.getElementById("run-button").addEventListener("click", async function() {
+    var code = editor.getValue();
+    var output = document.getElementById("output");
+    output.innerHTML = "Running...";
+
+    try {
+        // Send the code to .NET Fiddle API for execution
+        var response = await fetch('https://dotnetfiddle.net/Home/Run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'Code=' + encodeURIComponent(code)
+        });
+
+        if (response.ok) {
+            // Parse the response and extract the result
+            var result = await response.text();
+            output.innerHTML = result;
+        } else {
+            output.innerHTML = "Error occurred while running the code.";
+        }
+    } catch (error) {
+        output.innerHTML = "Error occurred while running the code: " + error;
+    }
+});
+  </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naresh I Technlogies Registration Page</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #registrationForm {
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+            text-align: left;
+        }
+
+        input {
+            width: calc(100% - 16px);
+            box-sizing: border-box;
+            margin-top: 5px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #usernameAvailability {
+            color: green;
+            display: none;
+            margin-left: 5px;
+        }
+
+        #usernameUnavailable {
+            color: red;
+            display: none;
+        }
+
+        #password, #confirmPassword, #studentRegisterId {
+            box-sizing: border-box;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        #passwordComplexity {
+            margin-top: -10px;
+            font-size: 12px;
+            color: #555;
+            text-align: left;
+            display: inline-block;
+        }
+
+        #passwordMismatch {
+            color: red;
+            display: none;
+            margin-top: -10px;
+        }
+
+        #cameraContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #logButton {
+            margin-top: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: not-allowed;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #logButton:enabled {
+            background-color: #2ecc71;
+            cursor: pointer;
+        }
+
+        #qrCodeDisplay {
+            display: none;
+            margin-top: 20px;
+        }
+         .validation-message {
+            color: red;
+            font-size: 12px;
+            text-align: left;
+            margin-top: 5px;
+            display: none;
+        }
+
+        #usernameValidation {
+            color: red;
+            font-size: 12px;
+            text-align: left;
+            margin-top: 5px;
+            display: none;
+        }
+
+         .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            text-align: center;
+        }
+
+        #closeModal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+ 
+    <form id="registrationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required maxlength="20" oninput="checkUsernameAvailability()">
+        <!-- Username availability indicators -->
+                <!-- Username availability indicators -->
+<!-- Username availability indicators -->
+        <span id="usernameAvailable" style="color: green; display: none;">&#10004; Username available</span>
+        <span id="usernameUnavailable" style="color: red; display: none;">Username unavailable</span>
+        <!-- Validation message for minimum 8 characters -->
+        <label id="usernameValidation" class="validation-message">Username must be at least 8 characters</label>
+
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required oninput="checkPasswordComplexity()">
+
+        </br>
+            </br>
+        <!-- Password complexity indicator -->
+        <small id="passwordComplexity">Password must contain at least 8 characters, including uppercase, lowercase, and a number.</small>
+
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required oninput="checkPasswordMatch()">
+        <!-- Password mismatch indicator -->
+        <span id="passwordMismatch">Passwords do not match</span>
+
+        <label for="studentRegisterId">Student Register ID:</label>
+        <input type="text" id="studentRegisterId" name="studentRegisterId" required oninput="enableRegisterButton()">
+
+        <!-- Container for uploaded QR code image -->
+        <div id="cameraContainer">
+            <!-- Display the selected QR code image (removed the file input) -->
+        </div>
+
+        <!-- Button to register the user -->
+        <button type="button" id="logButton" onclick="registerUser()" disabled>Register</button>
+
+        <!-- QR code display -->
+        <div id="qrCodeDisplay"></div>
+    </form>
+
+      <!-- Modal for displaying error messages -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" onclick="closeErrorModal()">&times;</span>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <div id="registrationSuccessModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" onclick="closeRegistrationSuccessModal()">&times;</span>
+        <p>Congratulations! Registration successful.</p>
+        <p>Save the QR Code for future login.</p>
+        <button onclick="downloadQRCode()">Download QR Code</button>
+    </div>
+</div>
+
+
+    <script>
+        // Function to check username availability
+               function checkUsernameAvailability() {
+            const username = document.getElementById('username').value;
+            const usernameAvailable = document.getElementById('usernameAvailable');
+            const usernameUnavailable = document.getElementById('usernameUnavailable');
+            const usernameValidation = document.getElementById('usernameValidation');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const studentRegisterId = document.getElementById('studentRegisterId');
+
+            // Make a request to your server to check user availability
+            fetch(`/checkUserAvailability?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        usernameAvailable.style.display = 'inline';
+                        usernameUnavailable.style.display = 'none';
+                        usernameValidation.style.display = 'none'; // Hide validation message
+
+                        // Enable password, confirm password, and register ID fields
+                        password.disabled = false;
+                        confirmPassword.disabled = false;
+                        studentRegisterId.disabled = false;
+                    } else {
+                        usernameAvailable.style.display = 'none';
+                        usernameUnavailable.style.display = 'inline';
+                        usernameValidation.style.display = 'none'; // Hide validation message
+
+                        // Disable password, confirm password, and register ID fields
+                        password.disabled = true;
+                        confirmPassword.disabled = true;
+                        studentRegisterId.disabled = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking username availability:', error);
+                });
+        }
+     function checkUsernameAvailability() {
+            const username = document.getElementById('username').value;
+            const usernameAvailable = document.getElementById('usernameAvailable');
+            const usernameUnavailable = document.getElementById('usernameUnavailable');
+            const usernameValidation = document.getElementById('usernameValidation');
+
+            if (username.length >= 8) {
+                // Make a request to your server to check user availability
+                fetch(`/checkUserAvailability?username=${username}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.available) {
+                            usernameAvailable.style.display = 'inline';
+                            usernameUnavailable.style.display = 'none';
+                            usernameValidation.style.display = 'none'; // Hide validation message
+                        } else {
+                            usernameAvailable.style.display = 'none';
+                            usernameUnavailable.style.display = 'inline';
+                            usernameValidation.style.display = 'none'; // Hide validation message
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking username availability:', error);
+                    });
+            } else {
+                // Display validation message for usernames less than 8 characters
+                usernameAvailable.style.display = 'none';
+                usernameUnavailable.style.display = 'none';
+                usernameValidation.innerText = 'Username must be at least 8 characters.';
+                usernameValidation.style.display = 'block'; // Display validation message
+            }
+        }
+
+        // Function to check password complexity
+        function checkPasswordComplexity() {
+            const password = document.getElementById('password');
+            const passwordValue = password.value;
+            const passwordComplexity = document.getElementById('passwordComplexity');
+
+            // Check password complexity (replace with actual complexity check logic)
+            const isComplexPassword = passwordValue.length >= 8 && /[a-z]/.test(passwordValue) && /[A-Z]/.test(passwordValue) && /\d/.test(passwordValue);
+
+            // Update border color based on complexity
+            password.style.border = isComplexPassword ? '1px solid green' : '1px solid red';
+
+            // Display complexity message
+            passwordComplexity.style.color = isComplexPassword ? 'green' : '#555';
+        }
+
+        // Function to check password match
+        function checkPasswordMatch() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const passwordMismatch = document.getElementById('passwordMismatch');
+
+            // Check if passwords match
+            const doPasswordsMatch = password.value === confirmPassword.value;
+
+            // Display mismatch indicator
+            passwordMismatch.style.display = doPasswordsMatch ? 'none' : 'inline';
+        }
+       function downloadQRCode() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const studentRegisterId = document.getElementById('studentRegisterId').value;
+
+    const qrCodeContent = `Username: ${username}\nPassword: ${password}\nStudent Register ID: ${studentRegisterId}`;
+    const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCodeContent)}&size=200x200`;
+
+    // Create an invisible link element
+    const link = document.createElement('a');
+    link.href = qrCodeImageUrl;
+
+    // Set the filename with the username and format as .jpg
+    link.download = `${username}_QRCode.jpg`;
+
+    // Trigger the click event on the link to start the download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+        // Function to enable register button after entering student register ID
+        function enableRegisterButton() {
+            const logButton = document.getElementById('logButton');
+            const studentRegisterId = document.getElementById('studentRegisterId').value;
+
+            // Enable the Register button if student register ID is entered
+            logButton.disabled = studentRegisterId ? false : true;
+        }
+         function openErrorModal() {
+            document.getElementById('errorModal').style.display = 'block';
+        }
+
+        // Function to close the error modal
+        function closeErrorModal() {
+            document.getElementById('errorModal').style.display = 'none';
+        }
+
+            // Function to open the registration success modal
+    function openRegistrationSuccessModal() {
+        document.getElementById('registrationSuccessModal').style.display = 'block';
+    }
+
+    // Function to close the registration success modal
+    function closeRegistrationSuccessModal() {
+        document.getElementById('registrationSuccessModal').style.display = 'none';
+    }
+
+
+
+        // Function to register the user
+         function registerUser() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const studentRegisterId = document.getElementById('studentRegisterId').value;
+
+    // Check if the passwords match and student register ID is entered
+    if (password === confirmPassword && studentRegisterId) {
+        // Construct the data object for the POST request
+        const userData = {
+            username: username,
+            password: password,
+            studentRegisterId: studentRegisterId
+        };
+
+        // Make a POST request to check user availability first
+        fetch(`/checkUserAvailability?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available) {
+                    // Continue with registration if username is available
+                    fetch(`/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the server
+                        if (data.success) {
+                           if (data.success) {
+            // Display the QR code
+            const qrCodeContent = `Username: ${username}\nPassword: ${password}\nStudent Register ID: ${studentRegisterId}`;
+            document.getElementById('qrCodeDisplay').innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(qrCodeContent) + '&amp;size=200x200" alt="QR Code">';
+            document.getElementById('qrCodeDisplay').style.display = 'block';
+
+            // Open the registration success modal
+            openRegistrationSuccessModal();
+        }
+
+
+                        } else {
+                            
+                                    document.getElementById('errorMessage').innerText = data.message;
+                                    openErrorModal();
+                               
+                        }
+                    })
+                    .catch(error => {
+                        // Handle errors during registration
+                        console.error('Registration Error:', error);
+                    });
+                } else {
+                    // Handle username not available
+                    alert('Username not available. Please choose a different username.');
+                }
+            })
+            .catch(error => {
+                // Handle errors during username availability check
+                console.error('Username Availability Error:', error);
+            });
+    } else {
+        alert('Please fill in all the required fields and ensure passwords match.');
+    }
+}
+
+    </script>
+</body>
+</html>

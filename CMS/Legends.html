@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Legends</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .legends-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .legend {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-dot {
+            width: 30px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .legend-text {
+            font-size: 1rem;
+        }
+
+        /* Legend Colors */
+        .attempted-dot {
+            background-color: #3498db; /* Blue */
+        }
+
+        .review-later-dot {
+            background-color: #e74c3c; /* Red */
+        }
+
+        .not-attempted-dot {
+            background-color: #2ecc71; /* Green */
+        }
+        .not-attempted-dot-reviewlater{
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="legends-container">
+        <div class="legend">
+            <div class="legend-dot attempted-dot"></div>
+            <div class="legend-text">Attempted</div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-dot review-later-dot"></div>
+            <div class="legend-text">Attempted + Review Later</div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-dot not-attempted-dot-reviewlater"></div>
+            <div class="legend-text">Not Attempted + Review Later</div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-dot not-attempted-dot"></div>
+            <div class="legend-text">Not Attempted</div>
+        </div>
+    </div>
+</body>
+
+</html>

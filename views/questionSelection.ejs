@@ -1,0 +1,44 @@
+s<!-- questionSelection.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Selection Page</title>
+    <!-- Add your styles here -->
+</head>
+
+<body>
+    <header>
+        <!-- Your header content goes here -->
+    </header>
+
+    <section>
+        <h2>Welcome To Question Selection Page</h2>
+
+        <!-- Form for selecting the number of questions for each type -->
+        <form action="/createTest" method="post">
+            <label for="mcqQuestions">Number of MCQ Questions:</label>
+            <input type="number" id="mcqQuestions" name="mcqQuestions" required>
+
+            <label for="descriptiveQuestions">Number of Descriptive Questions:</label>
+            <input type="number" id="descriptiveQuestions" name="descriptiveQuestions" required>
+
+            <label for="matchingQuestions">Number of Matching Questions:</label>
+            <input type="number" id="matchingQuestions" name="matchingQuestions" required>
+
+              <label for="MultiSelectionQuestion">Number of Matching Questions:</label>
+            <input type="number" id="checkboxSelections" name="checkboxSelections" required>
+
+            <button type="submit">Create Test</button>
+        </form>
+    </section>
+
+    <footer>
+        <!-- Your footer content goes here -->
+    </footer>
+</body>
+
+</html>

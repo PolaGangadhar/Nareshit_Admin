@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Grids</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px;
+        }
+
+        #sideLogo {
+            width: 30px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        nav {
+            background-color: grey;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #pageFooter {
+            border: 1px solid grey;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            height: 100px;
+            background-color: azure;
+        }
+
+        .container {
+    max-width: 600px; /* Adjust the maximum width as needed */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.textbox {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+
+.submit-button {
+    margin-left: 245px;
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #45a049;
+}
+#sheduletime {
+            color: #fff;
+            font-weight: bold;
+            background-color: #555;
+        }
+        
+/* Add any additional styles as needed */
+    </style>
+    <script>
+        function validateForm() {
+        var testName = document.getElementById("testName").value;
+        var testDescription = document.getElementById("testDescription").value;
+        var startDate = document.getElementById("startDate").value;
+        var endDate = document.getElementById("endDate").value;
+        var startTime = document.getElementById("startTime").value;
+        var endTime = document.getElementById("endTime").value;
+
+        if (testName === "") {
+            alert("Please enter the test name");
+            return false;
+        }
+        if (testDescription === "") {
+            alert("Please enter the test description");
+            return false;
+        }
+        if (startDate === "") {
+            alert("Please select the start date");
+            return false;
+        }
+        if (endDate === "") {
+            alert("Please select the end date");
+            return false;
+        }
+        if (startTime === "") {
+            alert("Please select the start time");
+            return false;
+        }
+        if (endTime === "") {
+            alert("Please select the end time");
+            return false;
+        }
+
+        var startDateObj = new Date(startDate);
+        var endDateObj = new Date(endDate);
+        var startTimeObj = new Date("1970-01-01 " + startTime);
+        var endTimeObj = new Date("1970-01-01 " + endTime);
+
+        if (startDateObj.getTime() === endDateObj.getTime()) {
+            if (startTimeObj.getTime() >= endTimeObj.getTime()) {
+                alert("End Time cannot be before or same as Start Time");
+                return false;
+            }
+        } else if (startDateObj > endDateObj) {
+            alert("End Date cannot be before Start Date");
+            return false;
+        }
+
+        return true;
+    }
+
+    function login() {
+        if (!validateForm()) {
+            return;
+        }     
+        window.location.href = '/listofAssessment';
+    }
+    </script>  
+</head>
+<body>
+    <header id="pageHeader">
+     <img src="/Images/Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img src="/Images/adminlogo.jpg" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>    
+        <a href="#">List Of Assessment</a>
+        <a href="#" id="technology">Technology</a>
+        <a href="#">Assessment</a>
+        <a href="#">Question Views</a>
+        <a href="#" id="sheduletime">SheduleTime</a>
+    </nav>
+
+    <form onsubmit="return validateForm()">
+    <div class="container">
+    <label>Test Name<input type="text" id="testName" class="textbox" ></label>
+    <label>Test Description<input type="text" id="testDescription" class="textbox" ></label>
+    <label> start Date<input type="date" id="startDate" class="textbox"></label>
+    <label>End Date<input type="date" id="endDate" class="textbox"></label>
+    <label>Start Time <input type="time" id="startTime" class="textbox" ></label>
+    <label>End Time<input type="time" id="endTime" class="textbox" ></label>
+    <button class="submit-button" type="button" onclick="login()">Test Prepared</button>
+  </div>
+</form>
+
+   <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 400px;">
+        &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+    </footer>
+</body>
+</html>

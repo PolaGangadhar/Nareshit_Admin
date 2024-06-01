@@ -1,0 +1,361 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test1</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f4f4f4;
+      }
+
+      header {
+          padding: 0.6em;
+          background-color: azure;
+          border: 1px solid grey;
+      }
+
+      #pageHeader {
+          grid-area: header;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+      #logo {
+          width: 250px;
+          height: auto;
+          margin-right: 20px;
+      }
+
+      #adminInfo {
+          display: flex;
+          align-items: center;
+      }
+
+      #adminUsername {
+          margin-right: 10px;
+      }
+
+      #sideLogo {
+          width: 30px;
+          height: auto;
+          margin-right: 20px;
+      }
+
+      nav {
+          background-color: grey;
+          padding: 10px;
+          text-align: center;
+      }
+
+      nav a {
+          color: white;
+          text-decoration: none;
+          padding: 10px;
+          margin: 0 10px;
+          font-weight: bold;
+          display: inline-block;
+      }
+
+      nav a:hover {
+          background-color: #555;
+      }
+
+      #technology {
+          color: #fff;
+          font-weight: bold;
+          background-color: #555;
+      }
+
+.TypeOfAssessment{
+  display: flex;
+  margin: 40px;
+}
+.NatureOfAssessment{
+  display: flex;
+  margin: 40px;
+}
+
+#languageDropdown {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+
+  /* Style for TypeOfAssessment container */
+  .TypeOfAssessment {
+    margin-top: 40px;
+  }
+
+  /* Style for radio buttons in TypeOfAssessment */
+  .TypeOfAssessment .form-check-input {
+    margin-right: 5px;
+  }
+
+  /* Style for NatureOfAssessment container */
+  .NatureofAssessment {
+    margin-top: 25px;
+    
+  }
+
+  /* Style for radio buttons in NatureOfAssessment */
+  .NatureofAssessment .form-check-input {
+    margin-right: 5px;
+  }
+
+  #nextButton {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    #nextButton:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .next-button {
+      margin-top: 60px; /* Adjust the margin as needed */
+      text-align: center; /* Center the button */
+    }
+    .mb-3{
+      margin-top: 40px;
+      margin: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+.randomcheck{
+  margin-bottom: 15px;
+}
+
+
+  </style>
+</head>
+<body>
+  <header id="pageHeader">
+
+    <div id="adminInfo">
+      
+        <div id="adminUsername"></div>
+    </div>
+</header>
+<nav>
+    <a href="#">List of Assessment</a>
+    <a href="#" id="technology">Technology</a>
+    <a href="#">Assessment</a>
+    <a href="#">Questions View</a>
+    <a href="#">Shedule Time</a> 
+</nav>
+  <div class="container">
+    <div class="mb-3">
+      <label for="languageDropdown" class="form-label">Select Technology:</label>
+     <select class="form-select" id="languageDropdown" onchange="enableTypeOfAssessment()">
+    </div>
+     <div class="TypeOfAssessment">
+      <label class="form-label">Type of Assessment:</label>
+      <div class="form-check" style="margin-left: 25px;">
+        <input class="form-check-input" type="radio" name="assessmentType" id="type1" disabled onchange="enableNatureOfAssessment()">
+        <label class="form-check-label" for="type1">Assessment</label>
+      </div>
+      <!-- Add the rest of the radio buttons for the type of assessment -->
+    </div>
+     
+    <div class="NatureofAssessment">
+      <label class="form-label">Nature of Assessment:</label>
+      <div class="form-check" style="margin-left: 25px;">
+        <input class="form-check-input" type="radio" name="assessmentNature" disabled onclick="enableRandomize()" id="nature1">
+          <label class="form-check-label" for="nature1">Dynamic</label>
+      </div>
+
+      <div class="form-check" style="margin-left: 25px;">
+        <input class="form-check-input" type="radio" name="assessmentNature" onclick="enableRandomize()" id="nature2" disabled>
+        <label class="form-check-label" for="nature2">Fixed</label>
+      </div>  
+      
+    
+  </div>
+
+
+ 
+</div>
+   <div class="checkRandom" style="margin-left: 25px;">
+    <label class="form-label" style="margin-left: 15px;">Random:</label>
+    <label class="randomcheck" style="margin-left: 25px;">
+      <input class="form-check-input" type="radio" name="randomize" id="Completetest" disabled onclick="enableNextButton()"> Complete Test
+    </label>
+  
+    <label class="randomcheck" style="margin-left: 25px;">
+      <input class="form-check-input" type="radio" name="randomize" id="modulewiserandom"  disabled onclick="enableNextButton()">Module Wise Random
+    </label>
+  
+    <label class="randomcheck" style="margin-left: 25px;">
+      <input class="form-check-input" type="radio" name="randomize" id="topicwiserandom"  disabled onclick="enableNextButton()">Topic Wise Random
+    </label>
+  
+    <label class="randomcheck" style="margin-left: 25px;">
+      <input class="form-check-input" type="radio" name="randomize" id="norandom" disabled onclick="enableNextButton()">No Random
+    </label>
+  </div>
+
+  <div class="next-button">
+    <button class="btn btn-primary" onclick="navigateToPage()" id="nextButton" disabled>Next</button>
+  </div>
+  <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 273px;">
+    &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+</footer>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+  <script>
+  $(document).ready(function () {
+    // Fetch technologies from the server
+    $.get('/fetchTechnologies', function (technologies) {
+      // Populate the language dropdown
+      var languageDropdown = $('#languageDropdown');
+      languageDropdown.empty();
+      languageDropdown.append('<option value="">Select Language</option>');
+
+      // Add options for each technology
+      technologies.forEach(function (technology) {
+        languageDropdown.append('<option value="' + technology.TechnologyID + '">' + technology.TechnologyName + '</option>');
+      });
+    });
+  });
+
+
+
+function enableTypeOfAssessment() {
+  var languageDropdown = document.getElementById("languageDropdown");
+  var type1 = document.getElementById("type1");
+  var type2 = document.getElementById("type2"); // Assuming you have type2 and other type IDs
+  var nature1 = document.getElementById("nature1");
+  var nature2 = document.getElementById("nature2");
+  var randomizeElements = document.querySelectorAll('input[name="randomize"]');
+  var nextButton = document.getElementById("nextButton");
+
+  if (languageDropdown.value !== "") {
+    type1.disabled = false;
+    type2.disabled = false; // Enable other type elements as needed
+  } else {
+    type1.disabled = true;
+    type2.disabled = true; // Disable other type elements as needed
+  }
+
+  nature1.disabled = true;
+  nature2.disabled = true;
+
+  randomizeElements.forEach((element) => {
+    element.disabled = true;
+    element.checked = false;
+  });
+
+  nextButton.disabled = true;
+}
+
+function enableNatureOfAssessment() {
+  var type1 = document.getElementById("type1");
+  var type2 = document.getElementById("type2");
+  var nature1 = document.getElementById("nature1");
+  var nature2 = document.getElementById("nature2");
+  var randomizeElements = document.querySelectorAll('input[name="randomize"]');
+  var nextButton = document.getElementById("nextButton");
+
+  if (type1.checked || type2.checked) {
+    nature1.disabled = false;
+    nature2.disabled = false;
+  } else {
+    nature1.disabled = true;
+    nature2.disabled = true;
+  }
+
+  function resetNatureOfAssessment() {
+  var nature1 = document.getElementById("nature1");
+  var nature2 = document.getElementById("nature2");
+
+  nature1.disabled = true;
+  nature2.disabled = true;
+  nature1.checked = false;
+  nature2.checked = false;
+}
+
+function resetRandom() {
+  var randomizeElements = document.querySelectorAll('input[name="randomize"]');
+  randomizeElements.forEach((element) => {
+    element.disabled = true;
+    element.checked = false;
+  });
+}
+
+
+  randomizeElements.forEach((element) => {
+    element.disabled = true;
+    element.checked = false;
+  });
+
+  nextButton.disabled = true;
+}
+
+function enableRandomize() {
+  var nature1 = document.getElementById("nature1");
+  var nature2 = document.getElementById("nature2");
+  var random1 = document.getElementById("Completetest");
+  var random2 = document.getElementById("modulewiserandom");
+  var random3 = document.getElementById("topicwiserandom");
+  var random4 = document.getElementById("norandom");
+  var nextButton = document.getElementById("nextButton");
+
+  if (nature1.checked || nature2.checked) {
+    random1.disabled = false;
+    random2.disabled = false;
+    random3.disabled = false;
+    random4.disabled = false;
+  } else {
+    random1.disabled = true;
+    random2.disabled = true;
+    random3.disabled = true;
+    random4.disabled = true;
+  }
+
+  var anyRandomChecked = random1.checked || random2.checked || random3.checked || random4.checked;
+  nextButton.disabled = !anyRandomChecked;
+}
+
+
+function enableNextButton() {
+  var random1 = document.getElementById("Completetest");
+  var random2 = document.getElementById("modulewiserandom");
+  var random3 = document.getElementById("topicwiserandom");
+  var random4 = document.getElementById("norandom");
+  var nextButton = document.getElementById("nextButton");
+
+  var anyRandomChecked = random1.checked || random2.checked || random3.checked || random4.checked;
+
+  if (anyRandomChecked) {
+    nextButton.disabled = false;
+  } else {
+    nextButton.disabled = true;
+  }
+}
+
+      
+
+     function navigateToPage(page) {
+      // Get selected language ID and name
+  var selectedLanguageId = document.getElementById("languageDropdown").value;
+  var selectedLanguageName = document.getElementById("languageDropdown").options[document.getElementById("languageDropdown").selectedIndex].text;
+
+  // Redirect to the next page with query parameters
+  window.location.href = '/testcreatortypes?languageId=' + selectedLanguageId + '&languageName=' + encodeURIComponent(selectedLanguageName);
+    }
+  </script>
+
+</body>
+</html>

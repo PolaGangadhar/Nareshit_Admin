@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Login</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #registrationForm {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+            text-align: left;
+        }
+
+        #username {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #cameraContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #qrCodeImage {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 10px;
+        }
+
+        #uploadButton,
+        #logButton {
+            margin-top: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #logButton:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+ 
+    <form id="registrationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <!-- Container for uploaded QR code image -->
+        <div id="cameraContainer">
+            <!-- Display the selected QR code image -->
+            <img id="qrCodeImageDisplay" src="" alt="Selected QR Code Image">
+        </div>
+
+        <!-- File input for QR code image upload -->
+        <label for="qrCodeImage">Upload QR Code Image:</label>
+        <input type="file" id="qrCodeImage" name="qrCodeImage" accept=".png, .jpg, .jpeg" onchange="handleImageUpload()">
+
+        <!-- Button to proceed with the selected QR code -->
+        <button type="button" id="uploadButton" onclick="proceed()">Upload QR Code Image</button>
+        </br>
+        </br>
+        <!-- Button to log the selected QR code -->
+        <button type="button" id="logButton" onclick="log()" disabled>Login</button>
+    </form>
+
+    <script>
+        // Function to handle QR code image upload
+        function handleImageUpload() {
+            const qrCodeImageInput = document.getElementById('qrCodeImage');
+            const qrCodeImageDisplay = document.getElementById('qrCodeImageDisplay');
+            const logButton = document.getElementById('logButton');
+
+            // Check if a QR code image is selected
+            if (qrCodeImageInput.files && qrCodeImageInput.files.length > 0) {
+                const qrCodeImage = qrCodeImageInput.files[0];
+
+                // Display the selected QR code image
+                qrCodeImageDisplay.src = URL.createObjectURL(qrCodeImage);
+
+                // Enable the Log QR Code button
+                logButton.disabled = false;
+            }
+        }
+
+        // Function to proceed with the selected QR code
+        function proceed() {
+            const username = document.getElementById('username').value;
+            const qrCodeImageDisplay = document.getElementById('qrCodeImageDisplay');
+
+            // Check if a QR code image is available
+            if (qrCodeImageDisplay.src.trim() !== '') {
+                alert('Proceeding with the selected QR code.');
+                // Perform further actions as needed
+            } else {
+                alert('Please upload a QR code image.');
+            }
+        }
+
+        // Function to log the selected QR code
+        function log() {
+            const username = document.getElementById('username').value;
+            const qrCodeImageDisplay = document.getElementById('qrCodeImageDisplay');
+
+            // Check if a QR code image is available
+            if (qrCodeImageDisplay.src.trim() !== '') {
+                alert('Logging the selected QR code.');
+                // Perform logging actions as needed
+            } else {
+                alert('Please upload a QR code image.');
+            }
+        }
+    </script>
+</body>
+</html>

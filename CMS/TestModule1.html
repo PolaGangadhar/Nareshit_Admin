@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+
+        #sideLogo {
+            width: 30px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+
+        nav {
+    background-color: grey; /* Background color */
+    padding: 10px; /* Padding for the navigation bar */
+    text-align: center;
+}
+
+nav a {
+    color: white; /* Text color for the links */
+    text-decoration: none; /* Remove underlines from links */
+    padding: 10px; /* Padding for the links */
+    margin: 0 10px; /* Margin between links */
+    font-weight: bold; /* Bold text for links */
+    display: inline-block; /* Display links horizontally */
+}
+
+nav a:hover {
+    background-color: #555; /* Background color on hover */
+}
+
+
+        .table-1 {
+            border: 1px solid white;
+            width: 100%;
+            margin: auto; /* Center the table */
+        }
+
+        .table-1 th, .table-1 td {
+            border: 1px solid white;
+            padding: 8px;
+            text-align: left;
+            vertical-align: middle; /* Center the content vertically */
+        }
+
+        .table-1 th {
+            background-color: white; /* Add background color to table headers */
+        }
+
+        .tbody-1 input[type="date"] {
+            width: 10%; /* Adjusted width for better visual */
+            padding: 8px;
+            box-sizing: border-box;
+            margin: 4px 0; /* Added margin for better spacing */
+        }
+
+        .filter-icon {
+            margin-left: 20px;
+            width: 16px;
+            height: 16px;
+            fill: black; /* Adjust the color as needed */
+            vertical-align: middle; /* Center the icon vertically */
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-label input {
+            margin-right: 8px; /* Added margin for better spacing */
+        }
+
+        table {
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        ::-webkit-scrollbar {
+    width: 12px;
+      }
+
+        th {
+            background-color: #f2f2f2; /* Add background color to table headers */
+        }
+
+        input[type="checkbox"] {
+            margin-left: 1px;
+        }
+
+        .batch {
+            margin: 20px; /* Adjust margin as needed */
+            padding: 10px; /* Adjust padding as needed */
+        }
+
+        .batch label {
+            display: inline-block;
+            margin-right: 10px; /* Adjust margin between label and input */
+        }
+        footer {
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        #pageFooter {
+            grid-area: footer;
+            border: 1px solid grey;
+            width: 100%; /* Set the desired width for the footer */
+            box-sizing: border-box; /* Include padding and border in the total width */
+            display: flex;
+            /* Adjust as needed */
+            align-items: center; /* Align items vertically in the center */
+            padding: 10px; /* Add padding as needed */
+            height: 100px;
+            background-color: azure;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">         
+            <img src="Images\adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+    <nav>
+        <a href="#">Test Details</a>
+        <a href="#">Test Schedule</a>
+      </nav>
+    <div>
+        <table class="table-1">
+            <tbody class="tbody-1">
+                <tr class="trdate">
+                    <td>
+                        <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M0 0h24v24H0V0z" fill="none"/>
+                            <path d="M3 3h18v2H3zM21 4v2h-1v2h1v12H2V8h1V6H2V4H1V3h18v1zM11 14h2v5h-2z"/>
+                        </svg>                        
+                    </td>
+                    <td>
+                        <label class="checkbox-label">Select All<input style="margin-left: 15px;" type="checkbox"> </label>                                             
+                    </td>
+                    <td class="tdmin">
+                        <label for="minDate">From:</label>
+                        <input type="date" id="minDate" name="minDate">
+                        <label style="margin-left: 60px;" for="maxDate">To:</label>
+                        <input type="date" id="maxDate" name="maxDate">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table id="example" class="display nowrap">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Sno.</th>
+                    <th>Test Name</th>
+                    <th>Test Description</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>1</td>
+                    <td>C# Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>2</td>
+                    <td>Java Sample Test</td>
+                    <td>Java Basic Foundation</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>3</td>
+                    <td>HTMl Sample Test</td>
+                    <td>Concepts of table Views</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>4</td>
+                    <td>C# Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>5</td>
+                    <td>Java Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>6</td>
+                    <td>HTMl Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>7</td>
+                    <td>C# Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>8</td>
+                    <td>Java Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>9</td>
+                    <td>HTMl Sample Test</td>
+                    <td>Concepts of Array</td>
+                    <td>2011-04-25</td>
+                    <td>2011-04-28</td>
+                    <td>9:00</td>
+                    <td>12:00</td>
+                </tr>
+            </tbody>
+         
+        </table>
+        <div class="batch">
+            <label>Batch Upload</label>
+            <input id="upload" type="checkbox">
+        
+            <label style="margin-left: 50px;">Batch Select</label>
+            <input id="select" type="checkbox">
+        </div>
+
+                        
+
+    </div>
+    <footer id="pageFooter">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo"
+            style="height: 25px; width: 180px; align-items: center; margin-top: 10px;">
+        <p style="margin: 0px px 0px 0px 300px;">© 2023 Naresh i Technologies | Software Training - Online
+            </p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <script>
+         let minDate, maxDate;
+
+minDate = new DateTime('#min', {
+    format: 'MMMM Do YYYY'
+});
+maxDate = new DateTime('#max', {
+    format: 'MMMM Do YYYY'
+});
+
+let table = new DataTable('#example');
+
+document.querySelectorAll('#min, #max').forEach((el) => {
+    el.addEventListener('change', () => table.draw());
+});
+    </script>
+</body>
+</html>

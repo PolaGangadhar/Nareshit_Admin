@@ -1,0 +1,6 @@
+﻿<parameters>
+  <parameter name="IIS Web Application Name" defaultValue="CMS" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\NareshIT\\Source\\NodejsWebApp1\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\NareshIT\\Source\\NodejsWebApp1\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+</parameters>

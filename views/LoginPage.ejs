@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .login-container {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+            max-width: 400px; /* Added max-width for better responsiveness */
+            width: 100%; /* Make it take full width */
+        }
+
+            .login-container:hover {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            }
+
+        .login-form {
+            max-width: 300px;
+            margin: auto;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px; /* Adjusted input padding for better touch */
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            transition: border-color 0.3s ease;
+        }
+
+            input:hover,
+            input:focus {
+                border-color: #3498db;
+            }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 14px 20px; /* Adjusted button padding for better touch */
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Make it take full width */
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        .separator {
+            margin: 20px 0;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+
+          #qrCodeModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fefefe;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div>
+            <!-- <button onclick="login('admin')">Admin Login</button>
+            <button onclick="login('user')">User Login</button> -->
+        </div>
+
+        <form id="loginForm" class="login-form">
+            <h2>Login</h2>
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="button" onclick="login()">Login</button>
+            </br>
+            <!-- Added register link -->
+            <a href="/register" class="register-link">Don't have an account? Register here.</a>
+        </form>
+    </div>
+  <div id="qrCodeModal" class="modal">
+    <div class="modal-content">
+        
+       <div>
+            
+            <label for="cameraInput">Choose QR File</label>
+            <input type="file" accept="image/*" capture="environment" id="cameraInput">
+            <button onclick="scanQRCode()">Scan QR Code</button>
+        </div>
+    </div>
+</div>
+    <script>
+     function checkQRCode() {
+        const qrCodeInput = document.getElementById('qrCodeInput').value;
+        const username = 'user'; // You can retrieve the username from the QR code content
+
+        if (qrCodeInput.includes(username)) {
+            alert('QR code scanned successfully! Redirecting to the homepage...');
+            window.location.href = `/UserHomePage?username=${username}`;
+        } else {
+            alert('Invalid QR code. Please try again.');
+        }
+    }
+
+    // Function to handle QR code scanning
+    async function scanQRCode() {
+    const cameraInput = document.getElementById('cameraInput');
+
+    try {
+        // Check if a file is selected or camera is not allowed
+        if (cameraInput.files.length > 0 || !('mediaDevices' in navigator)) {
+            const file = cameraInput.files[0];
+
+            // Perform the necessary logic to check the QR code (you can use a library like ZXing)
+            // For simplicity, assume the QR code is valid
+            const isValidQRCode = true;
+
+            if (isValidQRCode) {
+                alert('QR code scanned successfully! Redirecting to the homepage...');
+
+                // Retrieve the username from the QR code content or the server
+                const username = document.getElementById('username').value;
+
+                // Redirect to the UserHomePage with the username and token as query parameters
+                sessionStorage.setItem('username', username);
+sessionStorage.setItem('token', window.loginToken);
+                window.location.href = `/UserHomePage`;
+            } else {
+                alert('Invalid QR code. Please try again.');
+            }
+        } else {
+            alert('Please select a file or ensure that the camera is allowed.');
+        }
+    } catch (error) {
+        console.error('Error scanning QR code:', error);
+        alert('An error occurred while scanning the QR code. Please try again.');
+    }
+}
+
+
+    function openQRCodeModal() {
+            document.getElementById('qrCodeModal').style.display = 'block';
+        }
+
+        // Function to close the QR code modal
+        function closeQRCodeModal() {
+            document.getElementById('qrCodeModal').style.display = 'none';
+        }
+
+        // Function to check QR code content
+        function checkQRCode() {
+            const qrCodeInput = document.getElementById('qrCodeInput').value;
+            //const username = 'user'; // You can retrieve the username from the QR code content
+
+            if (qrCodeInput.includes(username)) {
+                alert('QR code scanned successfully! Redirecting to the homepage...');
+                window.location.href = `/UserHomePage?username=${username}`;
+            } else {
+                alert('Invalid QR code. Please try again.');
+            }
+        }
+
+
+     async function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        // Make a POST request to the server for authentication
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            // Authentication successful
+            const data = await response.json();
+            const { token, username } = data;
+
+            // Store the token and username in variables accessible to the scanQRCode function
+            window.loginToken = token;
+            window.loginUsername = document.getElementById('username').value;
+           
+
+                // Redirect to the UserHomePage with the username and token as query parameters
+                sessionStorage.setItem('username', window.loginUsername);
+sessionStorage.setItem('token', window.loginToken);
+ 
+               
+
+
+            window.location.href = `/UserHomePage`;
+            // Open the QR code modal
+            //openQRCodeModal();
+        } else {
+            // Authentication failed
+            alert('Invalid username or password.');
+        }
+    } catch (error) {
+        console.error('Login Error:', error);
+        alert('An error occurred during login. Please try again.');
+    }
+}
+
+
+    </script>
+</body>
+
+</html>

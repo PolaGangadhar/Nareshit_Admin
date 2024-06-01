@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid Template 1</title>
+    <style>
+        body {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "nav article ads"
+                "nav footer footer";
+            grid-template-rows: 80px 1fr 70px;
+            grid-template-columns: 20% 1fr 15%;
+            grid-row-gap: 10px;
+            grid-column-gap: 10px;
+            height: 100vh;
+            margin: 0;
+        }
+
+        header, footer, article, nav{
+            padding: 0.5em;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid grey; /* Add border styling */
+        }
+        
+
+        #pageHeader {
+          grid-area: header;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+        }
+
+        #logo {
+         width: 250px; /* Adjust the width as needed */
+         height: auto;
+         margin-right: 20px; /* Adjust the margin as needed */
+         }
+
+        #companyName {
+          flex-grow: 1;
+           text-align: center;
+           font-size: 24px; 
+           }
+
+        #pageFooter {
+            grid-area: footer;
+        }
+
+        #mainArticle {
+            grid-area: article;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            max-height: calc(100vh - 200px);
+            /* Set max height for the article */
+        }
+
+        #mainNav {
+            grid-area: nav;
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            max-height: calc(100vh - 200px);
+            /* Set max height for the nav */
+        }
+
+        #siteAds {
+            grid-area: ads;
+        }
+
+        /* Stack the layout on small devices/viewports. */
+        @media all and (max-width: 575px) {
+            body {
+                grid-template-areas:
+                    "header"
+                    "article"
+                    "ads"
+                    "nav"
+                    "footer";
+                grid-template-rows: 80px 1fr 70px 1fr 70px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .question-btn {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .question-btn button {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: gray;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .next-button {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #214c64;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        #submitBtn {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #35a84e;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .question-label {
+            font-size: 20px; /* Adjust the font size as needed */
+        }
+
+        #mainArticle {
+            margin: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="pageHeader">
+        <img src="Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <span id="companyName">Naresh I Technologies</span>
+    </header>
+    <article id="mainArticle"></article>
+    <nav id="mainNav">
+        <div class="question-btn">
+            <!-- No of question should display here -->
+        </div>
+    </nav>
+    <div id="siteAds">
+        <button id="submitBtn">Submit</button>
+    </div>
+    <footer id="pageFooter">lender</footer>
+
+    <script>
+        var currentQuestion = 0; // Variable to keep track of the current question
+        var numberOfQuestions; // Variable to store the total number of questions
+
+        function generateButtons() {
+            numberOfQuestions = sessionStorage.getItem('numberOfQuestions');
+            var questionBtnDiv = document.querySelector('.question-btn');
+            var mainArticle = document.getElementById('mainArticle');
+            var questions = generateQuestions(numberOfQuestions); // Generate questions
+
+            // Display the number of questions in the question-btn div
+            var numberOfQuestionsLabel = document.createElement('p');
+            numberOfQuestionsLabel.textContent = 'Number of Questions: ' + numberOfQuestions;
+            questionBtnDiv.appendChild(numberOfQuestionsLabel);
+
+            // Display the first question initially
+            mainArticle.appendChild(questions[currentQuestion].cloneNode(true));
+
+            // Create buttons for navigation
+            for (var k = 1; k <= numberOfQuestions; k++) {
+                var button = document.createElement('button');
+                button.textContent = 'Question ' + k;
+                button.classList.add('question-button');
+                button.dataset.questionIndex = k - 1; // Store the index in the dataset
+                button.addEventListener('click', displayQuestion);
+                questionBtnDiv.appendChild(button);
+            }
+
+            // Create "Next" button
+            createNextButton();
+
+            // Function to display the selected question
+            function displayQuestion(event) {
+                var questionIndex = event.currentTarget.dataset.questionIndex;
+                currentQuestion = parseInt(questionIndex);
+                mainArticle.innerHTML = ''; // Clear previous articles
+                mainArticle.appendChild(questions[questionIndex].cloneNode(true));
+
+                // Remove existing "Next" button
+                var existingNextButton = document.querySelector('.next-button');
+                if (existingNextButton) {
+                    existingNextButton.remove();
+                }
+
+                // Create new "Next" button
+                createNextButton();
+            }
+
+            // Function to switch to the next question
+            function nextQuestion() {
+                if (currentQuestion < numberOfQuestions - 1) {
+                    currentQuestion++;
+                    mainArticle.innerHTML = ''; // Clear previous question
+                    mainArticle.appendChild(questions[currentQuestion].cloneNode(true));
+
+                    // Remove existing "Next" button
+                    var existingNextButton = document.querySelector('.next-button');
+                    if (existingNextButton) {
+                        existingNextButton.remove();
+                    }
+
+                    // Create new "Next" button
+                    createNextButton();
+                }
+            }
+
+            // Function to create the "Next" button
+            function createNextButton() {
+                var nextButton = document.createElement('button');
+                nextButton.textContent = 'Next';
+                nextButton.classList.add('next-button');
+                nextButton.addEventListener('click', nextQuestion);
+                mainArticle.appendChild(nextButton);
+            }
+        }
+
+        // Call the generateButtons function when the page loads
+        window.onload = generateButtons;
+
+        // Function to generate questions based on the number
+        function generateQuestions(number) {
+            var questions = [];
+            for (var i = 1; i <= number; i++) {
+                var questionContainer = document.createElement('div');
+                questionContainer.classList.add('question-container');
+                var question = document.createElement('p');
+                question.textContent = 'Question ' + i + ': What is the correct answer?';
+                questionContainer.appendChild(question);
+
+                for (var j = 1; j <= 4; j++) {
+                    var radioLabel = document.createElement('label');
+                    var radioButton = document.createElement('input');
+                    radioButton.type = 'radio';
+                    radioButton.name = 'question' + i;
+                    radioButton.value = 'Option ' + j;
+                    radioLabel.appendChild(radioButton);
+                    radioLabel.appendChild(document.createTextNode(' Option ' + j));
+                    questionContainer.appendChild(radioLabel);
+                }
+
+                questions.push(questionContainer);
+            }
+            return questions;
+        }
+    </script>
+</body>
+
+</html>

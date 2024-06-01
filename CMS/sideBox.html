@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Box Example</title>
+    <style>
+           body {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "nav article ads"
+                "nav footer footer";
+            grid-template-rows: 80px 1fr 0fr; /* Change the third row to 1fr */
+            grid-template-columns: 18% 1fr 15%;
+            grid-row-gap: 10px;
+            grid-column-gap: 2px;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            position: relative; /* Added position relative to body */
+        }
+
+        header, article, nav{
+            padding: 0.4em;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid grey; /* Add border styling */
+        }
+
+        #buttonContainer {
+          
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column; 
+        }
+        #buttonContainer button{
+            margin: 10px auto;
+            display: inline-block;
+            margin: 10px;
+            padding: 5px 10px;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+
+        #sideLogo {
+            width: 30px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #companyName {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px; 
+        }
+
+        #timer {
+            position: absolute;
+            top: 28px;
+            right: 10px;
+            font-size: 18px;
+        }
+        #boxContainer {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .box {
+            display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 10px;
+            height: 75vh;
+        }
+        
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            border-radius: 5px;
+            justify-content: space-between;
+            align-items: center;
+            background-color: azure;
+            position: relative; /* Added position relative to header */
+        }
+        #siteAds {
+            grid-area: ads;
+        }
+        #submitBtn {
+            margin: 1.5em;
+            padding: 1em;
+            background-color: #35a84e;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <header id="pageHeader">
+        <img src="Images\Naresh_IT_Logo.png" alt="Logo" id="logo">
+        <div id="adminInfo">         
+            <img src="Images\adminlogo.webp" alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+
+    <div id="buttonContainer">
+        <button onclick="showBox(1)">Button 1</button>
+        <button onclick="showBox(2)">Button 2</button>
+        <button onclick="showBox(3)">Button 3</button>
+        <button onclick="showBox(4)">Button 4</button>
+        <button onclick="showBox(5)">Button 5</button>
+    </div>
+
+    <div id="boxContainer">
+
+        
+        <div id="box1" class="box">Box 1 Content
+            <div class="mcq"></div>
+        <script>
+        // Array of MCQs
+       
+        </script>
+   
+        </div>
+        <div id="box2" class="box">Box 2 Content</div>
+        <div id="box3" class="box">Box 3 Content</div>
+        <div id="box4" class="box">Box 4 Content
+            <div class="oneword"></div>
+        </div>
+        <div id="box5" class="box">Box 5 Content
+            
+        <script>
+        // Array of MCQs
+        
+       
+        </script>
+   
+        </div>
+    </div>
+    <div id="siteAds">
+        <button id="submitBtn">Submit</button>
+    </div>
+    <script>
+      
+        // showBox(1);
+        function showBox(boxNumber) {
+            // Hide all boxes
+            // debugger
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('box' + i).style.display = 'none';
+            }
+
+            // Show the selected box
+            let a = document.getElementById('box' + boxNumber)
+            a.style.display = 'block';
+
+            switch(boxNumber)
+            {
+                case 1:
+                    function box1Clicked() {
+                        console.log("Box 1 clicked");
+                        const mcqArray = [
+                {
+                    question: 'What is the capital of France?',
+                    options: ['Paris', 'London', 'Berlin', 'Madrid'],
+                    correctAnswer: 'Paris'
+                },
+                {
+                    question: 'What is the largest planet in our solar system?',
+                    options: ['Mercury', 'Venus', 'Earth', 'Jupiter'],
+                    correctAnswer: 'Jupiter'
+                },
+                {
+                    question: 'What is the largest planet in our solar system?',
+                    options: [],
+                    correctAnswer: 'Jupiter'
+                },
+                // Add more MCQs as needed
+            ];
+           let str=``;
+           let qt=''
+            for(let a of mcqArray)
+            {
+                console.log(a)
+               qt  =qt+ `<div>${a.question}</div>`
+                if(a.options.length>0)
+                {let opt=''
+                    console.log("array is present")
+                    for(let b of a.options)
+                    {
+                       opt += `<input type="radio" for=${b}><label id=${b}>${b}</label>`
+                        
+                    }
+                    qt = qt+opt;
+                }
+            }
+            console.log(qt)
+            document.querySelector(".mcq").innerHTML = qt
+                    }
+                    box1Clicked()
+            break;
+            case 3:
+            function box2Clicked() {
+                console.log("Box 2 clicked");
+            }
+            break;
+            case 2:
+                function box3Clicked() {
+                console.log("Box 3 clicked");
+            }
+            break;
+            case 3:
+                function box4Clicked() {
+                    console.log("Box 4 clicked");
+                }
+                break;
+                case 4:
+                    function box5Clicked() {
+                        const mcqArrays = [
+                {
+                    question: 'What is the capital of France?',
+                    options: ['Paris', 'London', 'Berlin', 'Madrid'],
+                    correctAnswer: 'Paris'
+                },
+                {
+                    question: 'What is the largest planet in our solar system?',
+                    options: ['Mercury', 'Venus', 'Earth', 'Jupiter'],
+                    correctAnswer: 'Jupiter'
+                },
+                {
+                    question: 'What is the largest planet in our solar system?',
+                    options: [],
+                    correctAnswer: 'Jupiter'
+                },
+                // Add more MCQs as needed
+            ];
+           let strs=``;
+           let qts=''
+            for(let a of mcqArrays)
+            {
+                console.log(a)
+               qts  =qts+ `<div>${a.question}</div>
+               <input type="text">
+               `
+               
+                if(a.options.length>0)
+                {let opts=''
+                    
+                }
+            }
+            console.log(qts)
+            document.querySelector(".oneword").innerHTML = qts
+                    }
+                    box5Clicked()
+                    break;
+                }
+        }
+      
+    </script>
+
+</body>
+</html>

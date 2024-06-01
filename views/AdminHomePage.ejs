@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+      <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 0.6em;
+            background-color: azure;
+            border: 1px solid grey;
+        }
+
+        #pageHeader {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            width: 250px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        #adminInfo {
+            display: flex;
+            align-items: center;
+        }
+
+        #adminUsername {
+            margin-right: 10px; /* Adjust the margin as needed */
+        }
+
+        #sideLogo {
+            width: 30px; /* Adjust the width as needed */
+            height: auto;
+            margin-right: 20px; /* Adjust the margin as needed */
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+            background-color: #fff; /* Change the background color as needed */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        }
+
+        h1 {
+            color: #333; /* Change the text color as needed */
+        }
+
+        p {
+            color: #666; /* Change the text color as needed */
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            width: 200px;
+            height: 40px;
+            background-color: #3498db; /* Change the button background color as needed */
+            color: #fff; /* Change the button text color as needed */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Add a smooth transition effect */
+
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Change the button background color on hover as needed */
+        }
+    </style>
+   
+</head>
+
+<body>
+    <header id="pageHeader">
+    <img  alt="Logo" id="logo">
+        <div id="adminInfo">
+            <img  alt="Side Logo" id="sideLogo">
+            <div id="adminUsername"></div>
+        </div>
+    </header>
+
+    <main>
+        <h1>Welcome to Admin Webpage</h1>
+        <p>This is the Admin to Create for a Test Page</p>
+     <a href="/ListofAssessment">
+    <button>Test Creation Page</button>
+</a>
+
+<a href="http://49.207.10.13/CMSWebQB">
+    <button>Question's DB</button>
+</a>
+
+<a href="/enrollStudent">
+    <button>Enroll Student</button>
+</a>
+    </main>
+
+    <footer style="background-color: azure; color:black; padding: 10px; text-align: center; margin-top: 328px;">
+        &copy;  2023 Naresh i Technologies | Software Training - Online | All Rights Reserved.
+    </footer>
+    
+    <script>
+        // Function to get URL parameters by name
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Retrieve admin username from URL
+        var adminUsername = getParameterByName('username');
+
+        // Display admin username in the header
+        document.getElementById('adminUsername').innerText = adminUsername;
+
+        // Function to navigate to another page
+        function navigateToPage(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
