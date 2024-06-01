@@ -131,7 +131,6 @@ dist
 
 bin/
 CMD/
-config/
 Images/
 obj/
 path/
