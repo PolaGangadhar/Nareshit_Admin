@@ -77,7 +77,7 @@ pool.connect();
 
 const queryAsync = promisify(pool.query).bind(pool);
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "5mb" }));
 /*app.use(cors({ origin: 'https://www.nareshit.net' }));*/
 //app.options('/execute', (req, res) => {
 //    res.setHeader('Access-Control-Allow-Origin', 'https://www.nareshit.net');
@@ -5504,6 +5504,33 @@ app.get("/retrive-batch-details/:batchId", async (req, res) => {
       error: new Error(error).name,
       message: new Error(error).message,
     });
+  }
+});
+
+app.post("/api/program/new-program", (req, res) => {
+  try {
+    const body = req.body;
+
+    if (
+      !body.files ||
+      !body.testCases ||
+      !body.problemName ||
+      !body.problemDescription ||
+      !body.sampleInput ||
+      !body.image ||
+      !body.sampleOutput ||
+      !body.explanation
+    ) {
+      res.status(500).json({
+        error: "Missing data",
+        message: "Missing required fields in request body",
+      });
+      return;
+    }
+    res.status(201).json({ message: "Problem created successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: error.name, message: error.message });
   }
 });
 
