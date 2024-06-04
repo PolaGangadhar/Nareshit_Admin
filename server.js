@@ -76,7 +76,7 @@ pool.connect();
 
 const queryAsync = promisify(pool.query).bind(pool);
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "5mb" }));
 /*app.use(cors({ origin: 'https://www.nareshit.net' }));*/
 //app.options('/execute', (req, res) => {
 //    res.setHeader('Access-Control-Allow-Origin', 'https://www.nareshit.net');
@@ -5945,6 +5945,91 @@ app.get("/fetchAndShowResults", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+/** ------------------------ */
+
+app.get("/retrive-batch-details/:batchId", async (req, res) => {
+  try {
+    const batchId = req.params?.batchId;
+
+    if (!batchId) {
+      res.status(400);
+      res.json({
+        error: "batchId missing",
+        message: "batchId must be sent",
+      });
+      return;
+    }
+
+    if (Number(batchId) === NaN || !Number(batchId)) {
+      res.status(400);
+      res.json({
+        error: "Invalid batchId",
+        message: "batchId must be valid",
+      });
+      return;
+    }
+
+    const connection = await db.getConnection();
+
+    const { recordset } = await connection.query`
+     EXEC USP_RetriveBatch_Details
+     @BatchId  = ${batchId}`;
+
+    if (!recordset || (Array.isArray(recordset) && recordset.length === 0)) {
+      res
+        .status(404)
+        .json({ error: "no records", message: "records not found" });
+      return;
+    }
+
+    /**
+     * JsonResult is specific to this sp type: JSON.stringify
+     *
+     * value: {"technologyId":Number,"moduleId":Number,"batchName":String,"batchAdmin":String,"startDate":String,"endDate":String,"facultyIds":String,"mentorIds":String,"studentIds":String}
+     */
+    const { "JSON_F52E2B61-18A1-11d1-B105-00805F49916B": JsonResult } =
+      recordset[0];
+
+    res.status(200).send(JsonResult);
+  } catch (error) {
+    console.error(error);
+
+    res.json({
+      error: new Error(error).name,
+      message: new Error(error).message,
+    });
+  }
+});
+
+app.post("/api/program/new-program", (req, res) => {
+  try {
+    const body = req.body;
+
+    if (
+      !body.files ||
+      !body.testCases ||
+      !body.problemName ||
+      !body.problemDescription ||
+      !body.sampleInput ||
+      !body.image ||
+      !body.sampleOutput ||
+      !body.explanation
+    ) {
+      res.status(500).json({
+        error: "Missing data",
+        message: "Missing required fields in request body",
+      });
+      return;
+    }
+    res.status(201).json({ message: "Problem created successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: error.name, message: error.message });
+  }
+});
+
+/**  --------------- */
 
 const key_options = {
   key: fs.readFileSync(path.join("./", "path", "key.pem")),
