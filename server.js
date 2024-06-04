@@ -53,9 +53,9 @@ let isSubmitting = false;
 
 // SQL Server connection configuration
 const sqlConfig = {
-  user: "sa1",
+  user: "sa",
   password: "Password@123",
-  server: "49.207.10.13",
+  server: "localhost",
   database: "cmdexamdb",
   options: {
     encrypt: true,
