@@ -2,10 +2,10 @@ const sql = require("mssql");
 
 // Define your database configuration
 const dbConfig = {
-  user: "sa",
-  password: "Password@123",
-  server: "localhost",
-  database: "cmdexamdb",
+  user: process.env.SQL_UID,
+  password: process.env.SQL_PWD,
+  server: process.env.SQL_SERVER,
+  database: process.env.SQL_DATABASE,
   options: {
     encrypt: true,
     trustServerCertificate: true,

@@ -1,9 +1,10 @@
 "use strict";
 const fs = require("fs");
+require("dotenv").config();
 const http = require("https");
 const express = require("express");
 const fetch = require("node-fetch");
-//const Fingerprint = require('express-fingerprint');
+//const Fingerprint = require("express-fingerprint");
 const bodyParser = require("body-parser");
 const path = require("path");
 //const morgan = require('morgan');
@@ -25,6 +26,7 @@ const {
   startOfWeek,
   addDays,
 } = require("date-fns");
+const db = require("./config/db");
 
 const PORT = process.env.PORT || 3009;
 const generateSecret = () =>
@@ -41,6 +43,17 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
+console.log({
+  user: process.env.SQL_UID,
+  password: process.env.SQL_PWD,
+  server: process.env.SQL_SERVER,
+  database: process.env.SQL_DATABASE,
+  options: {
+    encrypt: true,
+    trustServerCertificate: true,
+  },
+});
+
 app.use(cors(corsOptions));
 const sleep = util.promisify(setTimeout);
 
@@ -53,10 +66,10 @@ let isSubmitting = false;
 
 // SQL Server connection configuration
 const sqlConfig = {
-  user: "sa",
-  password: "Password@123",
-  server: "localhost",
-  database: "cmdexamdb",
+  user: process.env.SQL_UID,
+  password: process.env.SQL_PWD,
+  server: process.env.SQL_SERVER,
+  database: process.env.SQL_DATABASE,
   options: {
     encrypt: true,
     trustServerCertificate: true,
@@ -76,7 +89,7 @@ pool.connect();
 
 const queryAsync = promisify(pool.query).bind(pool);
 
-app.use(bodyParser.json({ limit: "5mb" }));
+app.use(bodyParser.json());
 /*app.use(cors({ origin: 'https://www.nareshit.net' }));*/
 //app.options('/execute', (req, res) => {
 //    res.setHeader('Access-Control-Allow-Origin', 'https://www.nareshit.net');
@@ -633,257 +646,62 @@ app.get("/exam", async (req, res) => {
     res.status(500).json({ message: "Error fetching questions." });
   }
 });
-
-//app.get('/fetchTechnologies', async (req, res) => {
-//    try {
-//        console.info("Fetch Technologes method Called");
-//        const technologies = await fetchTechnologiesFromDatabase();
-//        res.json(technologies);
-//    } catch (error) {
-//        console.error('Error fetching technologies:', error.message);
-//        res.status(500).json({ message: 'Error fetching technologies.' });
-//    }
-//});
-//app.get('/treeview', async (req, res) => {
-//    try {
-//        // Fetch data from the database (replace with your actual methods)
-//        const technologies = await fetchTechnologiesWithModulesAndTopics();
-
-//        // Render the treeview page with the data
-//        res.render('treeview', { technologies });
-//    } catch (error) {
-//        console.error('Error fetching treeview data:', error.message);
-//        res.status(500).json({ message: 'Error fetching treeview data.' });
-//    }
-//});
-
 app.get("/fetchTechnologies", async (req, res) => {
   try {
-    console.info("List of Technolgies");
-    await sql.connect(sqlConfig);
+    console.info("Fetch Technologes method Called");
+    const technologies = await fetchTechnologiesFromDatabase();
+    res.json(technologies);
+  } catch (error) {
+    console.error("Error fetching technologies:", error.message);
+    res.status(500).json({ message: "Error fetching technologies." });
+  }
+});
+app.get("/treeview", async (req, res) => {
+  try {
+    // Fetch data from the database (replace with your actual methods)
+    const technologies = await fetchTechnologiesWithModulesAndTopics();
 
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-            EXEC USP_Get_Technologies
-        
-          
-            
-           `;
-
-    console.log("ListTechnologies", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json(recordsetData);
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json({
-        success: true,
-        message:
-          "Stored procedure executed successfully, but no records returned.",
-        dbresult: null,
-      });
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
+    // Render the treeview page with the data
+    res.render("treeview", { technologies });
+  } catch (error) {
+    console.error("Error fetching treeview data:", error.message);
+    res.status(500).json({ message: "Error fetching treeview data." });
+  }
+});
+app.get("/fetchModules/:technologyId", async (req, res) => {
+  const technologyId = req.params.technologyId;
+  try {
+    const modules = await fetchModulesFromDatabase(technologyId);
+    res.json(modules);
+  } catch (error) {
+    console.error("Error fetching modules:", error.message);
+    res.status(500).json({ message: "Error fetching modules." });
   }
 });
 
-//app.get('/fetchModules/:technologyId', async (req, res) => {
-//    const technologyId = req.params.technologyId;
-//    try {
-//        const modules = await fetchModulesFromDatabase(technologyId);
-//        res.json(modules);
-//    } catch (error) {
-//        console.error('Error fetching modules:', error.message);
-//        res.status(500).json({ message: 'Error fetching modules.' });
-//    }
-//});
-
 // Route to fetch topics based on the selected module
-//app.get('/fetchTopics/:moduleId', async (req, res) => {
-//    const moduleId = req.params.moduleId;
-//    try {
-//        const topics = await fetchTopicsFromDatabase(moduleId);
-//        res.json(topics);
-//    } catch (error) {
-//        console.error('Error fetching topics:', error.message);
-//        res.status(500).json({ message: 'Error fetching topics.' });
-//    }
-//});
-
 app.get("/fetchTopics/:moduleId", async (req, res) => {
+  const moduleId = req.params.moduleId;
   try {
-    console.info("List of  Technologies");
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.params.moduleId; // No need to stringify the request body
-    console.info(requestData);
-
-    const moduleId = requestData;
-
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-            EXEC USP_Get_TopicIdByModules
-               @ModuleID = ${moduleId}
-            `;
-
-    console.log("ListTechnologies", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json(recordsetData);
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json(null);
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
+    const topics = await fetchTopicsFromDatabase(moduleId);
+    res.json(topics);
+  } catch (error) {
+    console.error("Error fetching topics:", error.message);
+    res.status(500).json({ message: "Error fetching topics." });
   }
 });
 
 // Route to fetch subtopics based on the selected topic
-//app.get('/fetchSubtopics/:topicId', async (req, res) => {
-//    const topicId = req.params.topicId;
-//    try {
-//        const subtopics = await fetchSubtopicsFromDatabase(topicId);
-//        res.json(subtopics);
-//    } catch (error) {
-//        console.error('Error fetching subtopics:', error.message);
-//        res.status(500).json({ message: 'Error fetching subtopics.' });
-//    }
-//});
-
 app.get("/fetchSubtopics/:topicId", async (req, res) => {
+  const topicId = req.params.topicId;
   try {
-    console.info("List of  Technologies");
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.params.topicId; // No need to stringify the request body
-    console.info(requestData);
-
-    const topicId = requestData;
-
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-           EXEC USP_Get_SubTopicIdIdByTopics 
-                 @topicId = ${topicId}
-            
-          
-            
-           `;
-
-    console.log("ListTechnologies", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json(recordsetData || null);
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json(null);
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
+    const subtopics = await fetchSubtopicsFromDatabase(topicId);
+    res.json(subtopics);
+  } catch (error) {
+    console.error("Error fetching subtopics:", error.message);
+    res.status(500).json({ message: "Error fetching subtopics." });
   }
 });
-
-app.get("/fetchModules/:technologyId", async (req, res) => {
-  try {
-    console.info("List of  Technologies");
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.params.technologyId; // No need to stringify the request body
-    console.info(requestData);
-
-    const technologyId = requestData;
-
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-            EXEC USP_Get_ModuleIdByTechnologies
-                @TechnologyID = ${technologyId}
-            
-          
-            
-           `;
-
-    console.log("ListTechnologies", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json(recordsetData || null);
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json(null);
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json(err);
-  } finally {
-    sql.close();
-  }
-});
-
 app.get("/api/getQuestionCounts/:questionTypeId", async (req, res) => {
   try {
     const testId = 1;
@@ -909,7 +727,7 @@ app.get("/getAllTests", async (req, res) => {
   try {
     await sql.connect(sqlConfig);
     const result = await sql.query(`
-            select * from dbo.Test where IsActive =1  ORDER BY TESTID DESC
+            select * from dbo.Test where IsActive =1  ORDER BY TESTNAME DESC
         `);
 
     res.json(result.recordset);
@@ -979,18 +797,20 @@ async function fetchQuestionsFromDatabase1(tableName, numberOfQuestions) {
     await sql.close();
   }
 }
-//async function fetchTechnologiesFromDatabase() {
-//    try {
-//        const result = await queryAsync('exec USP_Get_Technologies');
-//        const technologies = result.recordset;
-//        return technologies;
-//    } catch (error) {
-//        console.error(`Error fetching technologies from the database: ${error.message}`);
-//        throw new Error('Error fetching technologies from the database.');
-//    } finally {
-//        await sql.close();
-//    }
-//}
+async function fetchTechnologiesFromDatabase() {
+  try {
+    const result = await queryAsync("exec USP_Get_Technologies");
+    const technologies = result.recordset;
+    return technologies;
+  } catch (error) {
+    console.error(
+      `Error fetching technologies from the database: ${error.message}`
+    );
+    throw new Error("Error fetching technologies from the database.");
+  } finally {
+    await sql.close();
+  }
+}
 
 // Function to fetch a specific number of questions from cache or the database
 async function fetchQuestionsFromCache(numberOfQuestions) {
@@ -1043,33 +863,36 @@ function updateCache(questions) {
 // Add these functions to your server.js
 
 // Function to fetch modules based on the selected technology
-//async function fetchModulesFromDatabase(technologyId) {
-//    try {
-
-//        const result = await queryAsync(`Exec USP_Get_ModuleIdByTechnologies  @TechnologyID = ${technologyId}`);
-//        const modules = result.recordset;
-//        return modules;
-//    } catch (error) {
-//        console.error(`Error fetching modules from the database: ${error.message}`);
-//        throw new Error('Error fetching modules from the database.');
-//    } finally {
-//        await sql.close();
-//    }
-//}
+async function fetchModulesFromDatabase(technologyId) {
+  try {
+    const result = await queryAsync(
+      `Exec USP_Get_ModuleIdByTechnologies  @TechnologyID = ${technologyId}`
+    );
+    const modules = result.recordset;
+    return modules;
+  } catch (error) {
+    console.error(`Error fetching modules from the database: ${error.message}`);
+    throw new Error("Error fetching modules from the database.");
+  } finally {
+    await sql.close();
+  }
+}
 
 // Function to fetch topics based on the selected module
-//async function fetchTopicsFromDatabase(moduleId) {
-//    try {
-//        const result = await queryAsync(`Exec  USP_Get_TopicIdByModules @ModuleID = ${moduleId}`);
-//        const topics = result.recordset;
-//        return topics;
-//    } catch (error) {
-//        console.error(`Error fetching topics from the database: ${error.message}`);
-//        throw new Error('Error fetching topics from the database.');
-//    } finally {
-//        await sql.close();
-//    }
-//}
+async function fetchTopicsFromDatabase(moduleId) {
+  try {
+    const result = await queryAsync(
+      `Exec  USP_Get_TopicIdByModules @ModuleID = ${moduleId}`
+    );
+    const topics = result.recordset;
+    return topics;
+  } catch (error) {
+    console.error(`Error fetching topics from the database: ${error.message}`);
+    throw new Error("Error fetching topics from the database.");
+  } finally {
+    await sql.close();
+  }
+}
 
 // Function to fetch subtopics based on the selected topic
 
@@ -1173,7 +996,7 @@ const executeGetTestQuestions = async (testID, studentName, transactionId) => {
 
     // Process the result as needed
     const questions = result.recordset;
-    console.log("---------------------------", qustions);
+
     // console.log('Fetched questions:', questions);
     console.info("Current Transaction Id Step3" + transactionId);
     return questions; // Return the fetched questions
@@ -1884,14 +1707,8 @@ app.post("/Update_BookSlot", async (req, res) => {
     const requestData = req.body; // No need to stringify the request body
     console.info(requestData);
 
-    const {
-      WeekNumber,
-      DayNumber,
-      SlotInTime,
-      SlotOutTime,
-      StudentId,
-      TechnologyId,
-    } = requestData;
+    const { WeekNumber, DayNumber, SlotInTime, SlotOutTime, StudentId } =
+      requestData;
 
     //// Ensure TechnologyID and Query are parsed as integers
     //const parsedQuery = 1;
@@ -1902,8 +1719,7 @@ app.post("/Update_BookSlot", async (req, res) => {
          @DayNumber= ${DayNumber},
          @SlotInTime=${SlotInTime},
          @SlotOutTime=${SlotOutTime},
-         @StudentId=${StudentId},
-         @TechnologyId=${TechnologyId}
+         @StudentId=${StudentId}
         `;
 
     console.log("ListSlots", result);
@@ -1978,7 +1794,7 @@ app.post("/Update_BookSlot", async (req, res) => {
         const mailOptions = {
           from: "virtuallab@nareshit.com",
           to: requestData.Email,
-          subject: `Virtual Lab slot booking ${new Date()}`,
+          subject: `Virtual Lab slot booking.`,
           text: `Dear ${firstName}
 
 Greetings for the day!
@@ -2055,14 +1871,8 @@ app.post("/Update_BookSlot_V1", async (req, res) => {
     const requestData = req.body; // No need to stringify the request body
     console.info(requestData);
 
-    const {
-      WeekNumber,
-      DayNumber,
-      SlotInTime,
-      SlotOutTime,
-      StudentId,
-      TechnologyId,
-    } = requestData;
+    const { WeekNumber, DayNumber, SlotInTime, SlotOutTime, StudentId } =
+      requestData;
 
     //// Ensure TechnologyID and Query are parsed as integers
     //const parsedQuery = 1;
@@ -2073,8 +1883,7 @@ app.post("/Update_BookSlot_V1", async (req, res) => {
          @DayNumber= ${DayNumber},
          @SlotInTime=${SlotInTime},
          @SlotOutTime=${SlotOutTime},
-         @StudentId=${StudentId},
-         @TechnologyId=${TechnologyId}
+         @StudentId=${StudentId}
         `;
 
     console.log("ListSlots", result);
@@ -2085,10 +1894,6 @@ app.post("/Update_BookSlot_V1", async (req, res) => {
 
       // Log the recordset or return it in the response
       console.log("Stored procedure executed successfully:", recordsetData);
-
-      const AssignedMetorId = recordsetData?.[0]?.MentorId;
-      console.log("checked mentor id");
-      console.log(AssignedMetorId);
 
       if (
         recordsetData?.[0]?.Message?.includes(
@@ -2133,13 +1938,12 @@ app.post("/Update_BookSlot_V1", async (req, res) => {
         const firstName = firstNameResult.recordset[0]?.FirstName;
 
         const zoomLinkResult = await sql.query`
-                    SELECT m.ZoomLink,m.Mentor_EmailId
+                    SELECT m.ZoomLink
                     FROM MENTORS m
-                    WHERE TechnologyId=${TechnologyId}   and MENTOR_Id=${AssignedMetorId}
-                    
+                    INNER JOIN VLBookingDetails v ON v.MentorId = m.MENTOR_Id
+                    WHERE v.StudentId = (SELECT TOP 1 StudentId FROM VLBookingDetails WHERE slotid = (SELECT TOP 1 slotid FROM VLBookingDetails WHERE StudentId=${StudentId}))
                 `;
         const zoomLink = zoomLinkResult.recordset[0]?.ZoomLink;
-        const Mentor_EmailId = zoomLinkResult.recordset[0]?.Mentor_EmailId;
 
         console.log(zoomLink, requestData.Email, firstName);
 
@@ -2154,44 +1958,16 @@ app.post("/Update_BookSlot_V1", async (req, res) => {
         const mailOptions = {
           from: "virtuallab@nareshit.com",
           to: requestData.Email,
-          bcc: Mentor_EmailId,
-          subject: `Virtual Lab slot booking ${datesRange[
-            dayNumber - 1
-          ].getDate()}-${new Date(endDateWithinWeek).getMonth() + 1}-${new Date(
-            endDateWithinWeek
-          ).getFullYear()} ${new Date(
-            `01/01/2000 ${SlotInTime}`
-          ).toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "2-digit",
-          })} - ${new Date(`01/01/2000 ${SlotOutTime}`).toLocaleTimeString(
-            "en-US",
-            { hour: "numeric", minute: "2-digit" }
-          )}
-
-`,
-
+          subject: `Virtual Lab slot booking.`,
           text: `Dear ${firstName}
-
-
 
 Greetings for the day!
 
-
 Thank you for your interest in NareshIT offerings!
-
-
-In our endeavour to provide our learners with previewresult()
-
-
-class learning opportunities we continue to bring in new features and facilities. 
+In our endeavour to provide our learners with world class learning opportunities we continue to bring in new features and facilities. 
 One such initiative is to provide "Live Personal Virtual Mentoring" to ensure you get the advantage of personal technical mentoring to clarify all your technical queries and get you a learning experience on par with physical learning.
-
-
-
-Congratulations! Your Live Personal Virtual Mentoring slot is confirmed.Below mentioned are your slot details:
-
-
+Congratulations! Your Live Personal Virtual Mentoring slot is confirmed. 
+Below mentioned are your slot details:
 Date: ${datesRange[dayNumber - 1].getDate()}-${
             new Date(endDateWithinWeek).getMonth() + 1
           }-${new Date(endDateWithinWeek).getFullYear()}
@@ -2202,21 +1978,16 @@ Time: ${new Date(`01/01/2000 ${SlotInTime}`).toLocaleTimeString("en-US", {
             "en-US",
             { hour: "numeric", minute: "2-digit" }
           )}
-
-
-Link Mentioned Below:
 ${zoomLink}
 Zoom Link To connect with your personal mentor:
-Join our Cloud HD Video Meeting.
-
-
-
+Join our Cloud HD Video Meeting
+zoom.ico
+Note: Please login 5 Minutes before your slot timing. Your slot shall stand cancelled if you fail to login within 5 Minutes of your slot start time. Ex: You have to mandatorily login before 2:05PM for a 2PM slot.
 Best Regards,
 Team NareshIT.
-
-
-
-Note: Please login 5 Minutes before your slot timing. Your slot shall stand cancelled if you fail to login within 5 Minutes of your slot start time. Ex: You have to mandatorily login before 2:05PM for a 2PM slot.`,
+For Queries contact:
+On ${new Date()}, rudrarajubharathsaivyaas@gmail.com wrote:
+Your Slot has been booked successfully.`,
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
@@ -2430,8 +2201,6 @@ app.post("/EnrollTest", async (req, res) => {
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).send("Internal Server Error");
-  } finally {
-    sql.close();
   }
 });
 
@@ -2439,10 +2208,6 @@ async function callEnrollTest(jsonData, TechnologyId, ModuleId, EnrollmentId) {
   try {
     console.log("method to Tests sp");
     // Create a new table variable to hold the data
-
-    // Connect to the SQL database
-    let pool = await sql.connect(sqlConfig);
-    console.log("sql process");
     const table = new sql.Table();
     table.columns.add("TestId", sql.Int);
     table.columns.add("BatchId", sql.Int);
@@ -2453,6 +2218,10 @@ async function callEnrollTest(jsonData, TechnologyId, ModuleId, EnrollmentId) {
     parsedData.forEach((row) => {
       table.rows.add(row.TestId, row.BatchId, row.StudentId);
     });
+
+    // Connect to the SQL database
+    let pool = await sql.connect(sqlConfig);
+    console.log("sql process");
 
     console.log(TechnologyId, ModuleId, EnrollmentId);
     // Execute the stored procedure
@@ -2467,7 +2236,7 @@ async function callEnrollTest(jsonData, TechnologyId, ModuleId, EnrollmentId) {
     console.log("error:" + error);
     throw error;
   } finally {
-    sql.close();
+    await sql.close();
   }
 }
 
@@ -2487,7 +2256,6 @@ app.post("/Retrive_Enroll", async (req, res) => {
     const result = await sql.query`
             EXEC Usp_Retrive_Enrollments
             @EnrollmentId   = ${EnrollmentId}
-            
             
            `;
 
@@ -2524,6 +2292,8 @@ app.post("/Retrive_Enroll", async (req, res) => {
       message: "Error executing stored procedure",
       apperror: err,
     });
+  } finally {
+    sql.close();
   }
 });
 
@@ -2587,9 +2357,8 @@ app.post("/Fetch_Students", async (req, res) => {
   try {
     console.info("Method ListofStudents");
     await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.body; // No need to stringify the request body
-    console.info(requestData);
+
+    const requestData = req.body;
 
     const {} = requestData;
 
@@ -2601,14 +2370,9 @@ app.post("/Fetch_Students", async (req, res) => {
             
            `;
 
-    console.log("RetriveBatches", result);
-
     // Check if the recordset is not empty or undefined
     if (result.recordset !== undefined && result.recordset.length > 0) {
       const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
 
       res.status(200).json({
         success: true,
@@ -2616,10 +2380,6 @@ app.post("/Fetch_Students", async (req, res) => {
         dbresult: recordsetData,
       });
     } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
       res.status(200).json({
         success: true,
         message:
@@ -3004,7 +2764,7 @@ app.post("/Insert_Update_QuestionCombination", async (req, res) => {
     const result = await sql.query`
             exec USP_Create_Insert_Update_QuestionsCombination
 
-            @TestId   =    ${TestId},
+            @TestId   = ${TestId},
             @TestDetailsId= ${TestDetailsId},
             @Combinations=${Combinations}
         `;
@@ -3015,80 +2775,6 @@ app.post("/Insert_Update_QuestionCombination", async (req, res) => {
     if (result.recordset !== undefined && result.recordset.length > 0) {
       const recordsetData = result.recordset;
       //const recordsetData ='{"23/02/2024, 04:12:08:r4:":{"id":"23/02/2024, 04:12:08:r4:","selectedModule":"C# 10.0","ModuleID":"2","TopicID":0,"SubTopicID":0,"easy":2,"medium":0,"hard":10,"includes":{}},"23/02/2024, 04:30:50:r14:":{"id":"23/02/2024, 04:30:50:r14:","selectedModule":"C# 10.0","ModuleID":"2","TopicID":0,"SubTopicID":0,"easy":2,"medium":4,"hard":0,"includes":{}},"23/02/2024, 04:32:25:r1d:":{"id":"23/02/2024, 04:32:25:r1d:","selectedModule":"SQL Basics","ModuleID":"10","selectedTopic":"RDBMS (Relational Database Management System)","TopicID":"117","selectedSubTopic":"Characteristics of RDBMS","SubTopicID":"735","easy":1,"medium":0,"hard":0,"includes":{}}}'
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json({
-        success: true,
-        message: "Stored procedure executed successfully",
-        dbresult: recordsetData,
-      });
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json({
-        success: true,
-        message:
-          "Stored procedure executed successfully, but no records returned.",
-        dbresult: null,
-      });
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
-  }
-});
-
-app.post("/Insertion_StudentProgramDeatils", async (req, res) => {
-  try {
-    console.info("Method Listof_Facaulty");
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.body; // No need to stringify the request body
-    console.info(requestData);
-
-    const {
-      Email,
-      ProgramId,
-      No_AttemptsPerBuildSucceeded,
-      No_TestCasesPassed,
-      No_TestCasesFailed,
-      Result,
-      Grade,
-      Comments,
-      StudentName,
-    } = requestData;
-
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-            EXEC  USP_StudentProgramdetails_Insertion
-            @Email=${Email},
-            @ProgramId=${ProgramId},
-            @No_AttemptsPerBuildSucceeded=${No_AttemptsPerBuildSucceeded},
-            @No_TestCasesPassed=${No_TestCasesPassed},
-            @No_TestCasesFailed=${No_TestCasesFailed},
-            @Result=${Result},
-            @Grade=${Grade},
-            @Comments=${Comments},
-            @StudentName=${StudentName}
- `;
-
-    console.log("RetriveBatches", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
       // Log the recordset or return it in the response
       console.log("Stored procedure executed successfully:", recordsetData);
 
@@ -5296,122 +4982,6 @@ app.get("/fetchFixedQuestions", async (req, res) => {
   }
 });
 
-app.get("/retrieveProgramQuestions/:id", async (req, res) => {
-  try {
-    console.info("List of programs");
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.params.id; // No need to stringify the request body
-    console.info(requestData);
-
-    const programId = requestData;
-
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-            EXEC [dbo].[USP_RetriveProgramQuestions]
-            @programId   = ${programId}
-          
-            
-           `;
-
-    console.log("ListPrograms", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json({
-        success: true,
-        message: "Stored procedure executed successfully",
-        dbresult: recordsetData,
-      });
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json({
-        success: true,
-        message:
-          "Stored procedure executed successfully, but no records returned.",
-        dbresult: null,
-      });
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
-  }
-});
-
-app.get("/retrieveProgramTestCase/:id", async (req, res) => {
-  try {
-    console.info("List of programs");
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const requestData = req.params.id; // No need to stringify the request body
-    console.info(requestData);
-
-    const programId = requestData;
-
-    //// Ensure TechnologyID and Query are parsed as integers
-    //const parsedQuery = 1
-
-    const result = await sql.query`
-            EXEC [dbo].[USP_RetriveProgramTestCase]
-            @programId   = ${programId}
-          
-            
-           `;
-
-    console.log("ListPrograms", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json({
-        success: true,
-        message: "Stored procedure executed successfully",
-        dbresult: recordsetData,
-      });
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json({
-        success: true,
-        message:
-          "Stored procedure executed successfully, but no records returned.",
-        dbresult: null,
-      });
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
-  }
-});
-
 app.get("/mcqCheckQuestions", async (req, res) => {
   try {
     // Extract easy, medium, and hard counts from query parameters
@@ -5479,59 +5049,6 @@ app.get("/FreeTextQuestions", async (req, res) => {
   } finally {
     // Close the database connection
     await sql.close();
-  }
-});
-
-app.get("/fetchtestsbydate", async (req, res) => {
-  try {
-    console.info("List of  Tests");
-    const { startdate, enddate } = req.query;
-    console.log(startdate, enddate);
-    await sql.connect(sqlConfig);
-    console.log(req.body);
-    const result = await sql.query`
-            EXEC   Usp_FetchTestsBydate
-            @startDate   = ${startdate},
-            @endDate   = ${enddate}
-          
-            
-           `;
-
-    console.log("ListTests", result);
-
-    // Check if the recordset is not empty or undefined
-    if (result.recordset !== undefined && result.recordset.length > 0) {
-      const recordsetData = result.recordset;
-
-      // Log the recordset or return it in the response
-      console.log("Stored procedure executed successfully:", recordsetData);
-
-      res.status(200).json({
-        success: true,
-        message: "Stored procedure executed successfully",
-        dbresult: recordsetData,
-      });
-    } else {
-      // Handle the case where the recordset is empty or undefined
-      console.log(
-        "Stored procedure executed successfully, but no records returned."
-      );
-      res.status(200).json({
-        success: true,
-        message:
-          "Stored procedure executed successfully, but no records returned.",
-        dbresult: null,
-      });
-    }
-  } catch (err) {
-    console.error("Error executing stored procedure:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error executing stored procedure",
-      apperror: err,
-    });
-  } finally {
-    sql.close();
   }
 });
 
@@ -5616,13 +5133,13 @@ app.get("/previewExamPage", async (req, res) => {
     // Fetch questions using the executeGetTestQuestions function
     const questions = await GetTestQuestionsPreview(
       testID,
-      "gangadharpola@gmail.com",
+      "john.doe@example.com",
       transactionId
     );
     //console.log('Fetched questions in route handler:', questions);
-    console.log("Questions", questions);
+
     // Render the EJS template and pass the questions variable
-    res.render("previewExamPage", { questions, username: "test" });
+    res.render("previewExamPage", { questions });
   } catch (error) {
     if (!testID) {
       res
@@ -5649,7 +5166,7 @@ app.get("/ExamMainPage", async (req, res) => {
     // Fetch questions using the executeGetTestQuestions function
     const questions = await GetTestQuestionsPreview(
       testID,
-      "ameesham@gmail.com",
+      "john.doe@example.com",
       transactionId
     );
     //console.log('Fetched questions in route handler:', questions);
@@ -5999,33 +5516,6 @@ app.get("/retrive-batch-details/:batchId", async (req, res) => {
       error: new Error(error).name,
       message: new Error(error).message,
     });
-  }
-});
-
-app.post("/api/program/new-program", (req, res) => {
-  try {
-    const body = req.body;
-
-    if (
-      !body.files ||
-      !body.testCases ||
-      !body.problemName ||
-      !body.problemDescription ||
-      !body.sampleInput ||
-      !body.image ||
-      !body.sampleOutput ||
-      !body.explanation
-    ) {
-      res.status(500).json({
-        error: "Missing data",
-        message: "Missing required fields in request body",
-      });
-      return;
-    }
-    res.status(201).json({ message: "Problem created successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: error.name, message: error.message });
   }
 });
 
