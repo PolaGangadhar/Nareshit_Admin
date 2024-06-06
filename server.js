@@ -3208,6 +3208,7 @@ app.post("/Insertion_StudentProgramDeatils", async (req, res) => {
             Grade,
             Comments,
             StudentName,
+            UserCode
         } = requestData;
 
         //// Ensure TechnologyID and Query are parsed as integers
@@ -3223,7 +3224,8 @@ app.post("/Insertion_StudentProgramDeatils", async (req, res) => {
             @Result=${Result},
             @Grade=${Grade},
             @Comments=${Comments},
-            @StudentName=${StudentName}
+            @StudentName=${StudentName},
+            @UserCode=${UserCode}
  `;
 
         console.log("RetriveBatches", result);
@@ -5661,7 +5663,7 @@ app.get("/retrieveProgramTestCase/:id", async (req, res) => {
                 .json({
                     success: true,
                     message: "Stored procedure executed successfully",
-                    dbresult: recordsetData,
+                    dbresult:[],
                 });
         } else {
             // Handle the case where the recordset is empty or undefined
@@ -5931,7 +5933,7 @@ app.get("/ExamMainPage", async (req, res) => {
         // Fetch questions using the executeGetTestQuestions function
         const questions = await GetTestQuestionsPreview(
             testID,
-            "ameesham@gmail.com",
+            "john.doe@example.com",
             transactionId
         );
         //console.log('Fetched questions in route handler:', questions);
