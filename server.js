@@ -5332,7 +5332,7 @@ app.get("/retrieveProgramQuestions/:id", async (req, res) => {
       res.status(200).json({
         success: true,
         message: "Stored procedure executed successfully",
-        dbresult: recordsetData,
+        dbresult: [],
       });
     } else {
       // Handle the case where the recordset is empty or undefined
