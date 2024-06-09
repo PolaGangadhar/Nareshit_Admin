@@ -26,6 +26,7 @@ const {
   format,
   startOfWeek,
   addDays,
+  max,
 } = require("date-fns");
 
 const PORT = process.env.PORT || 3009;
@@ -2448,7 +2449,7 @@ async function callEnrollTest(jsonData, TechnologyId, ModuleId, EnrollmentId) {
     const table = new sql.Table();
     table.columns.add("TestId", sql.Int);
     table.columns.add("BatchId", sql.Int);
-    table.columns.add("StudentId", sql.NVarChar(100));
+    table.columns.add("StudentId", sql.NVarChar(max));
     const parsedData = JSON.parse(jsonData);
     console.log(jsonData);
     // Populate rows in the table type
@@ -5915,7 +5916,7 @@ app.post("/studentResults", async (req, res) => {
   }
 });
 
-app.post("/RetriveTestsBystudentId", async (req, res) => {
+app.post("/RetriveTestsBystudentId_code", async (req, res) => {
   try {
     console.info("listofTests");
     await sql.connect(sqlConfig);
@@ -5923,16 +5924,16 @@ app.post("/RetriveTestsBystudentId", async (req, res) => {
     const requestData = req.body; // No need to stringify the request body
     console.info(requestData);
 
-    const { studentid, createdAt } = requestData;
+    const { studentId, createdAt } = requestData;
 
     //// Ensure TechnologyID and Query are parsed as integers
     //const parsedQuery = 1
 
     const result = await sql.query`
-            EXEC [dbo].[USP_RetriveTestsBystudentId]
-            @studentid  = ${studentid},
+            EXEC [dbo].[USP_RetriveTestsBystudentId_ProgramCode]
+            @studentId  = ${studentId},
             @createdAt=${createdAt}
-            
+
            `;
 
     console.log("List_Ttests", result);
@@ -5970,6 +5971,310 @@ app.post("/RetriveTestsBystudentId", async (req, res) => {
     });
   } finally {
     sql.close();
+  }
+});
+
+app.post("/RetriveTestsBystudentId_Mcq", async (req, res) => {
+  try {
+    console.info("listofTests");
+    await sql.connect(sqlConfig);
+    console.log(req.body);
+    const requestData = req.body; // No need to stringify the request body
+    console.info(requestData);
+
+    const { studentId, createdAt } = requestData;
+
+    //// Ensure TechnologyID and Query are parsed as integers
+    //const parsedQuery = 1
+
+    const result = await sql.query`
+              EXEC [dbo].[USP_RetriveTestsBystudentId_Mcq]
+              @studentId  = ${studentId},
+              @createdAt=${createdAt}
+  
+             `;
+
+    console.log("List_Ttests", result);
+
+    // Check if the recordset is not empty or undefined
+    if (result.recordset !== undefined && result.recordset.length > 0) {
+      const recordsetData = result.recordset;
+
+      // Log the recordset or return it in the response
+      console.log("Stored procedure executed successfully:", recordsetData);
+
+      res.status(200).json({
+        success: true,
+        message: "Stored procedure executed successfully",
+        dbresult: recordsetData,
+      });
+    } else {
+      // Handle the case where the recordset is empty or undefined
+      console.log(
+        "Stored procedure executed successfully, but no records returned."
+      );
+      res.status(200).json({
+        success: true,
+        message:
+          "Stored procedure executed successfully, but no records returned.",
+        dbresult: null,
+      });
+    }
+  } catch (err) {
+    console.error("Error executing stored procedure:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error executing stored procedure",
+      apperror: err,
+    });
+  } finally {
+    sql.close();
+  }
+});
+
+app.post("/RetriveProgramsByStudentId", async (req, res) => {
+  try {
+    console.info("listofTests");
+    await sql.connect(sqlConfig);
+    console.log(req.body);
+    const requestData = req.body; // No need to stringify the request body
+    console.info(requestData);
+
+    const { studentId, TestId } = requestData;
+
+    //// Ensure TechnologyID and Query are parsed as integers
+    //const parsedQuery = 1
+
+    const result = await sql.query`
+              EXEC USP_RetriveProgramsByStudentId
+              @studentId  = ${studentId},
+              @TestId=${TestId}
+  
+             `;
+
+    console.log("List_Ttests", result);
+
+    // Check if the recordset is not empty or undefined
+    if (result.recordset !== undefined && result.recordset.length > 0) {
+      const recordsetData = result.recordset;
+
+      // Log the recordset or return it in the response
+      console.log("Stored procedure executed successfully:", recordsetData);
+
+      res.status(200).json({
+        success: true,
+        message: "Stored procedure executed successfully",
+        dbresult: recordsetData,
+      });
+    } else {
+      // Handle the case where the recordset is empty or undefined
+      console.log(
+        "Stored procedure executed successfully, but no records returned."
+      );
+      res.status(200).json({
+        success: true,
+        message:
+          "Stored procedure executed successfully, but no records returned.",
+        dbresult: null,
+      });
+    }
+  } catch (err) {
+    console.error("Error executing stored procedure:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error executing stored procedure",
+      apperror: err,
+    });
+  } finally {
+    sql.close();
+  }
+});
+
+app.post("/AuthenticateStudent", async (req, res) => {
+  try {
+    console.info("Method CheckUsername");
+    await sql.connect(sqlConfig);
+    console.log(req.body);
+    const requestData = req.body; // No need to stringify the request body
+    console.info(requestData);
+
+    const { UserName } = requestData;
+
+    //// Ensure TechnologyID and Query are parsed as integers
+    //const parsedQuery = 1
+
+    const result = await sql.query`
+              EXEC [dbo].[Usp_AuthenticateStudent]
+              @UserName   = ${UserName}
+               `;
+
+    console.log("CheckUsername", result);
+
+    // Check if the recordset is not empty or undefined
+    if (result.recordset !== undefined && result.recordset.length > 0) {
+      const recordsetData = result.recordset;
+
+      // Log the recordset or return it in the response
+      console.log("Stored procedure executed successfully:", recordsetData);
+
+      res.status(200).json({
+        success: true,
+        message: "Stored procedure executed successfully",
+        dbresult: recordsetData,
+      });
+    } else {
+      console.log(
+        "Login Failed! The username or password you entered is incorrect. Please check your credentials and try again."
+      );
+      // Handle the case where the recordset is empty or undefined
+      res.status(401).json({
+        success: true,
+        message:
+          "Login Failed! The username or password you entered is incorrect. Please check your credentials and try again.",
+        dbresult: [],
+      });
+    }
+  } catch (err) {
+    console.error("Error executing stored procedure:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error executing stored procedure",
+      apperror: err,
+    });
+  } finally {
+    sql.close();
+  }
+});
+
+// app.get("/USP_RetriveTestsBystudentId_Mcq", async (req, res) => {
+//   try {
+//     await sql.connect(sqlConfig);
+//     const requestData = req.body;
+//     //// Ensure TechnologyID and Query are parsed as integers
+//     //const parsedQuery = 1
+//     const { studentId, TestStartDate } = requestData;
+//     console.log(studentId, TestStartDate);
+
+//     const result = await sql.query`
+//               EXEC [USP_RetriveTestsBystudentId_Mcq]
+//               @studentId=${studentId},
+//               @teststartdate=${TestStartDate}`;
+
+//     console.log("ListTechnologies", result);
+
+//     // Check if the recordset is not empty or undefined
+//     if (result.recordset !== undefined && result.recordset.length > 0) {
+//       const recordsetData = result.recordset;
+
+//       // Log the recordset or return it in the response
+//       console.log("Stored procedure executed successfully:", recordsetData);
+
+//       res.status(200).json(recordsetData);
+//     } else {
+//       // Handle the case where the recordset is empty or undefined
+//       console.log(
+//         "Stored procedure executed successfully, but no records returned."
+//       );
+//       res.status(200).json({
+//         success: true,
+//         message:
+//           "Stored procedure executed successfully, but no records returned.",
+//         dbresult: null,
+//       });
+//     }
+//   } catch (err) {
+//     console.error("Error executing stored procedure:", err);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error executing stored procedure",
+//       apperror: err,
+//     });
+//   } finally {
+//     sql.close();
+//   }
+// });
+
+/**---------------------------------------------------- */
+
+app.get("/retrive-batch-details/:batchId", async (req, res) => {
+  try {
+    const batchId = req.params?.batchId;
+
+    if (!batchId) {
+      res.status(400);
+      res.json({
+        error: "batchId missing",
+        message: "batchId must be sent",
+      });
+      return;
+    }
+
+    if (Number(batchId) === NaN || !Number(batchId)) {
+      res.status(400);
+      res.json({
+        error: "Invalid batchId",
+        message: "batchId must be valid",
+      });
+      return;
+    }
+
+    const connection = await db.getConnection();
+
+    const { recordset } = await connection.query`
+       EXEC USP_RetriveBatch_Details
+       @BatchId  = ${batchId}`;
+
+    if (!recordset || (Array.isArray(recordset) && recordset.length === 0)) {
+      res
+        .status(404)
+        .json({ error: "no records", message: "records not found" });
+      return;
+    }
+
+    /**
+     * JsonResult is specific to this sp type: JSON.stringify
+     *
+     * value: {"technologyId":Number,"moduleId":Number,"batchName":String,"batchAdmin":String,"startDate":String,"endDate":String,"facultyIds":String,"mentorIds":String,"studentIds":String}
+     */
+    const { "JSON_F52E2B61-18A1-11d1-B105-00805F49916B": JsonResult } =
+      recordset[0];
+
+    res.status(200).send(JsonResult);
+  } catch (error) {
+    console.error(error);
+
+    res.json({
+      error: new Error(error).name,
+      message: new Error(error).message,
+    });
+  }
+});
+
+/**---------------------------------------------------- */
+app.post("/api/program/new-program", (req, res) => {
+  try {
+    const body = req.body;
+
+    if (
+      !body.files ||
+      !body.testCases ||
+      !body.problemName ||
+      !body.problemDescription ||
+      !body.sampleInput ||
+      !body.image ||
+      !body.sampleOutput ||
+      !body.explanation
+    ) {
+      res.status(500).json({
+        error: "Missing data",
+        message: "Missing required fields in request body",
+      });
+      return;
+    }
+    res.status(201).json({ message: "Problem created successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: error.name, message: error.message });
   }
 });
 
